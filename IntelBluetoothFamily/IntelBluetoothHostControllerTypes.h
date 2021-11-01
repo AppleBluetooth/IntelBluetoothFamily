@@ -177,7 +177,7 @@ struct BluetoothIntelCommandWriteBootParams
     UInt8  firmwareBuildYear;
 } __attribute__((packed));
 
-struct BluetoothIntelBootupEvent
+struct BluetoothIntelBootupEventParams
 {
     UInt8     zero;
     UInt8     numCommands;
@@ -187,10 +187,10 @@ struct BluetoothIntelBootupEvent
     UInt8     ddcStatus;
 } __attribute__((packed));
 
-struct BluetoothIntelSecureSendResult
+struct BluetoothIntelSecureSendResultEventParams
 {
     UInt8    result;
-    SInt16   opCode;
+    UInt16   opCode;
     UInt8    status;
 } __attribute__((packed));
 

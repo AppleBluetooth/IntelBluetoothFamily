@@ -555,37 +555,6 @@ reset:
     return err;
 }
 
-void IntelBluetoothHostController::HandleBootupEvent(const void * ptr, IOByteCount size)
-{
-    BluetoothIntelBootupEvent * event = (BluetoothIntelBootupEvent *) ptr;
-
-    if (size != sizeof(*event))
-        return;
-
-    if ( mExpansionData->mBooting )
-    {
-        mExpansionData->mBooting = false;
-        mCommandGate->commandWakeup(&mExpansionData->mBooting);
-    }
-}
-
-void IntelBluetoothHostController::HandleSecureSendResult(const void * ptr, IOByteCount size)
-{
-    BluetoothIntelSecureSendResult * event = (BluetoothIntelSecureSendResult *) ptr;
-
-    if (size != sizeof(*event))
-        return;
-
-    if (event->result)
-        mExpansionData->mFirmwareLoadingFailed = true;
-
-    if ( mExpansionData->mDownloading && mExpansionData->mFirmwareLoaded )
-    {
-        mExpansionData->mDownloading = false;
-        mCommandGate->commandWakeup(&mExpansionData->mDownloading);
-    }
-}
-
 void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber)
 {
     super::ProcessEventDataWL(inDataPtr, inDataSize, sequenceNumber);
@@ -602,22 +571,47 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
     {
         switch (inDataPtr[0])
         {
+            ++inDataPtr;
+            --inDataSize;
             case 0x02:
+            {
                 /* When switching to the operational firmware
                  * the device sends a vendor specific event
                  * indicating that the bootup completed.
                  */
-                HandleBootupEvent(inDataPtr + 1, inDataSize - 1);
+                if (inDataSize != sizeof(BluetoothIntelBootupEventParams))
+                    return;
+
+                if ( mExpansionData->mBooting )
+                {
+                    mExpansionData->mBooting = false;
+                    mCommandGate->commandWakeup(&mExpansionData->mBooting);
+                }
                 break;
+            }
 
             case 0x06:
+            {
                 /* When the firmware loading completes the
                  * device sends out a vendor specific event
                  * indicating the result of the firmware
                  * loading.
                  */
-                HandleSecureSendResult(inDataPtr + 1, inDataSize - 1);
+                BluetoothIntelSecureSendResultEventParams * eventParam = (BluetoothIntelSecureSendResultEventParams *) inDataPtr;
+
+                if (inDataSize != sizeof(BluetoothIntelSecureSendResultEventParams))
+                    return;
+
+                if (eventParam->result)
+                    mExpansionData->mFirmwareLoadingFailed = true;
+
+                if ( mExpansionData->mDownloading && mExpansionData->mFirmwareLoaded )
+                {
+                    mExpansionData->mDownloading = false;
+                    mCommandGate->commandWakeup(&mExpansionData->mDownloading);
+                }
                 break;
+            }
         }
     }
 }

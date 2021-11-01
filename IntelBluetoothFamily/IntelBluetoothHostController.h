@@ -70,9 +70,6 @@ public:
     
     virtual IOReturn WaitForDeviceBoot(UInt32 callTime, AbsoluteTime deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
-    
-    virtual void HandleBootupEvent(const void * ptr, IOByteCount size);
-    virtual void HandleSecureSendResult(const void * ptr, IOByteCount size);
 
     virtual IOReturn HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode) APPLE_KEXT_OVERRIDE;
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
