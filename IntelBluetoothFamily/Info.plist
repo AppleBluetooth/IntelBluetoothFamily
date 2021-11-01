@@ -18,9 +18,9 @@
     <string>1.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
-	<key>IOKitPersonalities</key>
-	<dict/>
-	<key>OSBundleLibraries</key>
+    <key>IOKitPersonalities</key>
+    <dict/>
+    <key>OSBundleLibraries</key>
     <dict>
         <key>com.apple.iokit.IOACPIFamily</key>
         <string>1.0.0</string>
