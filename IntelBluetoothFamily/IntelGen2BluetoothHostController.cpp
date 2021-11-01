@@ -163,6 +163,7 @@ IOReturn IntelGen2BluetoothHostController::GetFirmwareWL(void * version, Bluetoo
         os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][GetFirmwareWL] Unsupported firmware name!");
         return kIOReturnInvalid;
     }
+    setProperty("firmwareName", fwName);
     
     if ( !transport )
     {
@@ -277,6 +278,7 @@ download:
         {
             /* Firmware has already been loaded */
             mExpansionData->mFirmwareLoaded = true;
+            setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
         }
         return err;
@@ -313,6 +315,7 @@ download:
             {
                 os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][DownloadFirmware] Firmware already loaded!");
                 mExpansionData->mFirmwareLoaded = true;
+                setProperty("FirmwareLoaded", true);
                 return kIOReturnSuccess;
             }
     }

@@ -382,6 +382,7 @@ IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, 
     AbsoluteTime duration;
 
     mExpansionData->mFirmwareLoaded = true;
+    setProperty("FirmwareLoaded", true);
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForFirmwareDownload] Waiting for firmware download to complete...");
 

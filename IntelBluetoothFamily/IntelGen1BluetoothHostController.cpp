@@ -207,7 +207,9 @@ IOReturn IntelGen1BluetoothHostController::GetFirmwareWL(void * version, Bluetoo
         GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
     else
         GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
-    
+
+    setProperty("firmwareName", fwName);
+
     if ( !transport )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][GetFirmwareWL] Transport is invalid!");
