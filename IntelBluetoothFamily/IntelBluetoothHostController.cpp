@@ -112,6 +112,30 @@ void IntelBluetoothHostController::stop(IOService * provider)
     }
 }
 
+void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)
+{
+    switch (hardwareVariant)
+    {
+        /* Legacy bootloader devices that supports MSFT Extension */
+        case 0x11:    /* JfP */
+        case 0x12:    /* ThP */
+        case 0x13:    /* HrP */
+        case 0x14:    /* CcP */
+        /* All Intel new genration controllers support the Microsoft vendor
+         * extension are using 0xFC1E for VsMsftOpCode.
+         */
+        case 0x17:
+        case 0x18:
+        case 0x19:
+            mMicrosoftExtensionOpCode = 0xFC1E;
+            // What operations need to be done?
+            break;
+        default:
+            /* Not supported */
+            break;
+    }
+}
+
 void IntelBluetoothHostController::ResetToBootloader(BluetoothHCIRequestID inID)
 {
     IOReturn err;
@@ -136,7 +160,7 @@ void IntelBluetoothHostController::ResetToBootloader(BluetoothHCIRequestID inID)
 void IntelBluetoothHostController::HandleHardwareError(BluetoothHCIRequestID inID, UInt8 code)
 {
     IOReturn err;
-    char * buffer = NULL;
+    char * buffer;
     
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Hardware error: 0x%2.2x", code);
 
@@ -150,7 +174,8 @@ void IntelBluetoothHostController::HandleHardwareError(BluetoothHCIRequestID inI
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Failed to prepare request for new command: 0x%x", err);
         return;
     }
-    
+
+    buffer = IONewZero(char, 12);
     err = SendHCIRequestFormatted(inID, 0xFC22, 12, buffer, "Hbb", 0xFC22, 1, 0x00);
     if ( err )
     {
@@ -159,6 +184,7 @@ void IntelBluetoothHostController::HandleHardwareError(BluetoothHCIRequestID inI
     }
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Exception Info: %s", buffer);
+    IOSafeDeleteNULL(buffer, UInt8, 12);
 }
 
 IOReturn IntelBluetoothHostController::WriteDeviceAddress(BluetoothHCIRequestID inID, BluetoothDeviceAddress * inAddress)
@@ -559,6 +585,48 @@ void IntelBluetoothHostController::HandleSecureSendResult(const void * ptr, IOBy
     }
 }
 
+void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber)
+{
+    super::ProcessEventDataWL(inDataPtr, inDataSize, sequenceNumber);
+
+    if (inDataSize <= kBluetoothHCIEventPacketHeaderSize)
+        return;
+
+    BluetoothHCIEventPacketHeader * event = (BluetoothHCIEventPacketHeader *) inDataPtr;
+    inDataPtr += sizeof(BluetoothHCIEventPacketHeader);
+    inDataSize -= sizeof(BluetoothHCIEventPacketHeader);
+    if ( event->dataSize != inDataSize || event->dataSize == 0 )
+        return;
+    if ( mExpansionData->mBootloaderMode && event->eventCode == 0xFF )
+    {
+        switch (inDataPtr[0])
+        {
+            case 0x02:
+                /* When switching to the operational firmware
+                 * the device sends a vendor specific event
+                 * indicating that the bootup completed.
+                 */
+                HandleBootupEvent(inDataPtr + 1, inDataSize - 1);
+                break;
+
+            case 0x06:
+                /* When the firmware loading completes the
+                 * device sends out a vendor specific event
+                 * indicating the result of the firmware
+                 * loading.
+                 */
+                HandleSecureSendResult(inDataPtr + 1, inDataSize - 1);
+                break;
+        }
+    }
+}
+
+IOReturn IntelBluetoothHostController::HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode)
+{
+    // Do stuff
+    return super::HandleSpecialOpcodes(opCode);
+}
+
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelSecureSend(BluetoothHCIRequestID inID, UInt8 fragmentType, UInt32 paramSize, const UInt8 * param)
 {
     IOReturn err;
@@ -806,7 +874,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadVersionInfo(Bluetoot
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(BluetoothHCIRequestID inID, BluetoothIntelDebugFeatures * features)
 {
     IOReturn err;
-    UInt8 * response = NULL;
+    UInt8 * response;
 
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
@@ -818,6 +886,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
     /* Intel controller supports two pages, each page is of 128-bit
      * feature bit mask. And each bit defines specific feature support
      */
+    response = IONewZero(UInt8, sizeof(features->page1) + 2);
     err = SendHCIRequestFormatted(inID, 0xFCA6, sizeof(features->page1) + 2, response, "Hbb", 0xFCA6, 1, 1);
     if (err)
     {
@@ -826,6 +895,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
     }
     
     memcpy(features->page1, response + 2, sizeof(features->page1));
+    IOSafeDeleteNULL(response, UInt8, sizeof(features->page1) + 2);
 
     return kIOReturnSuccess;
 }

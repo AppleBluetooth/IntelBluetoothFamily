@@ -51,7 +51,7 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
     mExpansionData->mWidebandSpeechSupported = true;
     
     /* Setup MSFT Extension support */
-    //btintel_set_msft_opcode(hdev, ver.hw_variant);
+    SetMicrosoftExtensionOpCode(version->hardwareVariant);
     
     /* Set the default boot parameter to 0x0 and it is updated to
      * SKU specific boot parameter after reading Intel_Write_Boot_Params
@@ -105,10 +105,8 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
         HCIRequestDelete(NULL, id);
     }
 
-    /* Read the Intel version information after loading the FW  */
-    HCIRequestCreate(&id);
-    err = BluetoothHCIIntelReadVersionInfo(id, 0x00, (UInt8 *) version);
-    HCIRequestDelete(NULL, id);
+    /* Read the Intel version information after loading the FW */
+    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
     if (err)
         return false;
 

@@ -160,9 +160,7 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
     /* Need build number for downloaded fw patches in
      * every power-on boot
      */
-    HCIRequestCreate(&id);
-    err = BluetoothHCIIntelReadVersionInfo(id, 0x00, (UInt8 *) version);
-    HCIRequestDelete(NULL, id);
+    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
     if (err)
         return false;
 

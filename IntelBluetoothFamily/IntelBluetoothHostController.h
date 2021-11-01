@@ -42,7 +42,8 @@ public:
     virtual void free() APPLE_KEXT_OVERRIDE;
     virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
     virtual void stop(IOService * provider) APPLE_KEXT_OVERRIDE;
-    
+
+    virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);
     virtual void HandleHardwareError(BluetoothHCIRequestID inID, UInt8 code);
     virtual IOReturn WriteDeviceAddress(BluetoothHCIRequestID inID, BluetoothDeviceAddress * inAddress) APPLE_KEXT_OVERRIDE;
@@ -72,7 +73,10 @@ public:
     
     virtual void HandleBootupEvent(const void * ptr, IOByteCount size);
     virtual void HandleSecureSendResult(const void * ptr, IOByteCount size);
-    
+
+    virtual IOReturn HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode) APPLE_KEXT_OVERRIDE;
+    virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
+
     virtual IOReturn BluetoothHCIIntelSecureSend(BluetoothHCIRequestID inID, UInt8 fragmentType, UInt32 paramSize, const UInt8 * param);
     
     /*! @function BluetoothHCISendIntelReset
@@ -84,7 +88,7 @@ public:
      *   @param bootOption The boot option: 0x00 (current image), 0x01 (specified boot address).
      *   @param bootAddress The boot address which applies only when bootOptions is 0x01.
      */
-    
+
     virtual IOReturn BluetoothHCISendIntelReset(BluetoothHCIRequestID inID, UInt8 resetType, bool enablePatch, bool reloadDDC, UInt8 bootOption, UInt32 bootAddress);
     virtual IOReturn BluetoothHCIIntelEnterManufacturerMode(BluetoothHCIRequestID inID);
     virtual IOReturn BluetoothHCIIntelExitManufacturerMode(BluetoothHCIRequestID inID, BluetoothIntelManufacturingExitResetOption resetOption);
@@ -130,6 +134,7 @@ protected:
     
 protected:
     void * mVersionInfo;
+    BluetoothHCICommandOpCode mMicrosoftExtensionOpCode;
     struct ExpansionData
     {
         bool mValidLEStates;

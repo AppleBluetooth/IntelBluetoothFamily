@@ -81,7 +81,7 @@ bool IntelGen3BluetoothHostController::start(IOService * provider)
             mExpansionData->mWidebandSpeechSupported = true;
 
             /* Setup MSFT Extension support */
-            //btintel_set_msft_opcode(hdev, INTEL_HW_VARIANT(ver_tlv.cnvi_bt));
+            SetMicrosoftExtensionOpCode(IntelCNVXExtractHardwareVariant(version.cnviBT));
 
             /* Set the default boot parameter to 0x0 and it is updated to
              * SKU specific boot parameter after reading Intel_Write_Boot_Params
