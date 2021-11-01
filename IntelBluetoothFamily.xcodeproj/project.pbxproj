@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BC6A4C2E272B96FA00E83996 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BC6B9AA9272F65490097B209 /* FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6B9AA8272F65490097B209 /* FirmwareBinary.cpp */; };
+		BC6B9AC027301C070097B209 /* IntelBluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCB67C64272DC525007711DB /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB67C6C272DF0C6007711DB /* AppleBluetoothHostControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */; };
 		BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCC18145272CC61600FE5090 /* kern_btfixup.hpp */; };
@@ -29,6 +30,20 @@
 		BCDAECB8272D0F8400D24C15 /* IntelBluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BCDAECB6272D0F8300D24C15 /* IntelBluetoothHostControllerUSBTransport.h */; };
 		BCDAECB9272D0FE800D24C15 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BC6B9ABF27301BBC0097B209 /* Copy to PlugIns */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BC6B9AC027301C070097B209 /* IntelBluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
+			);
+			name = "Copy to PlugIns";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BC6A4C0B272B960100E83996 /* IntelBluetoothFamily.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily.kext; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -359,6 +374,7 @@
 				BC6A4C06272B960100E83996 /* Headers */,
 				BC6A4C07272B960100E83996 /* Sources */,
 				BC6A4C08272B960100E83996 /* Frameworks */,
+				BC6B9ABF27301BBC0097B209 /* Copy to PlugIns */,
 				BC6A4C09272B960100E83996 /* Resources */,
 			);
 			buildRules = (
