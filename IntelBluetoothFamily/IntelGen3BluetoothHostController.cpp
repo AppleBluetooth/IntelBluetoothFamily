@@ -282,7 +282,7 @@ IOReturn IntelGen3BluetoothHostController::GetFirmwareWL(void * version, Bluetoo
         os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostController][GetFirmwareWL] Unsupported firmware name!");
         return kIOReturnInvalid;
     }
-    setProperty("firmwareName", fwName);
+    setProperty("FirmwareName", fwName);
     
     if ( !transport )
     {

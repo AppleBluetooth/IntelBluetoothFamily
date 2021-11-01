@@ -208,7 +208,7 @@ IOReturn IntelGen1BluetoothHostController::GetFirmwareWL(void * version, Bluetoo
     else
         GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
 
-    setProperty("firmwareName", fwName);
+    setProperty("FirmwareName", fwName);
 
     if ( !transport )
     {
