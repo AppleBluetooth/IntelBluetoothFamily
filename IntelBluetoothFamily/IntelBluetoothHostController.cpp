@@ -569,10 +569,10 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
         return;
     if ( mExpansionData->mBootloaderMode && event->eventCode == 0xFF )
     {
+        ++inDataPtr;
+        --inDataSize;
         switch (inDataPtr[0])
         {
-            ++inDataPtr;
-            --inDataSize;
             case 0x02:
             {
                 /* When switching to the operational firmware
