@@ -1,6 +1,8 @@
 .DS_Store
 DerivedData
-build
-xcuserdata
+Lilu.kext
+OpenFirmwareManager.kext
 xcshareddata
+xcuserdata
 project.xcworkspace
+build
