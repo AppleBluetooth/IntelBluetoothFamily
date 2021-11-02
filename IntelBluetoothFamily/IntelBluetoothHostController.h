@@ -99,6 +99,7 @@ public:
     virtual IOReturn BluetoothHCIIntelWriteDDC(BluetoothHCIRequestID inID, UInt8 * data, UInt8 dataSize);
     
 protected:
+    virtual IOReturn BroadcastCommandCompleteEvent(BluetoothHCICommandOpCode opCode);
     virtual IOReturn DownloadFirmwarePayload(BluetoothHCIRequestID inID, OSData * fwData, size_t offset);
     virtual IOReturn SecureSendSFIRSAFirmwareHeader(BluetoothHCIRequestID inID, OSData * fwData);
     virtual IOReturn SecureSendSFIECDSAFirmwareHeader(BluetoothHCIRequestID inID, OSData * fwData);

@@ -39,7 +39,7 @@ bool IntelBluetoothHostController::init( IOBluetoothHCIController * family, IOBl
 void IntelBluetoothHostController::free()
 {
     mVersionInfo = NULL;
-    IODelete(mExpansionData, ExpansionData, 1);
+    IOSafeDeleteNULL(mExpansionData, ExpansionData, 1);
     super::free();
 }
 
@@ -616,9 +616,25 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
     }
 }
 
+IOReturn IntelBluetoothHostController::BroadcastCommandCompleteEvent(BluetoothHCICommandOpCode opCode)
+{
+    IOBluetoothHCIRequest * request;
+    UInt8 eventParams[4];
+
+    eventParams[0] = 0x01; //numCommands
+    *(BluetoothHCICommandOpCode *) (eventParams + 1) = opCode;
+    eventParams[3] = 0x00; //returnParams
+
+    FindQueuedRequest(opCode, NULL, 0xFFFF, true, &request);
+    BroadcastEventNotification(request->mID, kBluetoothHCIEventCommandComplete, 0, eventParams, 4, opCode, false, 255); // Need to verify...
+    return kIOReturnSuccess;
+}
+
 IOReturn IntelBluetoothHostController::HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode)
 {
-    // Do stuff
+    if (opCode == 0xfc01)
+        BroadcastCommandCompleteEvent(opCode);
+
     return super::HandleSpecialOpcodes(opCode);
 }
 
