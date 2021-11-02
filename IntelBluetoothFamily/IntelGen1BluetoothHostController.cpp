@@ -249,6 +249,9 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
     BluetoothHCIRequestID id;
     BluetoothHCICommandPacket cmd;
     BluetoothHCIEventPacketHeader * event = NULL;
+    IOBluetoothHostControllerUSBTransport * usbTransport;
+    UInt8 * actualEvent;
+    IOByteCount actualSize;
     UInt8 * eventParam = NULL;
     IOByteCount remain = fwData->getLength() - (*fwPtr - (UInt8 *) fwData->getBytesNoCopy());
 
@@ -344,22 +347,22 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
      * the firmware file. At fist, it checks the length and then
      * the contents of the event.
      */
-    /*
-    if (skb->len != evt->plen) {
-        bt_dev_err(hdev, "mismatch event length (opcode 0x%4.4x)",
-               le16_to_cpu(cmd->opcode));
-        kfree_skb(skb);
-        return -EFAULT;
-    }
 
-    if (memcmp(skb->data, evt_param, evt->plen)) {
-        bt_dev_err(hdev, "mismatch event parameter (opcode 0x%4.4x)",
-               le16_to_cpu(cmd->opcode));
-        kfree_skb(skb);
-        return -EFAULT;
+    if ( (usbTransport = OSDynamicCast(IOBluetoothHostControllerUSBTransport, mBluetoothTransport)) )
+    {
+        actualSize = usbTransport->mInterruptReadDataBuffer->getLength(); // not sure though
+        actualEvent = (UInt8 *) usbTransport->mInterruptReadDataBuffer->getBytesNoCopy();
+        if ( event->dataSize != actualSize )
+        {
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Event length mismatch: opCode = 0x%04X", cmd.opCode);
+            return kIOReturnError;
+        }
+        if (memcmp(actualEvent, eventParam, actualSize))
+        {
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Event parameters mismatch: opCode = 0x%04X", cmd.opCode);
+            return kIOReturnError;
+        }
     }
-    kfree_skb(skb);
-     */
     
     return kIOReturnSuccess;
 }
