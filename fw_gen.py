@@ -50,7 +50,7 @@ copyright = '''/*
  *
  */
 
-#include "../IntelBluetoothHostControllerUSBTransport/IntelFirmwareList.h"
+#include "IntelBluetoothHostControllerUSBTransport/IntelFirmwareList.h"
 '''
 
 def hash(data):
