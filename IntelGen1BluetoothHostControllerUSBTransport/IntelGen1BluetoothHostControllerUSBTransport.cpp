@@ -55,7 +55,7 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
      * WBS for SdP - SdP and Stp have a same hw_varaint but
      * different fw_variant
      */
-    if (version->hardwareVariant == 0x08 && version->firmwareVariant == 0x22)
+    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantStP && version->firmwareVariant == 0x22 )
         controller->mWidebandSpeechSupported = true;
 
     /* These devices have an issue with LED which doesn't
@@ -68,7 +68,7 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
      * have. If there is no patch data in the device, it is always 0x00.
      * So, if it is other than 0x00, no need to patch the device again.
      */
-    if (version->firmwarePatchVersion)
+    if ( version->firmwarePatchVersion )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
         goto complete;
@@ -118,13 +118,13 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
      * If the default patch file is used, no reset is done when disabling
      * the manufacturer.
      */
-    while (fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy())
+    while ( fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy() )
     {
         controller->HCIRequestCreate(&id);
         err = PatchFirmware(id, fwData, &fwPtr, &disablePatch);
         controller->HCIRequestDelete(NULL, id);
         
-        if (err)
+        if ( err )
         {
             /* Patching failed. Disable the manufacturer mode with reset and
              * deactivate the downloaded firmware patches.
@@ -132,7 +132,7 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
             controller->HCIRequestCreate(&id);
             err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches);
             controller->HCIRequestDelete(NULL, id);
-            if (err)
+            if ( err )
                 return false;
 
             os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed and deactivated");
@@ -140,13 +140,13 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
         }
     }
 
-    if (disablePatch)
+    if ( disablePatch )
     {
         /* Disable the manufacturer mode without reset */
         controller->HCIRequestCreate(&id);
         err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
         controller->HCIRequestDelete(NULL, id);
-        if (err)
+        if ( err )
             return false;
 
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed");
@@ -160,14 +160,14 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
     controller->HCIRequestCreate(&id);
     err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetActivatePatches);
     controller->HCIRequestDelete(NULL, id);
-    if (err)
+    if ( err )
         return err;
 
     /* Need build number for downloaded fw patches in
      * every power-on boot
      */
     err = controller->CallBluetoothHCIIntelReadVersionInfo(0x00);
-    if (err)
+    if ( err )
         return false;
 
     os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) controller->mVersionInfo)->firmwarePatchVersion);
@@ -192,7 +192,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
     char firmwareName[64];
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     
-    if (!mIsDefaultFirmware)
+    if ( !mIsDefaultFirmware )
         snprintf(firmwareName, sizeof(firmwareName), "ibt-hw-%x.%x.%x-fw-%x.%x.%x.%x.%x.%s", version->hardwarePlatform, version->hardwareVariant, version->hardwareRevision, version->firmwareVariant, version->firmwareRevision, version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, suffix);
     else
         snprintf(firmwareName, sizeof(firmwareName), "ibt-hw-%x.%x.%s", version->hardwarePlatform, version->hardwareVariant, suffix);
@@ -254,7 +254,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * the firmware file is corrupted and it should stop the patching
      * process.
      */
-    if (remain > kBluetoothHCICommandPacketHeaderSize && *fwPtr[0] != 0x01)
+    if ( remain > kBluetoothHCICommandPacketHeaderSize && *fwPtr[0] != 0x01 )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command read!");
         return kIOReturnInvalid;
@@ -270,7 +270,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
     /* Ensure that the remain firmware data is long enough than the length
      * of command parameter. If not, the firmware file is corrupted.
      */
-    if (remain < cmd.dataSize)
+    if ( remain < cmd.dataSize )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command length!");
         return kIOReturnError;
@@ -282,7 +282,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * is not required when the default firmware patch file is used
      * because there are no patch data to load.
      */
-    if (*disablePatch && (UInt16) (cmd.opCode) == 0xFC8E)
+    if ( *disablePatch && (UInt16) (cmd.opCode) == 0xFC8E )
         *disablePatch = 0;
 
     memcpy(cmd.data, fwPtr, cmd.dataSize);
@@ -296,7 +296,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * can be sent with __hci_cmd_sync_ev() which returns the sk_buff of
      * last expected event.
      */
-    while (remain > kBluetoothHCIEventPacketHeaderSize && *fwPtr[0] == 0x02)
+    while ( remain > kBluetoothHCIEventPacketHeaderSize && *fwPtr[0] == 0x02 )
     {
         ++(*fwPtr);
         --remain;
@@ -305,7 +305,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
         *fwPtr += sizeof(*event);
         remain -= sizeof(*event);
 
-        if (remain < event->dataSize)
+        if ( remain < event->dataSize )
         {
             os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event length!");
             return kIOReturnError;
@@ -320,14 +320,14 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * If event is not found or remain is smaller than zero, the firmware
      * file is corrupted.
      */
-    if (!event || !eventParam || remain < 0)
+    if ( !event || !eventParam || remain < 0 )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event read!");
         return kIOReturnError;
     }
 
     err = controller->SendRawHCICommand(inID, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
-    if (err)
+    if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
         return kIOReturnError;
@@ -345,7 +345,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event length mismatch: opCode = 0x%04X", cmd.opCode);
         return kIOReturnError;
     }
-    if (memcmp(actualEvent, eventParam, actualSize))
+    if ( memcmp(actualEvent, eventParam, actualSize) )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event parameters mismatch: opCode = 0x%04X", cmd.opCode);
         return kIOReturnError;

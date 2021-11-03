@@ -27,7 +27,7 @@ OSDefineMetaClassAndStructors(IntelGen2BluetoothHostControllerUSBTransport, supe
 
 bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
 {
-    if (!super::start(provider))
+    if ( !super::start(provider) )
         return false;
 
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
@@ -69,21 +69,21 @@ bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
     controller->HCIRequestCreate(&id);
     err = DownloadFirmware(id, version, &params, &bootAddress);
     controller->HCIRequestDelete(NULL, id);
-    if (err)
+    if ( err )
         return false;
 
     /* controller is already having an operational firmware */
-    if (version->firmwareVariant == 0x23)
+    if ( version->firmwareVariant == 0x23 )
         goto finish;
 
     err = controller->BootDevice(bootAddress);
-    if (err)
+    if ( err )
         return false;
 
     controller->mBootloaderMode = false;
 
     err = GetFirmware(version, &params, "ddc", &fwData);
-    if (!err)
+    if ( !err )
     {
         /* Once the device is running in operational mode, it needs to
          * apply the device configuration (DDC) parameters.
@@ -102,7 +102,7 @@ bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
     controller->HCIRequestCreate(&id);
     err = controller->BluetoothHCIIntelReadDebugFeatures(id, &features);
     controller->HCIRequestDelete(NULL, id);
-    if (!err)
+    if ( !err )
     {
         /* Set DDC mask for available debug features */
         controller->HCIRequestCreate(&id);
@@ -112,7 +112,7 @@ bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
 
     /* Read the Intel version information after loading the FW */
     err = controller->CallBluetoothHCIIntelReadVersionInfo(0x00);
-    if (err)
+    if ( err )
         return false;
 
     version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
@@ -138,7 +138,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     char firmwareName[64];
     
-    switch (version->hardwareVariant)
+    switch ( version->hardwareVariant )
     {
         case kBluetoothIntelHardwareVariantSfP:
         case kBluetoothIntelHardwareVariantWsP:
@@ -171,7 +171,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::GetFirmwareWL(void * vers
     setProperty("FirmwareName", fwName);
     
     mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
-    if (!mFirmware)
+    if ( !mFirmware )
     {
         os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to obtain firmware file %s!!!", fwName);
         return err;
@@ -229,7 +229,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
      * details of the bootloader.
      */
     err = controller->BluetoothHCIIntelReadBootParams(inID, params);
-    if (err)
+    if ( err )
         return err;
 
     /* It is required that every single firmware fragment is acknowledged
@@ -287,7 +287,7 @@ download:
         return err;
     }
 
-    if (fwData->getLength() < 644)
+    if ( fwData->getLength() < 644 )
     {
         os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Size of firmware file is invalid: %u!", fwData->getLength());
         return kIOReturnUnsupported;
@@ -310,7 +310,7 @@ download:
             break;
         default:
             /* Skip reading firmware file version in bootloader mode */
-            if (version->firmwareVariant == 0x06)
+            if ( version->firmwareVariant == 0x06 )
                 break;
 
             /* Skip download if firmware has the same version */
@@ -331,18 +331,18 @@ download:
      * If the firmware version has changed that means it needs to be reset
      * to bootloader when operational so the new firmware can be loaded.
      */
-    if (version->firmwareVariant == 0x23)
+    if ( version->firmwareVariant == 0x23 )
     {
         err = kIOReturnInvalid;
         goto done;
     }
 
     err = controller->SecureSendSFIRSAFirmwareHeader(inID, fwData);
-    if (err)
+    if ( err )
         goto done;
 
     err = controller->DownloadFirmwarePayload(inID, fwData, kIntelRSAHeaderLength);
-    if (err)
+    if ( err )
         goto done;
 
     /* Before switching the device into operational mode and with that
@@ -357,7 +357,7 @@ download:
      * of this device.
      */
     err = controller->WaitForFirmwareDownload(callTime, 5000);
-    if (err == kIOReturnTimeout)
+    if ( err == kIOReturnTimeout )
 done:
         controller->ResetToBootloader(inID);
     return err;

@@ -482,12 +482,12 @@ IOReturn IntelBluetoothHostController::LoadDDCConfig(BluetoothHCIRequestID inID,
     /* DDC file contains one or more DDC structure which has
      * Length (1 byte), DDC ID (2 bytes), and DDC value (Length - 2).
      */
-    while (fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy())
+    while ( fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy() )
     {
         cmdDataSize = fwPtr[0] + sizeof(UInt8);
 
         err = BluetoothHCIIntelWriteDDC(inID, fwPtr, cmdDataSize);
-        if (err)
+        if ( err )
             return err;
 
         fwPtr += cmdDataSize;

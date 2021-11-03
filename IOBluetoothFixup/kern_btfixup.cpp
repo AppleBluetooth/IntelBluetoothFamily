@@ -40,10 +40,10 @@ void IOBluetoothFixup::deinit()
 
 void IOBluetoothFixup::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size)
 {
-    if (index == kextList[0].loadIndex)
+    if ( index == kextList[0].loadIndex )
     {
         KernelPatcher::RouteRequest request (createBluetoothHostControllerObjectSymbol, CreateBluetoothHostControllerObject, orgIOBluetoothFamily_CreateBluetoothHostControllerObject);
-        if (!patcher.routeMultiple(index, &request, 1, address, size))
+        if ( !patcher.routeMultiple(index, &request, 1, address, size) )
         {
             SYSLOG("IOBluetoothFixup", "patcher.routeMultiple for %s failed with error %d", request.symbol, patcher.getError());
             patcher.clearError();
