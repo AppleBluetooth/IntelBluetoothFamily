@@ -70,34 +70,51 @@ IOService * IntelBluetoothHostControllerUSBTransport::probe( IOService * provide
 
 bool IntelBluetoothHostControllerUSBTransport::start(IOService * provider)
 {
-    if (!super::start(provider))
+    if ( !super::start(provider) )
+        return false;
+
+    if ( mVendorID == 32903 )
+    {
+        mControllerVendorType = 8;
+        setProperty("ActiveBluetoothControllerVendor", "Intel");
+    }
+    else
         return false;
         
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
     if ( !controller )
         return false;
-    
+
+    /* The some controllers have a bug with the first HCI command sent to it
+     * returning number of completed commands as zero. This would stall the
+     * command processing in the Bluetooth core.
+     *
+     * As a workaround, send HCI Reset command first which will reset the
+     * number of completed commands and allow normal command processing
+     * from now on.
+     */
+
     if ( mProductID == 2012 )
-        controller->mExpansionData->mBrokenInitialNumberOfCommands = true;;
-    
-    OSNumber * deviceGeneration = OSDynamicCast(OSNumber, getProperty("deviceGeneration"));
-    switch (deviceGeneration->unsigned32BitValue())
     {
-        case 1:
-            mControllerVendorType = 8;
-            setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy ROM");
-            break;
-        case 2:
-            mControllerVendorType = 9;
-            setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy Bootloader");
-            break;
-        case 3:
-            mControllerVendorType = 10;
-            setProperty("ActiveBluetoothControllerVendor", "Intel - New Bootloader");
-            break;
-        default:
+        controller->mBrokenInitialNumberOfCommands = true;
+        if ( controller->CallBluetoothHCIReset(false, (char *) __FUNCTION__) )
             return false;
     }
+
+    /* Starting from TyP device, the command parameter and response are
+     * changed even though the OCF for HCI_Intel_Read_Version command
+     * remains same. The legacy devices can handle even if the
+     * command has a parameter and returns a correct version information.
+     * So, it uses new format to support both legacy and new format.
+     */
+
+    if ( controller->CallBluetoothHCIIntelReadVersionInfo(0xFF) )
+        return false;
+
+    /* Apply the common HCI quirks for Intel device */
+    controller->mStrictDuplicateFilter = true;
+    controller->mSimultaneousDiscovery = true;
+    controller->mDiagnosticModeNotPersistent = true;
     
     mBluetoothUSBHostDevice->retain();
     registerService();
@@ -105,27 +122,92 @@ bool IntelBluetoothHostControllerUSBTransport::start(IOService * provider)
     return true;
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::setFirmware(char * fwName)
-{
-    if (mFirmware)
-    {
-        mFirmware->removeFirmware();
-        OSSafeReleaseNULL(mFirmware);
-    }
-    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
-    return kIOReturnSuccess;
-}
-
-OpenFirmwareManager * IntelBluetoothHostControllerUSBTransport::getFirmware()
-{
-    if (mFirmware)
-        return mFirmware;
-    return NULL;
-}
-
 void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
 {
+    BluetoothHCIRequestID id;
+
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return;
+
+    /* Send HCI Reset to the controller to stop any BT activity which
+     * were triggered. This will help to save power and maintain the
+     * sync b/w Host and controller
+     */
+    if ( controller->CallBluetoothHCIReset(false, (char *) __FUNCTION__) )
+        return;
+
+    /* Some platforms have an issue with BT LED when the interface is
+     * down or BT radio is turned off, which takes 5 seconds to BT LED
+     * goes off. This command turns off the BT LED immediately.
+     */
+    if ( controller->mBrokenLED )
+    {
+        controller->HCIRequestCreate(&id);
+        controller->BluetoothHCIIntelTurnOffDeviceLED(id);
+        controller->HCIRequestDelete(NULL, id);
+    }
     super::stop(provider);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size)
+{
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return kIOReturnError;
+
+    return controller->mCommandGate->runAction(GetFirmwareAction, version, params, (void *) suffix, fwName);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
+{
+    IntelBluetoothHostControllerUSBTransport * object = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, owner);
+    return object->GetFirmwareNameWL(arg0, (BluetoothIntelBootParams *) arg1, (const char *) arg2, (char *) arg3);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
+{
+    return kIOReturnUnsupported;
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+{
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return kIOReturnError;
+
+    return controller->mCommandGate->runAction(GetFirmwareAction, version, params, (void *) suffix, *fwData);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
+{
+    IntelBluetoothHostControllerUSBTransport * object = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, owner);
+    return object->GetFirmwareWL(arg0, (BluetoothIntelBootParams *) arg1, (const char *) arg2, (OSData **) &arg3);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+{
+    return kIOReturnUnsupported;
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+{
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return kIOReturnError;
+
+    return controller->mCommandGate->runAction(DownloadFirmwareAction, &inID, version, params, bootAddress);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
+{
+    IntelBluetoothHostControllerUSBTransport * object = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, owner);
+    return object->DownloadFirmwareWL(*(BluetoothHCIRequestID *) arg0, arg1, (BluetoothIntelBootParams *) arg2, (UInt32 *) arg3);
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+{
+    return kIOReturnUnsupported;
 }
 
 OSMetaClassDefineReservedUnused(IntelBluetoothHostControllerUSBTransport, 0)

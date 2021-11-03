@@ -36,12 +36,26 @@ class IntelBluetoothHostController : public IOBluetoothHostController
     OSDeclareAbstractStructors(IntelBluetoothHostController)
     
     friend class IntelBluetoothHostControllerUSBTransport;
+    friend class IntelGen1BluetoothHostControllerUSBTransport;
+    friend class IntelGen2BluetoothHostControllerUSBTransport;
+    friend class IntelGen3BluetoothHostControllerUSBTransport;
     
 public:
-    virtual bool init( IOBluetoothHCIController * family, IOBluetoothHostControllerTransport * transport ) APPLE_KEXT_OVERRIDE;
+    /*! @function init
+     *   @abstract Initializes data structures (e.g. mExpansionData) and member variables.
+     *   @discussion This function overrides the init() specific to IOBluetoothHostController instead of the generic one of IOService.
+     *   @param family The IOBluetoothHCIController instance to initialize with.
+     *   @param transport The abstract transport instance to initialize with.
+     *   @result <code>true</code> if the object is successfully initialized.
+     */
+
+    virtual bool init(IOBluetoothHCIController * family, IOBluetoothHostControllerTransport * transport) APPLE_KEXT_OVERRIDE;
+
+    /*! @function free
+     *   @abstract Frees data allocated in init.
+     */
+
     virtual void free() APPLE_KEXT_OVERRIDE;
-    virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
-    virtual void stop(IOService * provider) APPLE_KEXT_OVERRIDE;
 
     virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);
@@ -51,28 +65,14 @@ public:
     virtual IOReturn CallBluetoothHCIIntelReadVersionInfo(UInt8 param);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);
-    
-    virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, AbsoluteTime deadline);
-    
-    virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
-    static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
-    virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
-    
-    virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
-    static IOReturn GetFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
-    virtual IOReturn GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
-    
-    virtual IOReturn DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
-    static IOReturn DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
-    virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
-    
-    virtual IOReturn LoadDDCConfig(BluetoothHCIRequestID inID, OSData * fwData);
-    
-    virtual IOReturn WaitForDeviceBoot(UInt32 callTime, AbsoluteTime deadline);
+
+    virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
 
     virtual IOReturn HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode) APPLE_KEXT_OVERRIDE;
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
+
+    virtual IOReturn LoadDDCConfig(BluetoothHCIRequestID inID, OSData * fwData);
 
     virtual IOReturn BluetoothHCIIntelSecureSend(BluetoothHCIRequestID inID, UInt8 fragmentType, UInt32 paramSize, const UInt8 * param);
     
@@ -133,22 +133,25 @@ protected:
 protected:
     void * mVersionInfo;
     BluetoothHCICommandOpCode mMicrosoftExtensionOpCode;
+
+    bool mValidLEStates;
+    bool mStrictDuplicateFilter;
+    bool mSimultaneousDiscovery;
+    bool mDiagnosticModeNotPersistent;
+    bool mWidebandSpeechSupported;
+    bool mInvalidDeviceAddress;
+    bool mIsLegacyROMDevice;
+    bool mBootloaderMode;
+    bool mBooting;
+    bool mDownloading;
+    bool mFirmwareLoaded;
+    bool mFirmwareLoadingFailed;
+    bool mBrokenLED;
+    bool mBrokenInitialNumberOfCommands;
+
     struct ExpansionData
     {
-        bool mValidLEStates;
-        bool mStrictDuplicateFilter;
-        bool mSimultaneousDiscovery;
-        bool mDiagnosticModeNotPersistent;
-        bool mWidebandSpeechSupported;
-        bool mInvalidDeviceAddress;
-        bool mIsLegacyROMDevice;
-        bool mBootloaderMode;
-        bool mBooting;
-        bool mDownloading;
-        bool mFirmwareLoaded;
-        bool mFirmwareLoadingFailed;
-        bool mBrokenLED;
-        bool mBrokenInitialNumberOfCommands;
+        void * mRefCon;
     };
     ExpansionData * mExpansionData;
 };

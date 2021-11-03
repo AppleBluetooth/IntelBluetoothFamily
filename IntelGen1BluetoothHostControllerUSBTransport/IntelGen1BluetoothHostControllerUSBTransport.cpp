@@ -20,19 +20,22 @@
  *
  */
 
-#include "IntelGen1BluetoothHostController.h"
-#include "../IntelBluetoothHostControllerUSBTransport/IntelBluetoothHostControllerUSBTransport.h"
+#include "IntelGen1BluetoothHostControllerUSBTransport.h"
 
-#define super IntelBluetoothHostController
-OSDefineMetaClassAndStructors(IntelGen1BluetoothHostController, super)
+#define super IntelBluetoothHostControllerUSBTransport
+OSDefineMetaClassAndStructors(IntelGen1BluetoothHostControllerUSBTransport, super)
 
-bool IntelGen1BluetoothHostController::start(IOService * provider)
+bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
 {
-    if (!super::start(provider))
+    if ( !super::start(provider) )
         return false;
-    
+
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return false;
+
     IOReturn err;
-    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
+    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
     OSData * fwData;
     UInt8 * fwPtr;
     BluetoothHCIRequestID id;
@@ -40,11 +43,12 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
     
     if ( version->hardwarePlatform != 0x37 || (version->hardwareVariant != kBluetoothIntelHardwareVariantWP && version->hardwareVariant != kBluetoothIntelHardwareVariantStP) )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][start] This controller is not an Intel Legacy ROM device!!!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] This controller is not an Intel Legacy ROM device!!!");
         return false;
     }
-    
-    mExpansionData->mIsLegacyROMDevice = true;
+
+    setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy ROM");
+    controller->mIsLegacyROMDevice = true;
 
     /* Apply the device specific HCI quirks
      *
@@ -52,13 +56,13 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
      * different fw_variant
      */
     if (version->hardwareVariant == 0x08 && version->firmwareVariant == 0x22)
-        mExpansionData->mWidebandSpeechSupported = true;
+        controller->mWidebandSpeechSupported = true;
 
     /* These devices have an issue with LED which doesn't
      * go off immediately during shutdown. Set the flag
      * here to send the LED OFF command during shutdown.
      */
-    mExpansionData->mBrokenLED = true;
+    controller->mBrokenLED = true;
 
     /* fw_patch_num indicates the version of patch the device currently
      * have. If there is no patch data in the device, it is always 0x00.
@@ -66,7 +70,7 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
      */
     if (version->firmwarePatchVersion)
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][start] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
         goto complete;
     }
 
@@ -86,9 +90,9 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
      * firmware patch data and configuration parameters.
      */
     
-    HCIRequestCreate(&id);
-    err = BluetoothHCIIntelEnterManufacturerMode(id);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    err = controller->BluetoothHCIIntelEnterManufacturerMode(id);
+    controller->HCIRequestDelete(NULL, id);
     if ( err )
         return false;
 
@@ -116,20 +120,22 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
      */
     while (fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy())
     {
-        HCIRequestCreate(&id);
+        controller->HCIRequestCreate(&id);
         err = PatchFirmware(id, fwData, &fwPtr, &disablePatch);
-        HCIRequestDelete(NULL, id);
+        controller->HCIRequestDelete(NULL, id);
         
         if (err)
         {
             /* Patching failed. Disable the manufacturer mode with reset and
              * deactivate the downloaded firmware patches.
              */
-            err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches);
+            controller->HCIRequestCreate(&id);
+            err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches);
+            controller->HCIRequestDelete(NULL, id);
             if (err)
                 return false;
 
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][start] Firmware patch completed and deactivated");
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed and deactivated");
             goto complete;
         }
     }
@@ -137,13 +143,13 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
     if (disablePatch)
     {
         /* Disable the manufacturer mode without reset */
-        HCIRequestCreate(&id);
-        err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
-        HCIRequestDelete(NULL, id);
+        controller->HCIRequestCreate(&id);
+        err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
+        controller->HCIRequestDelete(NULL, id);
         if (err)
             return false;
 
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][start] Firmware patch completed");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed");
 
         goto complete;
     }
@@ -151,39 +157,37 @@ bool IntelGen1BluetoothHostController::start(IOService * provider)
     /* Patching completed successfully and disable the manufacturer mode
      * with reset and activate the downloaded firmware patches.
      */
-    HCIRequestCreate(&id);
-    err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetActivatePatches);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    err = controller->BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetActivatePatches);
+    controller->HCIRequestDelete(NULL, id);
     if (err)
         return err;
 
     /* Need build number for downloaded fw patches in
      * every power-on boot
      */
-    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
+    err = controller->CallBluetoothHCIIntelReadVersionInfo(0x00);
     if (err)
         return false;
 
-    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][start] Firmware patch (0x%02x) completed and activated", version->firmwarePatchVersion);
-    
-    mVersionInfo = version;
+    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) controller->mVersionInfo)->firmwarePatchVersion);
 
 complete:
     /* Set the event mask for Intel specific vendor events. This enables
      * a few extra events that are useful during general operation.
      */
-    HCIRequestCreate(&id);
-    BluetoothHCIIntelSetEventMask(id, false);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    controller->BluetoothHCIIntelSetEventMask(id, false);
+    controller->HCIRequestDelete(NULL, id);
     
-    HCIRequestCreate(&id);
-    CheckDeviceAddress(id);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    controller->CheckDeviceAddress(id);
+    controller->HCIRequestDelete(NULL, id);
     
     return true;
 }
 
-IOReturn IntelGen1BluetoothHostController::GetFirmwareNameWL(void * ver, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
+IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * ver, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
 {
     char firmwareName[64];
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
@@ -192,15 +196,13 @@ IOReturn IntelGen1BluetoothHostController::GetFirmwareNameWL(void * ver, Bluetoo
         snprintf(firmwareName, sizeof(firmwareName), "ibt-hw-%x.%x.%x-fw-%x.%x.%x.%x.%x.%s", version->hardwarePlatform, version->hardwareVariant, version->hardwareRevision, version->firmwareVariant, version->firmwareRevision, version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, suffix);
     else
         snprintf(firmwareName, sizeof(firmwareName), "ibt-hw-%x.%x.%s", version->hardwarePlatform, version->hardwareVariant, suffix);
-        
+
     strcpy(fwName, firmwareName, 64);
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen1BluetoothHostController::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
-    IOReturn err;
-    IntelBluetoothHostControllerUSBTransport * transport = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, mBluetoothTransport);
     char fwName[64];
 
     if ( !mIsDefaultFirmware )
@@ -210,50 +212,40 @@ IOReturn IntelGen1BluetoothHostController::GetFirmwareWL(void * version, Bluetoo
 
     setProperty("FirmwareName", fwName);
 
-    if ( !transport )
+    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
+    if ( !mFirmware )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][GetFirmwareWL] Transport is invalid!");
-        return kIOReturnInvalid;
-    }
-    
-    err = transport->setFirmware(fwName);
-    if (err)
-    {
-        if (err == kIOReturnUnsupported)
-        {
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][GetFirmwareWL] Cannot find firmware file %s!", fwName);
-            return kIOReturnNotFound;
-        }
-
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][GetFirmwareWL] Failed to open firmware file %s: %d", fwName, err);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to open firmware file %s!!!", fwName);
 
         /* If the correct firmware patch file is not found, use the
          * default firmware patch file instead
          */
-        if (!mIsDefaultFirmware)
+        if ( !mIsDefaultFirmware )
         {
             mIsDefaultFirmware = true;
             return GetFirmwareWL(version, params, suffix, fwData);
         }
+        return kIOReturnError;
     }
-    *fwData = transport->getFirmware()->getFirmwareUncompressed();
+    *fwData = mFirmware->getFirmwareUncompressed();
 
-    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][GetFirmwareWL] Found firmware file: %s", fwName);
+    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Found firmware file: %s", fwName);
 
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
+IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
 {
     IOReturn err;
-    BluetoothHCIRequestID id;
     BluetoothHCICommandPacket cmd;
     BluetoothHCIEventPacketHeader * event = NULL;
-    IOBluetoothHostControllerUSBTransport * usbTransport;
     UInt8 * actualEvent;
     IOByteCount actualSize;
     UInt8 * eventParam = NULL;
     IOByteCount remain = fwData->getLength() - (*fwPtr - (UInt8 *) fwData->getBytesNoCopy());
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return false;
 
     /* The first byte indicates the types of the patch command or event.
      * 0x01 means HCI command and 0x02 is HCI event. If the first bytes
@@ -264,7 +256,7 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
      */
     if (remain > kBluetoothHCICommandPacketHeaderSize && *fwPtr[0] != 0x01)
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Firmware corrupted -- invalid command read!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command read!");
         return kIOReturnInvalid;
     }
     ++(*fwPtr);
@@ -280,7 +272,7 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
      */
     if (remain < cmd.dataSize)
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Firmware corrupted -- invalid command length!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command length!");
         return kIOReturnError;
     }
 
@@ -315,7 +307,7 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
 
         if (remain < event->dataSize)
         {
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Firmware corrupted -- invalid event length!");
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event length!");
             return kIOReturnError;
         }
 
@@ -330,16 +322,14 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
      */
     if (!event || !eventParam || remain < 0)
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Firmware corrupted -- invalid event read!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event read!");
         return kIOReturnError;
     }
 
-    HCIRequestCreate(&id);
-    err = SendRawHCICommand(id, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
-    HCIRequestDelete(NULL, id);
+    err = controller->SendRawHCICommand(inID, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
     if (err)
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
         return kIOReturnError;
     }
      
@@ -348,51 +338,43 @@ IOReturn IntelGen1BluetoothHostController::PatchFirmware(BluetoothHCIRequestID i
      * the contents of the event.
      */
 
-    if ( (usbTransport = OSDynamicCast(IOBluetoothHostControllerUSBTransport, mBluetoothTransport)) )
+    actualSize = mInterruptReadDataBuffer->getLength(); // not sure though
+    actualEvent = (UInt8 *) mInterruptReadDataBuffer->getBytesNoCopy();
+    if ( event->dataSize != actualSize )
     {
-        actualSize = usbTransport->mInterruptReadDataBuffer->getLength(); // not sure though
-        actualEvent = (UInt8 *) usbTransport->mInterruptReadDataBuffer->getBytesNoCopy();
-        if ( event->dataSize != actualSize )
-        {
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Event length mismatch: opCode = 0x%04X", cmd.opCode);
-            return kIOReturnError;
-        }
-        if (memcmp(actualEvent, eventParam, actualSize))
-        {
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostController][PatchFirmware] Event parameters mismatch: opCode = 0x%04X", cmd.opCode);
-            return kIOReturnError;
-        }
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event length mismatch: opCode = 0x%04X", cmd.opCode);
+        return kIOReturnError;
+    }
+    if (memcmp(actualEvent, eventParam, actualSize))
+    {
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event parameters mismatch: opCode = 0x%04X", cmd.opCode);
+        return kIOReturnError;
     }
     
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen1BluetoothHostController::LoadDDCConfig(BluetoothHCIRequestID inID, OSData * fwData)
-{
-    return kIOReturnUnsupported;
-}
-
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 0)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 1)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 2)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 3)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 4)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 5)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 6)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 7)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 8)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 9)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 10)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 11)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 12)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 13)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 14)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 15)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 16)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 17)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 18)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 19)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 20)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 21)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 22)
-OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostController, 23)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 0)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 1)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 2)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 3)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 4)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 5)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 6)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 7)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 8)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 9)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 10)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 11)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 12)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 13)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 14)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 15)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 16)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 17)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 18)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 19)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 20)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 21)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 22)
+OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 23)

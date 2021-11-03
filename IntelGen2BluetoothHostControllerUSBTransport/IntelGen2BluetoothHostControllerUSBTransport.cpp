@@ -20,20 +20,23 @@
  *
  */
 
-#include "IntelGen2BluetoothHostController.h"
-#include "../IntelBluetoothHostControllerUSBTransport/IntelBluetoothHostControllerUSBTransport.h"
+#include "IntelGen2BluetoothHostControllerUSBTransport.h"
 
-#define super IntelBluetoothHostController
-OSDefineMetaClassAndStructors(IntelGen2BluetoothHostController, super)
+#define super IntelBluetoothHostControllerUSBTransport
+OSDefineMetaClassAndStructors(IntelGen2BluetoothHostControllerUSBTransport, super)
 
-bool IntelGen2BluetoothHostController::start(IOService * provider)
+bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
 {
     if (!super::start(provider))
         return false;
-    
+
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return false;
+
     IOReturn err;
     BluetoothHCIRequestID id;
-    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
+    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
     BluetoothIntelDebugFeatures features;
     BluetoothIntelBootParams params;
     UInt32 bootAddress;
@@ -41,17 +44,19 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
 
     if ( version->hardwarePlatform != 0x37 || (version->hardwareVariant != kBluetoothIntelHardwareVariantJfP && version->hardwareVariant != kBluetoothIntelHardwareVariantThP && version->hardwareVariant != kBluetoothIntelHardwareVariantSfP && version->hardwareVariant != kBluetoothIntelHardwareVariantWsP && version->hardwareVariant != kBluetoothIntelHardwareVariantHrP && version->hardwareVariant != kBluetoothIntelHardwareVariantCcP) )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][start] This controller is not an Intel Legacy bootloader device!!!");
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][start] This controller is not an Intel Legacy bootloader device!!!");
         return false;
     }
-    
+
+    setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy Bootloader");
+
     if ( version->hardwareVariant == kBluetoothIntelHardwareVariantJfP || version->hardwareVariant == kBluetoothIntelHardwareVariantThP )
-        mExpansionData->mValidLEStates = true;
+        controller->mValidLEStates = true;
     
-    mExpansionData->mWidebandSpeechSupported = true;
+    controller->mWidebandSpeechSupported = true;
     
     /* Setup MSFT Extension support */
-    SetMicrosoftExtensionOpCode(version->hardwareVariant);
+    controller->SetMicrosoftExtensionOpCode(version->hardwareVariant);
     
     /* Set the default boot parameter to 0x0 and it is updated to
      * SKU specific boot parameter after reading Intel_Write_Boot_Params
@@ -59,11 +64,11 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
      */
     bootAddress = 0x00000000;
 
-    mExpansionData->mBootloaderMode = true;
+    controller->mBootloaderMode = true;
 
-    HCIRequestCreate(&id);
+    controller->HCIRequestCreate(&id);
     err = DownloadFirmware(id, version, &params, &bootAddress);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestDelete(NULL, id);
     if (err)
         return false;
 
@@ -71,11 +76,11 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
     if (version->firmwareVariant == 0x23)
         goto finish;
 
-    err = BootDevice(bootAddress);
+    err = controller->BootDevice(bootAddress);
     if (err)
         return false;
 
-    mExpansionData->mBootloaderMode = false;
+    controller->mBootloaderMode = false;
 
     err = GetFirmware(version, &params, "ddc", &fwData);
     if (!err)
@@ -86,31 +91,32 @@ bool IntelGen2BluetoothHostController::start(IOService * provider)
          * The device can work without DDC parameters, so even if it
          * fails to load the file, no need to fail the setup.
          */
-        HCIRequestCreate(&id);
-        LoadDDCConfig(id, fwData);
-        HCIRequestDelete(NULL, id);
+        controller->HCIRequestCreate(&id);
+        controller->LoadDDCConfig(id, fwData);
+        controller->HCIRequestDelete(NULL, id);
     }
 
     /* Read the Intel supported features and if new exception formats
      * supported, need to load the additional DDC config to enable.
      */
-    HCIRequestCreate(&id);
-    err = BluetoothHCIIntelReadDebugFeatures(id, &features);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    err = controller->BluetoothHCIIntelReadDebugFeatures(id, &features);
+    controller->HCIRequestDelete(NULL, id);
     if (!err)
     {
         /* Set DDC mask for available debug features */
-        HCIRequestCreate(&id);
-        BluetoothHCIIntelSetDebugFeatures(id, &features);
-        HCIRequestDelete(NULL, id);
+        controller->HCIRequestCreate(&id);
+        controller->BluetoothHCIIntelSetDebugFeatures(id, &features);
+        controller->HCIRequestDelete(NULL, id);
     }
 
     /* Read the Intel version information after loading the FW */
-    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
+    err = controller->CallBluetoothHCIIntelReadVersionInfo(0x00);
     if (err)
         return false;
 
-    PrintVersionInfo(version);
+    version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
+    controller->PrintVersionInfo(version);
 
 finish:
     /* Set the event mask for Intel specific vendor events. This enables
@@ -120,14 +126,14 @@ finish:
      * The device will function correctly without these events enabled
      * and thus no need to fail the setup.
      */
-    HCIRequestCreate(&id);
-    BluetoothHCIIntelSetEventMask(id, false);
-    HCIRequestDelete(NULL, id);
+    controller->HCIRequestCreate(&id);
+    controller->BluetoothHCIIntelSetEventMask(id, false);
+    controller->HCIRequestDelete(NULL, id);
     
     return true;
 }
 
-IOReturn IntelGen2BluetoothHostController::GetFirmwareNameWL(void * ver, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
+IOReturn IntelGen2BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * ver, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
 {
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     char firmwareName[64];
@@ -152,40 +158,37 @@ IOReturn IntelGen2BluetoothHostController::GetFirmwareNameWL(void * ver, Bluetoo
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen2BluetoothHostController::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+IOReturn IntelGen2BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
     IOReturn err;
-    IntelBluetoothHostControllerUSBTransport * transport = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, mBluetoothTransport);
     char fwName[64];
     
     if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][GetFirmwareWL] Unsupported firmware name!");
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][GetFirmwareWL] Unsupported firmware name!");
         return kIOReturnInvalid;
     }
     setProperty("FirmwareName", fwName);
     
-    if ( !transport )
+    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
+    if (!mFirmware)
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][GetFirmwareWL] Transport is invalid!");
-        return kIOReturnInvalid;
-    }
-    
-    err = transport->setFirmware(fwName);
-    if (err)
-    {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][GetFirmwareWL] Failed to obtain firmware file %s: 0x%x", fwName, err);
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to obtain firmware file %s!!!", fwName);
         return err;
     }
-    *fwData = transport->getFirmware()->getFirmwareUncompressed();
+    *fwData = mFirmware->getFirmwareUncompressed();
     
-    os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][GetFirmwareWL] Found firmware file: %s", fwName);
+    os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][GetFirmwareWL] Found firmware file: %s", fwName);
     
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen2BluetoothHostController::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * ver, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * ver, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
+    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
+    if ( !controller )
+        return false;
+
     IOReturn err;
     AbsoluteTime callTime;
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
@@ -209,8 +212,8 @@ IOReturn IntelGen2BluetoothHostController::DownloadFirmwareWL(BluetoothHCIReques
      */
     if ( version->firmwareVariant == 0x23 )
     {
-        mExpansionData->mBootloaderMode = false;
-        CheckDeviceAddress(inID);
+        controller->mBootloaderMode = false;
+        controller->CheckDeviceAddress(inID);
 
         /* SfP and WsP don't seem to update the firmware version on file
          * so version checking is currently possible.
@@ -225,7 +228,7 @@ IOReturn IntelGen2BluetoothHostController::DownloadFirmwareWL(BluetoothHCIReques
     /* Read the secure boot parameters to identify the operating
      * details of the bootloader.
      */
-    err = BluetoothHCIIntelReadBootParams(inID, params);
+    err = controller->BluetoothHCIIntelReadBootParams(inID, params);
     if (err)
         return err;
 
@@ -235,7 +238,7 @@ IOReturn IntelGen2BluetoothHostController::DownloadFirmwareWL(BluetoothHCIReques
      */
     if ( params->limitedCCE != 0x00 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][DownloadFirmware] Unsupported firmware loading method: %u!", params->limitedCCE);
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Unsupported firmware loading method: %u!", params->limitedCCE);
         return kIOReturnInvalid;
     }
 
@@ -244,8 +247,8 @@ IOReturn IntelGen2BluetoothHostController::DownloadFirmwareWL(BluetoothHCIReques
      */
     if ( params->otpDeviceAddress.data[0] == 0 && params->otpDeviceAddress.data[1] == 0 && params->otpDeviceAddress.data[2] == 0 && params->otpDeviceAddress.data[3] == 0 && params->otpDeviceAddress.data[4] == 0 && params->otpDeviceAddress.data[5] == 0 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][DownloadFirmware] No device address configured!");
-        mExpansionData->mInvalidDeviceAddress = true;
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] No device address configured!");
+        controller->mInvalidDeviceAddress = true;
     }
     
 download:
@@ -274,10 +277,10 @@ download:
     err = GetFirmware(version, params, "sfi", &fwData);
     if ( err )
     {
-        if ( !mExpansionData->mBootloaderMode )
+        if ( !controller->mBootloaderMode )
         {
             /* Firmware has already been loaded */
-            mExpansionData->mFirmwareLoaded = true;
+            controller->mFirmwareLoaded = true;
             setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
         }
@@ -286,13 +289,13 @@ download:
 
     if (fwData->getLength() < 644)
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][DownloadFirmware] Size of firmware file is invalid: %u!", fwData->getLength());
+        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Size of firmware file is invalid: %u!", fwData->getLength());
         return kIOReturnUnsupported;
     }
 
     callTime = mBluetoothFamily->GetCurrentTime();
 
-    mExpansionData->mDownloading = true;
+    controller->mDownloading = true;
 
     /* Start firmware downloading and get boot parameter */
     
@@ -311,10 +314,10 @@ download:
                 break;
 
             /* Skip download if firmware has the same version */
-            if ( ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
+            if ( controller->ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {
-                os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostController][DownloadFirmware] Firmware already loaded!");
-                mExpansionData->mFirmwareLoaded = true;
+                os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Firmware already loaded!");
+                controller->mFirmwareLoaded = true;
                 setProperty("FirmwareLoaded", true);
                 return kIOReturnSuccess;
             }
@@ -334,14 +337,14 @@ download:
         goto done;
     }
 
-    err = SecureSendSFIRSAFirmwareHeader(inID, fwData);
+    err = controller->SecureSendSFIRSAFirmwareHeader(inID, fwData);
     if (err)
         goto done;
 
-    err = DownloadFirmwarePayload(inID, fwData, kIntelRSAHeaderLength);
+    err = controller->DownloadFirmwarePayload(inID, fwData, kIntelRSAHeaderLength);
     if (err)
         goto done;
-    
+
     /* Before switching the device into operational mode and with that
      * booting the loaded firmware, wait for the bootloader notification
      * that all fragments have been successfully received.
@@ -353,34 +356,34 @@ download:
      * and thus just timeout if that happens and fail the setup
      * of this device.
      */
-    err = WaitForFirmwareDownload(callTime, 5000);
+    err = controller->WaitForFirmwareDownload(callTime, 5000);
     if (err == kIOReturnTimeout)
 done:
-        ResetToBootloader(inID);
+        controller->ResetToBootloader(inID);
     return err;
 }
 
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 0)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 1)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 2)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 3)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 4)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 5)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 6)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 7)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 8)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 9)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 10)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 11)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 12)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 13)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 14)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 15)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 16)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 17)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 18)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 19)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 20)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 21)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 22)
-OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostController, 23)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 1)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 2)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 3)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 4)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 5)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 6)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 7)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 8)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 9)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 10)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 11)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 12)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 13)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 14)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 15)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 16)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 17)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 18)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 19)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 20)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 21)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 22)
+OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 23)

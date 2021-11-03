@@ -38,9 +38,16 @@ public:
     virtual IOService * probe( IOService * provider, SInt32 * score ) APPLE_KEXT_OVERRIDE;
     virtual bool start( IOService * provider ) APPLE_KEXT_OVERRIDE;
     virtual void stop( IOService * provider ) APPLE_KEXT_OVERRIDE;
-    
-    virtual IOReturn setFirmware(char * fwName);
-    virtual OpenFirmwareManager * getFirmware();
+
+    virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
+    static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
+    virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
+    virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
+    static IOReturn GetFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
+    virtual IOReturn GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
+    virtual IOReturn DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
+    static IOReturn DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
+    virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
     
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 1);

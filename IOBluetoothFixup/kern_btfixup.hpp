@@ -29,7 +29,7 @@
 #include <IOKit/bluetooth/transport/IOBluetoothHostControllerTransport.h>
 
 #include "AppleBluetoothHostControllers.h"
-#include "../IntelBluetoothFamily/IntelBluetoothFamily.h"
+#include "../IntelBluetoothFamily/IntelBluetoothHostController.h"
 
 static const char *kextIOBluetoothFamily[] { "/System/Library/Extensions/IOBluetoothFamily.kext/Contents/MacOS/IOBluetoothFamily" };
 static KernelPatcher::KextInfo kextList[] {

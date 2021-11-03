@@ -27,8 +27,7 @@ import os
 import struct
 import hashlib
 
-copyright = '''
-/*
+copyright = '''/*
  *  Released under "The GNU General Public License (GPL-2.0)"
  *
  *  Copyright (c) 2021 cjiang. All rights reserved.
@@ -51,7 +50,7 @@ copyright = '''
  *
  */
 
- #include "IntelBluetoothHostControllerUSBTransport/IntelBluetoothHostControllerUSBTransport.h"
+#include "../IntelBluetoothHostControllerUSBTransport/IntelFirmwareList.h"
 '''
 
 def hash(data):

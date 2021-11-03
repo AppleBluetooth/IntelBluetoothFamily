@@ -75,13 +75,7 @@ IOReturn IOBluetoothFixup::CreateBluetoothHostControllerObject(IOBluetoothHCICon
             controller = OSTypeAlloc(CSRBluetoothHostController);
             break;
         case 8:
-            controller = OSTypeAlloc(IntelGen1BluetoothHostController);
-            break;
-        case 9:
-            controller = OSTypeAlloc(IntelGen2BluetoothHostController);
-            break;
-        case 10:
-            controller = OSTypeAlloc(IntelGen3BluetoothHostController);
+            controller = OSTypeAlloc(IntelBluetoothHostController);
             break;
         default:
             controller = OSTypeAlloc(IOBluetoothHostController);
