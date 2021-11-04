@@ -25,7 +25,6 @@
 
 #include <IOKit/bluetooth/transport/IOBluetoothHostControllerUSBTransport.h>
 #include <OpenFirmwareManager.h>
-#include "IntelFirmwareList.h"
 #include "../IntelBluetoothFamily/IntelBluetoothHostController.h"
 
 class IntelBluetoothHostControllerUSBTransport : public IOBluetoothHostControllerUSBTransport

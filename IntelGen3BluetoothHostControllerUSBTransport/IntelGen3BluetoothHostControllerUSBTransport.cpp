@@ -278,7 +278,6 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
 
 IOReturn IntelGen3BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
-    IOReturn err;
     char fwName[64];
     
     if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
@@ -292,7 +291,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::GetFirmwareWL(void * vers
     if ( !mFirmware )
     {
         os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to obtain firmware file %s!!!", fwName);
-        return err;
+        return kIOReturnUnsupported;
     }
     *fwData = mFirmware->getFirmwareUncompressed();
     
