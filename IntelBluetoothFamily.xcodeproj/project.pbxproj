@@ -15,8 +15,6 @@
 		BC7211DE273335DD004FF756 /* Gen3FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC7211DD273335DD004FF756 /* Gen3FirmwareBinary.cpp */; };
 		BC7211DF27333924004FF756 /* IntelGen1FirmwareList.h in Headers */ = {isa = PBXBuildFile; fileRef = BCA3E4392732E9F100AC8038 /* IntelGen1FirmwareList.h */; };
 		BC7211E2273349B2004FF756 /* IntelBluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC7211E3273349B2004FF756 /* IntelGen1BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC7211E4273349B2004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC7211E5273349B2004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCA3E43D2733172000AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C19272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
 		BCA3E43F2733173B00AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1A272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.h */; };
@@ -24,6 +22,8 @@
 		BCAAACDC27337889005667DB /* IntelGen3FirmwareList.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAAACDB27337889005667DB /* IntelGen3FirmwareList.h */; };
 		BCAAACE1273385A4005667DB /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC7211CF273323B0004FF756 /* Gen1FirmwareBinary.cpp */; };
 		BCAAACE227338784005667DB /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC7211D927332CEE004FF756 /* Gen2FirmwareBinary.cpp */; };
+		BCAAACE327339179005667DB /* IntelGen1BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BCAAACE427339179005667DB /* IntelGen2BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCB134662731904600D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB134762731904800D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB134862731904A00D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
@@ -48,8 +48,8 @@
 			dstSubfolderSpec = 13;
 			files = (
 				BC7211E2273349B2004FF756 /* IntelBluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
-				BC7211E3273349B2004FF756 /* IntelGen1BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
-				BC7211E4273349B2004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
+				BCAAACE327339179005667DB /* IntelGen1BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
+				BCAAACE427339179005667DB /* IntelGen2BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
 				BC7211E5273349B2004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */,
 			);
 			name = "Copy to PlugIns";
@@ -73,7 +73,7 @@
 		BC6A4C2D272B96FA00E83996 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		BC6B9AC127301DE30097B209 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BC6B9AC227301DE40097B209 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BC6B9AC527301E1B0097B209 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		BC6B9AC527301E1B0097B209 /* .gitignore */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = .gitignore; sourceTree = "<group>"; };
 		BC7211CF273323B0004FF756 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = ../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen1BluetoothHostControllerUSBTransport.build/DerivedSources/Gen1FirmwareBinary.cpp; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC7211D927332CEE004FF756 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Gen2FirmwareBinary.cpp; path = ../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport.build/DerivedSources/Gen2FirmwareBinary.cpp; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC7211DD273335DD004FF756 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Gen3FirmwareBinary.cpp; path = ../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport.build/DerivedSources/Gen3FirmwareBinary.cpp; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,7 +93,7 @@
 		BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IOBluetoothFixup.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCB67C62272DC4FF007711DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppleBluetoothHostControllers.h; sourceTree = "<group>"; };
-		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
+		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
 		BCC18142272CC5B800FE5090 /* kern_start.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_start.cpp; sourceTree = "<group>"; };
 		BCC18144272CC61600FE5090 /* kern_btfixup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_btfixup.cpp; sourceTree = "<group>"; };
 		BCC18145272CC61600FE5090 /* kern_btfixup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_btfixup.hpp; sourceTree = "<group>"; };

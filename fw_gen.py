@@ -67,7 +67,7 @@ def write_single_file(target_file, file_path, fw_root, file_hashes):
     data_var_name = format_var_name(src_hash)
     rel_path = os.path.relpath(file_path, fw_root).lstrip('.')
 
-    for i in range(len(file_hashes)-1):
+    for i in range(len(file_hashes)):
         if src_hash == file_hashes[i][1]:
             file_hash = (rel_path, src_hash, file_hashes[i][2])
             file_hashes.append(file_hash)
