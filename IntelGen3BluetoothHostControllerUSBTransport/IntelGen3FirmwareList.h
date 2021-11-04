@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef IntelFirmwareList_h
-#define IntelFirmwareList_h
+#ifndef IntelGen3FirmwareList_h
+#define IntelGen3FirmwareList_h
 
 #include <OpenFirmwareManager.h>
 
