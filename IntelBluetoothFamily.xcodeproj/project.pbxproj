@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		BC6A4C2E272B96FA00E83996 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
+		BC716BFA2735A80B002905A8 /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC716BF92735A80B002905A8 /* Gen2FirmwareBinary.cpp */; };
+		BC716BFC2735A8EE002905A8 /* Gen3FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC716BFB2735A8ED002905A8 /* Gen3FirmwareBinary.cpp */; };
+		BC716BFE2735A969002905A8 /* Gen3FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC716BFD2735A969002905A8 /* Gen3FirmwareBinary.cpp */; };
 		BC7211D127332706004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1E272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.h */; };
 		BC7211D22733270B004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C1F272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.cpp */; };
 		BC7211DB27332DBD004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C20272B963100E83996 /* IntelGen3BluetoothHostControllerUSBTransport.h */; };
@@ -38,13 +41,6 @@
 		BC9BCE8D27350D2500383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC9BCE8E27350D2500383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC9BCE8F27350D2500383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC9BCEA32735223800383496 /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA22735223800383496 /* Gen2FirmwareBinary.cpp */; };
-		BC9BCEA42735223800383496 /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA22735223800383496 /* Gen2FirmwareBinary.cpp */; };
-		BC9BCEA62735224A00383496 /* Gen3FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA52735224A00383496 /* Gen3FirmwareBinary.cpp */; };
-		BC9BCEA72735224A00383496 /* Gen3FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA52735224A00383496 /* Gen3FirmwareBinary.cpp */; };
-		BC9BCEA82735225C00383496 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA02735222400383496 /* Gen1FirmwareBinary.cpp */; };
-		BC9BCEA92735225D00383496 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9BCEA02735222400383496 /* Gen1FirmwareBinary.cpp */; };
-		BCA3E43D2733172000AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C19272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
 		BCA3E43F2733173B00AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1A272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.h */; };
 		BCAAACDA27337870005667DB /* IntelGen2FirmwareList.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAAACD927337870005667DB /* IntelGen2FirmwareList.h */; };
 		BCAAACDC27337889005667DB /* IntelGen3FirmwareList.h in Headers */ = {isa = PBXBuildFile; fileRef = BCAAACDB27337889005667DB /* IntelGen3FirmwareList.h */; };
@@ -59,11 +55,15 @@
 		BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCC18145272CC61600FE5090 /* kern_btfixup.hpp */; };
 		BCB67C6E272DF0CB007711DB /* kern_start.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18142272CC5B800FE5090 /* kern_start.cpp */; };
 		BCB67C6F272DF0CB007711DB /* kern_btfixup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18144272CC61600FE5090 /* kern_btfixup.cpp */; };
+		BCB8A6B02735A7B400253917 /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */; };
 		BCDAEC9A272D04DE00D24C15 /* IntelBluetoothHostControllerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C18272B963000E83996 /* IntelBluetoothHostControllerTypes.h */; };
 		BCDAEC9B272D04DE00D24C15 /* IntelBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1D272B963000E83996 /* IntelBluetoothHostController.h */; };
 		BCDAEC9F272D04F100D24C15 /* IntelBluetoothHostController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C1B272B963000E83996 /* IntelBluetoothHostController.cpp */; };
 		BCDAECB8272D0F8400D24C15 /* IntelBluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BCDAECB6272D0F8300D24C15 /* IntelBluetoothHostControllerUSBTransport.h */; };
 		BCDAECB9272D0FE800D24C15 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
+		BCE72E8E2735A22E00C62911 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C19272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
+		BCE72E962735A67100C62911 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCE72E952735A67100C62911 /* Gen1FirmwareBinary.cpp */; };
+		BCE72E982735A71900C62911 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCE72E972735A71900C62911 /* Gen1FirmwareBinary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -114,14 +114,14 @@
 		BC6B9AC127301DE30097B209 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BC6B9AC227301DE40097B209 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BC6B9AC527301E1B0097B209 /* .gitignore */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = .gitignore; sourceTree = "<group>"; };
+		BC716BF92735A80B002905A8 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC716BFB2735A8ED002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC716BFD2735A969002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE4D27350BF500383496 /* IntelBluetoothFamily.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen2BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen3BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCEA02735222400383496 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "/Users/charliejiang/Documents/IOKit Projects/IntelBluetoothFamily/IntelGen1BluetoothHostControllerUSBTransport/../../../../../../private/tmp/Gen1FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
-		BC9BCEA22735223800383496 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "/Users/charliejiang/Documents/IOKit Projects/IntelBluetoothFamily/IntelGen2BluetoothHostControllerUSBTransport/../../../../../../private/tmp/Gen2FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
-		BC9BCEA52735224A00383496 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "/Users/charliejiang/Documents/IOKit Projects/IntelBluetoothFamily/IntelGen3BluetoothHostControllerUSBTransport/../../../../../../private/tmp/Gen3FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
 		BCA3E4312732E9AC00AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCA3E4332732E9BE00AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCA3E4382732E9F100AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -139,6 +139,7 @@
 		BCB67C62272DC4FF007711DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BluetoothHostControllers.h; sourceTree = "<group>"; };
 		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
+		BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC18142272CC5B800FE5090 /* kern_start.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_start.cpp; sourceTree = "<group>"; };
 		BCC18144272CC61600FE5090 /* kern_btfixup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_btfixup.cpp; sourceTree = "<group>"; };
 		BCC18145272CC61600FE5090 /* kern_btfixup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_btfixup.hpp; sourceTree = "<group>"; };
@@ -147,6 +148,8 @@
 		BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
 		BCDAECB1272D0F4200D24C15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCDAECB6272D0F8300D24C15 /* IntelBluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
+		BCE72E952735A67100C62911 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen1BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen1FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCE72E972735A71900C62911 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen1BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen1FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,6 +247,7 @@
 		BC6A4C01272B960100E83996 = {
 			isa = PBXGroup;
 			children = (
+				BCE72E922735A61A00C62911 /* FirmwareBinaries */,
 				BCB67C52272DC2F1007711DB /* Lilu.kext */,
 				BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */,
 				BC6A4C2A272B965E00E83996 /* MacKernelSDK */,
@@ -304,7 +308,6 @@
 			children = (
 				BCB134912731A94700D29EE3 /* Firmwares */,
 				BCA3E4392732E9F100AC8038 /* IntelGen1FirmwareList.h */,
-				BC9BCEA02735222400383496 /* Gen1FirmwareBinary.cpp */,
 				BC6A4C1A272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.h */,
 				BC6A4C19272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */,
 				BCA3E4312732E9AC00AC8038 /* Info.plist */,
@@ -317,7 +320,6 @@
 			children = (
 				BCB134932731A95A00D29EE3 /* Firmwares */,
 				BCAAACDB27337889005667DB /* IntelGen3FirmwareList.h */,
-				BC9BCEA52735224A00383496 /* Gen3FirmwareBinary.cpp */,
 				BC6A4C20272B963100E83996 /* IntelGen3BluetoothHostControllerUSBTransport.h */,
 				BC6A4C1C272B963000E83996 /* IntelGen3BluetoothHostControllerUSBTransport.cpp */,
 				BCA3E4382732E9F100AC8038 /* Info.plist */,
@@ -330,7 +332,6 @@
 			children = (
 				BCB134922731A95100D29EE3 /* Firmwares */,
 				BCAAACD927337870005667DB /* IntelGen2FirmwareList.h */,
-				BC9BCEA22735223800383496 /* Gen2FirmwareBinary.cpp */,
 				BC6A4C1E272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.h */,
 				BC6A4C1F272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.cpp */,
 				BCA3E4332732E9BE00AC8038 /* Info.plist */,
@@ -358,6 +359,19 @@
 				BCDAECB1272D0F4200D24C15 /* Info.plist */,
 			);
 			path = IntelBluetoothHostControllerUSBTransport;
+			sourceTree = "<group>";
+		};
+		BCE72E922735A61A00C62911 /* FirmwareBinaries */ = {
+			isa = PBXGroup;
+			children = (
+				BCE72E952735A67100C62911 /* Gen1FirmwareBinary.cpp */,
+				BCE72E972735A71900C62911 /* Gen1FirmwareBinary.cpp */,
+				BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */,
+				BC716BF92735A80B002905A8 /* Gen2FirmwareBinary.cpp */,
+				BC716BFB2735A8ED002905A8 /* Gen3FirmwareBinary.cpp */,
+				BC716BFD2735A969002905A8 /* Gen3FirmwareBinary.cpp */,
+			);
+			name = FirmwareBinaries;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -811,11 +825,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen1FirmwareBinary.cpp,
+				"$(DERIVED_FILES_DIR)/Gen1FirmwareBinary.cpp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen1FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen1BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen1BluetoothHostControllerUSBTransport/IntelGen1FirmwareList.h\"' \"bseq\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen1FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen1BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen1BluetoothHostControllerUSBTransport/IntelGen1FirmwareList.h\"' \"bseq\"\n";
 		};
 		BC9BCE6D27350CB300383496 /* Firmware Generation */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -830,11 +844,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen2FirmwareBinary.cpp,
+				/private/tmp/Gen2FirmwareBinary.cpp,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen2FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen2BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen2BluetoothHostControllerUSBTransport/IntelGen2FirmwareList.h\"' \"sfi,ddc\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen2FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen2BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen2BluetoothHostControllerUSBTransport/IntelGen2FirmwareList.h\"' \"sfi,ddc\"\n";
 		};
 		BC9BCE7D27350CBA00383496 /* Firmware Generation */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -849,11 +863,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen3FirmwareBinary.cpp,
+				/private/tmp/Gen3FirmwareBinary.cpp,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen3FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen3BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen3BluetoothHostControllerUSBTransport/IntelGen3FirmwareList.h\"' \"sfi,ddc\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen3FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen3BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen3BluetoothHostControllerUSBTransport/IntelGen3FirmwareList.h\"' \"sfi,ddc\"\n";
 		};
 		BCB1345E2731904600D29EE3 /* Firmware Generation */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -868,11 +882,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen1FirmwareBinary.cpp,
+				"$(DERIVED_FILES_DIR)/Gen1FirmwareBinary.cpp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen1FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen1BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen1BluetoothHostControllerUSBTransport/IntelGen1FirmwareList.h\"' \"bseq\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen1FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen1BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen1BluetoothHostControllerUSBTransport/IntelGen1FirmwareList.h\"' \"bseq\"\n";
 		};
 		BCB1346E2731904800D29EE3 /* Firmware Generation */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -887,11 +901,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen2FirmwareBinary.cpp,
+				/private/tmp/Gen2FirmwareBinary.cpp,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen2FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen2BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen2BluetoothHostControllerUSBTransport/IntelGen2FirmwareList.h\"' \"sfi,ddc\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen2FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen2BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen2BluetoothHostControllerUSBTransport/IntelGen2FirmwareList.h\"' \"sfi,ddc\"\n";
 		};
 		BCB1347E2731904A00D29EE3 /* Firmware Generation */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -906,11 +920,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				/tmp/Gen3FirmwareBinary.cpp,
+				/private/tmp/Gen3FirmwareBinary.cpp,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"/tmp/Gen3FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen3BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen3BluetoothHostControllerUSBTransport/IntelGen3FirmwareList.h\"' \"sfi,ddc\"\n";
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/fw_gen.py\"\ntarget_file=\"${DERIVED_FILES_DIR}/Gen3FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/IntelGen3BluetoothHostControllerUSBTransport/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" '\"IntelGen3BluetoothHostControllerUSBTransport/IntelGen3FirmwareList.h\"' \"sfi,ddc\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -943,7 +957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC9BCEA82735225C00383496 /* Gen1FirmwareBinary.cpp in Sources */,
+				BCE72E982735A71900C62911 /* Gen1FirmwareBinary.cpp in Sources */,
 				BC9BCE6327350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -953,7 +967,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC9BCE7327350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
-				BC9BCEA42735223800383496 /* Gen2FirmwareBinary.cpp in Sources */,
+				BC716BFA2735A80B002905A8 /* Gen2FirmwareBinary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -961,8 +975,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC716BFE2735A969002905A8 /* Gen3FirmwareBinary.cpp in Sources */,
 				BC9BCE8327350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport.cpp in Sources */,
-				BC9BCEA72735224A00383496 /* Gen3FirmwareBinary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -970,8 +984,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC9BCEA92735225D00383496 /* Gen1FirmwareBinary.cpp in Sources */,
-				BCA3E43D2733172000AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */,
+				BCE72E962735A67100C62911 /* Gen1FirmwareBinary.cpp in Sources */,
+				BCE72E8E2735A22E00C62911 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,7 +994,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC7211D22733270B004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
-				BC9BCEA32735223800383496 /* Gen2FirmwareBinary.cpp in Sources */,
+				BCB8A6B02735A7B400253917 /* Gen2FirmwareBinary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,7 +1002,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC9BCEA62735224A00383496 /* Gen3FirmwareBinary.cpp in Sources */,
+				BC716BFC2735A8EE002905A8 /* Gen3FirmwareBinary.cpp in Sources */,
 				BC7211DC27332DC3004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1580,7 +1594,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = IOBluetoothFixup/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
 				MODULE_NAME = com.cjiang.IOBluetoothFixup;
 				MODULE_VERSION = 1.0.0d1;
@@ -1604,7 +1618,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = IOBluetoothFixup/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
 				MODULE_NAME = com.cjiang.IOBluetoothFixup;
 				MODULE_VERSION = 1.0.0d1;
