@@ -177,19 +177,18 @@
 			);
 			sourceTree = "<group>";
 		};
-		BC6A4C0C272B960100E83996 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				BC6A4C0B272B960100E83996 /* IntelBluetoothFamily.kext */,
-				BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */,
-				BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */,
-				BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
-				BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
-				BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
+        BCC18141272CC59500FE5090 /* IOBluetoothFixup */ = {
+            isa = PBXGroup;
+            children = (
+                BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */,
+                BCC18142272CC5B800FE5090 /* kern_start.cpp */,
+                BCC18145272CC61600FE5090 /* kern_btfixup.hpp */,
+                BCC18144272CC61600FE5090 /* kern_btfixup.cpp */,
+                BCB67C62272DC4FF007711DB /* Info.plist */,
+            );
+            path = IOBluetoothFixup;
+            sourceTree = "<group>";
+        };
 		BC6A4C0D272B960100E83996 /* IntelBluetoothFamily */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,14 +200,16 @@
 			path = IntelBluetoothFamily;
 			sourceTree = "<group>";
 		};
-		BC6A4C2C272B96FA00E83996 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				BC6A4C2D272B96FA00E83996 /* libkmod.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
+        BCDAECAC272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport */ = {
+            isa = PBXGroup;
+            children = (
+                BCDAECB6272D0F8300D24C15 /* IntelBluetoothHostControllerUSBTransport.h */,
+                BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */,
+                BCDAECB1272D0F4200D24C15 /* Info.plist */,
+            );
+            path = IntelBluetoothHostControllerUSBTransport;
+            sourceTree = "<group>";
+        };
 		BCB1348D2731908900D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +223,19 @@
 			path = IntelGen1BluetoothHostControllerUSBTransport;
 			sourceTree = "<group>";
 		};
+        BCB13490273190BD00D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport */ = {
+            isa = PBXGroup;
+            children = (
+                BCB134922731A95100D29EE3 /* Firmwares */,
+                BCAAACD927337870005667DB /* IntelGen2FirmwareList.h */,
+                BC7211D927332CEE004FF756 /* Gen2FirmwareBinary.cpp */,
+                BC6A4C1E272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.h */,
+                BC6A4C1F272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.cpp */,
+                BCA3E4332732E9BE00AC8038 /* Info.plist */,
+            );
+            path = IntelGen2BluetoothHostControllerUSBTransport;
+            sourceTree = "<group>";
+        };
 		BCB1348F273190A900D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport */ = {
 			isa = PBXGroup;
 			children = (
@@ -235,41 +249,27 @@
 			path = IntelGen3BluetoothHostControllerUSBTransport;
 			sourceTree = "<group>";
 		};
-		BCB13490273190BD00D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport */ = {
-			isa = PBXGroup;
-			children = (
-				BCB134922731A95100D29EE3 /* Firmwares */,
-				BCAAACD927337870005667DB /* IntelGen2FirmwareList.h */,
-				BC7211D927332CEE004FF756 /* Gen2FirmwareBinary.cpp */,
-				BC6A4C1E272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.h */,
-				BC6A4C1F272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.cpp */,
-				BCA3E4332732E9BE00AC8038 /* Info.plist */,
-			);
-			path = IntelGen2BluetoothHostControllerUSBTransport;
-			sourceTree = "<group>";
-		};
-		BCC18141272CC59500FE5090 /* IOBluetoothFixup */ = {
-			isa = PBXGroup;
-			children = (
-				BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */,
-				BCC18142272CC5B800FE5090 /* kern_start.cpp */,
-				BCC18145272CC61600FE5090 /* kern_btfixup.hpp */,
-				BCC18144272CC61600FE5090 /* kern_btfixup.cpp */,
-				BCB67C62272DC4FF007711DB /* Info.plist */,
-			);
-			path = IOBluetoothFixup;
-			sourceTree = "<group>";
-		};
-		BCDAECAC272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport */ = {
-			isa = PBXGroup;
-			children = (
-				BCDAECB6272D0F8300D24C15 /* IntelBluetoothHostControllerUSBTransport.h */,
-				BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */,
-				BCDAECB1272D0F4200D24C15 /* Info.plist */,
-			);
-			path = IntelBluetoothHostControllerUSBTransport;
-			sourceTree = "<group>";
-		};
+        BC6A4C0C272B960100E83996 /* Products */ = {
+            isa = PBXGroup;
+            children = (
+                BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */,
+                BC6A4C0B272B960100E83996 /* IntelBluetoothFamily.kext */,
+                BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */,
+                BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
+                BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
+                BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
+            );
+            name = Products;
+            sourceTree = "<group>";
+        };
+        BC6A4C2C272B96FA00E83996 /* Frameworks */ = {
+            isa = PBXGroup;
+            children = (
+                BC6A4C2D272B96FA00E83996 /* libkmod.a */,
+            );
+            name = Frameworks;
+            sourceTree = "<group>";
+        };
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */

@@ -338,7 +338,10 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * the contents of the event.
      */
 
-    actualSize = mInterruptReadDataBuffer->getLength(); // not sure though
+    if ( !StartInterruptPipeRead() )
+        return false;
+
+    actualSize = mInterruptReadDataBuffer->getLength();
     actualEvent = (UInt8 *) mInterruptReadDataBuffer->getBytesNoCopy();
     if ( event->dataSize != actualSize )
     {
