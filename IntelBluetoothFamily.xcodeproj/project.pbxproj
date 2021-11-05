@@ -55,7 +55,7 @@
 		BCB134862731904A00D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB134982732095600D29EE3 /* IntelBluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */; };
 		BCB67C64272DC525007711DB /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
-		BCB67C6C272DF0C6007711DB /* AppleBluetoothHostControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */; };
+		BCB67C6C272DF0C6007711DB /* BluetoothHostControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */; };
 		BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCC18145272CC61600FE5090 /* kern_btfixup.hpp */; };
 		BCB67C6E272DF0CB007711DB /* kern_start.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18142272CC5B800FE5090 /* kern_start.cpp */; };
 		BCB67C6F272DF0CB007711DB /* kern_btfixup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18144272CC61600FE5090 /* kern_btfixup.cpp */; };
@@ -137,7 +137,7 @@
 		BCB67C52272DC2F1007711DB /* Lilu.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = Lilu.kext; sourceTree = "<group>"; };
 		BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IOBluetoothFixup.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCB67C62272DC4FF007711DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppleBluetoothHostControllers.h; sourceTree = "<group>"; };
+		BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BluetoothHostControllers.h; sourceTree = "<group>"; };
 		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
 		BCC18142272CC5B800FE5090 /* kern_start.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_start.cpp; sourceTree = "<group>"; };
 		BCC18144272CC61600FE5090 /* kern_btfixup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_btfixup.cpp; sourceTree = "<group>"; };
@@ -341,7 +341,7 @@
 		BCC18141272CC59500FE5090 /* IOBluetoothFixup */ = {
 			isa = PBXGroup;
 			children = (
-				BCB67C6B272DF01D007711DB /* AppleBluetoothHostControllers.h */,
+				BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */,
 				BCC18142272CC5B800FE5090 /* kern_start.cpp */,
 				BCC18145272CC61600FE5090 /* kern_btfixup.hpp */,
 				BCC18144272CC61600FE5090 /* kern_btfixup.cpp */,
@@ -447,7 +447,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCB67C6C272DF0C6007711DB /* AppleBluetoothHostControllers.h in Headers */,
+				BCB67C6C272DF0C6007711DB /* BluetoothHostControllers.h in Headers */,
 				BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

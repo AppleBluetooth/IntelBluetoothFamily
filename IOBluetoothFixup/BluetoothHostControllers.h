@@ -19,15 +19,10 @@
  *
  */
 
-#ifndef AppleBluetoothHostControllers_h
-#define AppleBluetoothHostControllers_h
+#ifndef BluetoothHostControllers_h
+#define BluetoothHostControllers_h
 
 #include <IOKit/bluetooth/IOBluetoothHostController.h>
-
-/*
- * These classes do not represent their actaul declaration by Apple in IOBluetoothFamily. Only their structors are
- * defined so that they could be allocated by this kext while being kept simple.
- */
 
 class BroadcomBluetoothHostController : public IOBluetoothHostController
 {
@@ -49,4 +44,9 @@ class AppleCSRBluetoothHostController : public IOBluetoothHostController
     OSDeclareDefaultStructors(AppleCSRBluetoothHostController)
 };
 
-#endif /* AppleBluetoothHostControllers_h */
+class IntelBluetoothHostController : public IOBluetoothHostController
+{
+    OSDeclareDefaultStructors(IntelBluetoothHostController)
+};
+
+#endif /* BluetoothHostControllers_h */
