@@ -125,22 +125,22 @@ struct BluetoothIntelVersionInfoTLV
 
 struct BluetoothIntelTLV
 {
-    UInt8   type;
-    UInt8   length;
+    UInt8  type;
+    UInt8  length;
     UInt8 * value;
 } __attribute__((packed));
 
 struct BluetoothIntelVersionInfo
 {
-    UInt8 hardwarePlatform;
-    UInt8 hardwareVariant;
-    UInt8 hardwareRevision;
-    UInt8 firmwareVariant;
-    UInt8 firmwareRevision;
-    UInt8 firmwareBuildNum;
-    UInt8 firmwareBuildWeek;
-    UInt8 firmwareBuildYear;
-    UInt8 firmwarePatchVersion;
+    UInt8  hardwarePlatform;
+    UInt8  hardwareVariant;
+    UInt8  hardwareRevision;
+    UInt8  firmwareVariant;
+    UInt8  firmwareRevision;
+    UInt8  firmwareBuildNum;
+    UInt8  firmwareBuildWeek;
+    UInt8  firmwareBuildYear;
+    UInt8  firmwarePatchVersion;
 } __attribute__((packed));
 
 struct BluetoothIntelBootParams
@@ -179,19 +179,19 @@ struct BluetoothIntelCommandWriteBootParams
 
 struct BluetoothIntelBootupEventParams
 {
-    UInt8     zero;
-    UInt8     numCommands;
-    UInt8     source;
-    UInt8     resetType;
-    UInt8     resetReason;
-    UInt8     ddcStatus;
+    UInt8  zero;
+    UInt8  numCommands;
+    UInt8  source;
+    UInt8  resetType;
+    UInt8  resetReason;
+    UInt8  ddcStatus;
 } __attribute__((packed));
 
 struct BluetoothIntelSecureSendResultEventParams
 {
-    UInt8    result;
-    UInt16   opCode;
-    UInt8    status;
+    UInt8  result;
+    UInt16 opCode;
+    UInt8  status;
 } __attribute__((packed));
 
 #define IntelCNVXExtractHardwarePlatform(cnvx)      ((UInt8)(((cnvx) & 0x0000ff00) >> 8))
