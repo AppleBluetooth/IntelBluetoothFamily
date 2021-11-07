@@ -50,12 +50,10 @@
 		BCB134762731904800D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB134862731904A00D29EE3 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCB134982732095600D29EE3 /* IntelBluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */; };
-		BCB67C64272DC525007711DB /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
-		BCB67C6C272DF0C6007711DB /* BluetoothHostControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */; };
-		BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCC18145272CC61600FE5090 /* kern_btfixup.hpp */; };
-		BCB67C6E272DF0CB007711DB /* kern_start.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18142272CC5B800FE5090 /* kern_start.cpp */; };
-		BCB67C6F272DF0CB007711DB /* kern_btfixup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCC18144272CC61600FE5090 /* kern_btfixup.cpp */; };
+		BCB28C002736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB28BFF2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h */; };
+		BCB28C022736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCB28C012736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp */; };
 		BCB8A6B02735A7B400253917 /* Gen2FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */; };
+		BCC6F33027381BC400E62FDF /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCE72E972735A71900C62911 /* Gen1FirmwareBinary.cpp */; };
 		BCDAEC9A272D04DE00D24C15 /* IntelBluetoothHostControllerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C18272B963000E83996 /* IntelBluetoothHostControllerTypes.h */; };
 		BCDAEC9B272D04DE00D24C15 /* IntelBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1D272B963000E83996 /* IntelBluetoothHostController.h */; };
 		BCDAEC9F272D04F100D24C15 /* IntelBluetoothHostController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C1B272B963000E83996 /* IntelBluetoothHostController.cpp */; };
@@ -63,7 +61,6 @@
 		BCDAECB9272D0FE800D24C15 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
 		BCE72E8E2735A22E00C62911 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C19272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
 		BCE72E962735A67100C62911 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCE72E952735A67100C62911 /* Gen1FirmwareBinary.cpp */; };
-		BCE72E982735A71900C62911 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCE72E972735A71900C62911 /* Gen1FirmwareBinary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -134,15 +131,14 @@
 		BCB134912731A94700D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
 		BCB134922731A95100D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
 		BCB134932731A95A00D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
+		BCB28BFD2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUARTTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCB28BFF2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerUARTTransport.h; sourceTree = "<group>"; };
+		BCB28C012736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUARTTransport.cpp; sourceTree = "<group>"; };
+		BCB28C032736DFA5008634D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCB28C072736E030008634D0 /* hci_intel.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hci_intel.c; sourceTree = "<group>"; };
 		BCB67C52272DC2F1007711DB /* Lilu.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = Lilu.kext; sourceTree = "<group>"; };
-		BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IOBluetoothFixup.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCB67C62272DC4FF007711DB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BluetoothHostControllers.h; sourceTree = "<group>"; };
 		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
 		BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCC18142272CC5B800FE5090 /* kern_start.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_start.cpp; sourceTree = "<group>"; };
-		BCC18144272CC61600FE5090 /* kern_btfixup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = kern_btfixup.cpp; sourceTree = "<group>"; };
-		BCC18145272CC61600FE5090 /* kern_btfixup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = kern_btfixup.hpp; sourceTree = "<group>"; };
 		BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = OpenFirmwareManager.kext; sourceTree = "<group>"; };
 		BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCDAECAF272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
@@ -225,11 +221,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCB67C55272DC4A3007711DB /* Frameworks */ = {
+		BCB28BFA2736DFA5008634D0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCB67C64272DC525007711DB /* libkmod.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,12 +246,12 @@
 				BCB67C52272DC2F1007711DB /* Lilu.kext */,
 				BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */,
 				BC6A4C2A272B965E00E83996 /* MacKernelSDK */,
-				BCC18141272CC59500FE5090 /* IOBluetoothFixup */,
 				BC6A4C0D272B960100E83996 /* IntelBluetoothFamily */,
 				BCDAECAC272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport */,
 				BCB1348D2731908900D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport */,
 				BCB13490273190BD00D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport */,
 				BCB1348F273190A900D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport */,
+				BCB28BFE2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport */,
 				BCB67CBF272E3468007711DB /* fw_gen.py */,
 				BC6B9AC527301E1B0097B209 /* .gitignore */,
 				BC6B9AC127301DE30097B209 /* LICENSE */,
@@ -269,7 +264,6 @@
 		BC6A4C0C272B960100E83996 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */,
 				BC6A4C0B272B960100E83996 /* IntelBluetoothFamily.kext */,
 				BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */,
 				BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
@@ -280,6 +274,7 @@
 				BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */,
 				BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */,
 				BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */,
+				BCB28BFD2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.kext */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -339,16 +334,15 @@
 			path = IntelGen2BluetoothHostControllerUSBTransport;
 			sourceTree = "<group>";
 		};
-		BCC18141272CC59500FE5090 /* IOBluetoothFixup */ = {
+		BCB28BFE2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport */ = {
 			isa = PBXGroup;
 			children = (
-				BCB67C6B272DF01D007711DB /* BluetoothHostControllers.h */,
-				BCC18142272CC5B800FE5090 /* kern_start.cpp */,
-				BCC18145272CC61600FE5090 /* kern_btfixup.hpp */,
-				BCC18144272CC61600FE5090 /* kern_btfixup.cpp */,
-				BCB67C62272DC4FF007711DB /* Info.plist */,
+				BCB28BFF2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h */,
+				BCB28C012736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp */,
+				BCB28C032736DFA5008634D0 /* Info.plist */,
+				BCB28C072736E030008634D0 /* hci_intel.c */,
 			);
-			path = IOBluetoothFixup;
+			path = IntelBluetoothHostControllerUARTTransport;
 			sourceTree = "<group>";
 		};
 		BCDAECAC272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport */ = {
@@ -425,8 +419,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC9BCE7F27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */,
 				BC9BCE8027350CBA00383496 /* IntelGen3FirmwareList.h in Headers */,
+				BC9BCE7F27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,17 +446,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC7211DB27332DBD004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */,
 				BCAAACDC27337889005667DB /* IntelGen3FirmwareList.h in Headers */,
+				BC7211DB27332DBD004FF756 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCB67C53272DC4A3007711DB /* Headers */ = {
+		BCB28BF82736DFA5008634D0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCB67C6C272DF0C6007711DB /* BluetoothHostControllers.h in Headers */,
-				BCB67C6D272DF0C6007711DB /* kern_btfixup.hpp in Headers */,
+				BCB28C002736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,22 +640,22 @@
 			productReference = BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
-		BCB67C57272DC4A3007711DB /* IOBluetoothFixup */ = {
+		BCB28BFC2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BCB67C5F272DC4A3007711DB /* Build configuration list for PBXNativeTarget "IOBluetoothFixup" */;
+			buildConfigurationList = BCB28C042736DFA5008634D0 /* Build configuration list for PBXNativeTarget "IntelBluetoothHostControllerUARTTransport" */;
 			buildPhases = (
-				BCB67C53272DC4A3007711DB /* Headers */,
-				BCB67C54272DC4A3007711DB /* Sources */,
-				BCB67C55272DC4A3007711DB /* Frameworks */,
-				BCB67C56272DC4A3007711DB /* Resources */,
+				BCB28BF82736DFA5008634D0 /* Headers */,
+				BCB28BF92736DFA5008634D0 /* Sources */,
+				BCB28BFA2736DFA5008634D0 /* Frameworks */,
+				BCB28BFB2736DFA5008634D0 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = IOBluetoothFixup;
-			productName = IOBluetoothFixup;
-			productReference = BCB67C58272DC4A3007711DB /* IOBluetoothFixup.kext */;
+			name = IntelBluetoothHostControllerUARTTransport;
+			productName = IntelBluetoothHostControllerUARTTransport;
+			productReference = BCB28BFD2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BCDAECAA272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport-Big Sur */ = {
@@ -695,8 +688,8 @@
 					BC6A4C0A272B960100E83996 = {
 						CreatedOnToolsVersion = 13.0;
 					};
-					BCB67C57272DC4A3007711DB = {
-						CreatedOnToolsVersion = 13.0;
+					BCB28BFC2736DFA5008634D0 = {
+						CreatedOnToolsVersion = 13.1;
 					};
 					BCDAECAA272D0F4200D24C15 = {
 						CreatedOnToolsVersion = 13.0;
@@ -716,7 +709,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BCB67C57272DC4A3007711DB /* IOBluetoothFixup */,
 				BC6A4C0A272B960100E83996 /* IntelBluetoothFamily-Big Sur */,
 				BC9BCE3C27350BF500383496 /* IntelBluetoothFamily-Catalina */,
 				BCDAECAA272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport-Big Sur */,
@@ -727,6 +719,7 @@
 				BC9BCE6C27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport-Catalina */,
 				BCB1347D2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport-Big Sur */,
 				BC9BCE7C27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport-Catalina */,
+				BCB28BFC2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport */,
 			);
 		};
 /* End PBXProject section */
@@ -795,7 +788,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCB67C56272DC4A3007711DB /* Resources */ = {
+		BCB28BFB2736DFA5008634D0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -957,7 +950,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCE72E982735A71900C62911 /* Gen1FirmwareBinary.cpp in Sources */,
+				BCC6F33027381BC400E62FDF /* Gen1FirmwareBinary.cpp in Sources */,
 				BC9BCE6327350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -966,8 +959,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC9BCE7327350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
 				BC716BFA2735A80B002905A8 /* Gen2FirmwareBinary.cpp in Sources */,
+				BC9BCE7327350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -993,8 +986,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC7211D22733270B004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
 				BCB8A6B02735A7B400253917 /* Gen2FirmwareBinary.cpp in Sources */,
+				BC7211D22733270B004FF756 /* IntelGen2BluetoothHostControllerUSBTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1007,12 +1000,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCB67C54272DC4A3007711DB /* Sources */ = {
+		BCB28BF92736DFA5008634D0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCB67C6E272DF0CB007711DB /* kern_start.cpp in Sources */,
-				BCB67C6F272DF0CB007711DB /* kern_btfixup.cpp in Sources */,
+				BCB28C022736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1308,9 +1300,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1332,9 +1324,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1356,9 +1348,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1380,9 +1372,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1404,9 +1396,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1428,9 +1420,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransportLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1452,9 +1444,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1476,9 +1468,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1500,9 +1492,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1524,9 +1516,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1548,9 +1540,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1572,9 +1564,9 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransport;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1582,23 +1574,22 @@
 			};
 			name = Release;
 		};
-		BCB67C60272DC4A3007711DB /* Debug */ = {
+		BCB28C052736DFA5008634D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = IOBluetoothFixup/Info.plist;
+				INFOPLIST_FILE = IntelBluetoothHostControllerUARTTransport/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IOBluetoothFixup;
+				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUARTTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IOBluetoothFixup;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUARTTransport;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1606,23 +1597,22 @@
 			};
 			name = Debug;
 		};
-		BCB67C61272DC4A3007711DB /* Release */ = {
+		BCB28C062736DFA5008634D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1.0.0d1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = IOBluetoothFixup/Info.plist;
+				INFOPLIST_FILE = IntelBluetoothHostControllerUARTTransport/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
 				MARKETING_VERSION = 1.0;
-				MODULE_NAME = com.cjiang.IOBluetoothFixup;
+				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUARTTransport;
 				MODULE_VERSION = 1.0.0d1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IOBluetoothFixup;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUARTTransport;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1771,11 +1761,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BCB67C5F272DC4A3007711DB /* Build configuration list for PBXNativeTarget "IOBluetoothFixup" */ = {
+		BCB28C042736DFA5008634D0 /* Build configuration list for PBXNativeTarget "IntelBluetoothHostControllerUARTTransport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BCB67C60272DC4A3007711DB /* Debug */,
-				BCB67C61272DC4A3007711DB /* Release */,
+				BCB28C052736DFA5008634D0 /* Debug */,
+				BCB28C062736DFA5008634D0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

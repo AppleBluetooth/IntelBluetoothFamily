@@ -2,6 +2,7 @@
  *  Released under "The GNU General Public License (GPL-2.0)"
  *
  *  Copyright (c) 2021 cjiang. All rights reserved.
+ *  Copyright (C) 2015 Intel Corporation.
  *
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by the
@@ -19,40 +20,17 @@
  *
  */
 
-#include <Headers/plugin_start.hpp>
-#include <Headers/kern_api.hpp>
+#ifndef IntelBluetoothHostControllerUARTTransport_h
+#define IntelBluetoothHostControllerUARTTransport_h
 
-#include "kern_btfixup.hpp"
+#include <IOKit/bluetooth/transport/IOBluetoothHostControllerUARTTransport.h>
+#include <OpenFirmwareManager.h>
+#include "../IntelBluetoothFamily/IntelBluetoothHostController.h"
 
-static IOBluetoothFixup btfixup;
+class IntelBluetoothHostControllerUARTTransport : public IOBluetoothHostControllerUARTTransport
+{
+    OSDeclareDefaultStructors(IntelBluetoothHostControllerUARTTransport)
 
-const char *bootargOff[] {
-    "-btfixupoff"
 };
 
-const char *bootargDebug[] {
-    "-btfixupdbg"
-};
-
-const char *bootargBeta[] {
-    "-btfixupbeta"
-};
-
-PluginConfiguration ADDPR(config) {
-    xStringify(PRODUCT_NAME),
-    parseModuleVersion(xStringify(MODULE_VERSION)),
-    LiluAPI::AllowNormal |
-    LiluAPI::AllowSafeMode |
-    LiluAPI::AllowInstallerRecovery,
-    bootargOff,
-    arrsize(bootargOff),
-    bootargDebug,
-    arrsize(bootargDebug),
-    bootargBeta,
-    arrsize(bootargBeta),
-    KernelVersion::Lion,
-    KernelVersion::Monterey,
-    []() {
-        btfixup.init();
-    }
-};
+#endif
