@@ -100,7 +100,6 @@
 		BC6A4C1E272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntelGen2BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
 		BC6A4C1F272B963000E83996 /* IntelGen2BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen2BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
 		BC6A4C20272B963100E83996 /* IntelGen3BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntelGen3BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
-		BC6A4C2A272B965E00E83996 /* MacKernelSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MacKernelSDK; path = ../../../MacKernelSDK; sourceTree = "<group>"; };
 		BC6A4C2D272B96FA00E83996 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		BC6B9AC127301DE30097B209 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BC6B9AC227301DE40097B209 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -108,7 +107,7 @@
 		BC716BF92735A80B002905A8 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC716BFB2735A8ED002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC716BFD2735A969002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE4D27350BF500383496 /* IntelBluetoothFamily.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamilyLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen2BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,6 +127,7 @@
 		BCB28C032736DFA5008634D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCB28C072736E030008634D0 /* hci_intel.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hci_intel.c; sourceTree = "<group>"; };
 		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
+		BCB7BA39273907520029BC09 /* MacKernelSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MacKernelSDK; sourceTree = "<group>"; };
 		BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = OpenFirmwareManager.kext; sourceTree = "<group>"; };
 		BCDAECAB272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,9 +232,9 @@
 		BC6A4C01272B960100E83996 = {
 			isa = PBXGroup;
 			children = (
-				BCE72E922735A61A00C62911 /* FirmwareBinaries */,
 				BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */,
-				BC6A4C2A272B965E00E83996 /* MacKernelSDK */,
+				BCB7BA39273907520029BC09 /* MacKernelSDK */,
+				BCE72E922735A61A00C62911 /* FirmwareBinaries */,
 				BC6A4C0D272B960100E83996 /* IntelBluetoothFamily */,
 				BCDAECAC272D0F4200D24C15 /* IntelBluetoothHostControllerUSBTransport */,
 				BCB1348D2731908900D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport */,
@@ -258,7 +258,7 @@
 				BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
 				BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
 				BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
-				BC9BCE4D27350BF500383496 /* IntelBluetoothFamily.kext */,
+				BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */,
 				BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */,
 				BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */,
 				BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */,
@@ -485,7 +485,7 @@
 			);
 			name = "IntelBluetoothFamily-Catalina";
 			productName = IntelBluetoothFamily;
-			productReference = BC9BCE4D27350BF500383496 /* IntelBluetoothFamily.kext */;
+			productReference = BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BC9BCE4F27350CA300383496 /* IntelBluetoothHostControllerUSBTransport-Catalina */ = {
@@ -1053,9 +1053,9 @@
 					"$(PROJECT_DIR)/OpenFirmwareManager.kext/Contents/Resources/",
 					"$(PROJECT_DIR)/IntelBluetoothFamily/",
 				);
-				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = /Users/charliejiang/MacKernelSDK/Headers;
-				KERNEL_FRAMEWORK_HEADERS = /Users/charliejiang/MacKernelSDK/Headers;
-				LIBRARY_SEARCH_PATHS = /Users/charliejiang/MacKernelSDK/Library/x86_64;
+				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
+				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Library/x86_64";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1113,9 +1113,9 @@
 					"$(PROJECT_DIR)/OpenFirmwareManager.kext/Contents/Resources/",
 					"$(PROJECT_DIR)/IntelBluetoothFamily/",
 				);
-				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = /Users/charliejiang/MacKernelSDK/Headers;
-				KERNEL_FRAMEWORK_HEADERS = /Users/charliejiang/MacKernelSDK/Headers;
-				LIBRARY_SEARCH_PATHS = /Users/charliejiang/MacKernelSDK/Library/x86_64;
+				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
+				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/MacKernelSDK/Headers";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/MacKernelSDK/Library/x86_64";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1186,7 +1186,7 @@
 				MODULE_NAME = com.cjiang.IntelBluetoothFamily;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothFamily;
-				PRODUCT_NAME = IntelBluetoothFamily;
+				PRODUCT_NAME = IntelBluetoothFamilyLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1210,7 +1210,7 @@
 				MODULE_VERSION = 1.0.0d1;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothFamily;
-				PRODUCT_NAME = IntelBluetoothFamily;
+				PRODUCT_NAME = IntelBluetoothFamilyLegacy;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
