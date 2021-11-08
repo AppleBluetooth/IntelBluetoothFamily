@@ -980,7 +980,8 @@ bool IntelBluetoothHostController::ParseFirmwareVersion(UInt8 number, UInt8 week
         {
             params = (BluetoothIntelCommandWriteBootParams *) (fwPtr + kBluetoothHCICommandPacketHeaderSize);
 
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ParseFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u", params->bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
+            *bootAddress = params->bootAddress;
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ParseFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
 
             return (number == params->firmwareBuildNumber && week == params->firmwareBuildWeek && year == params->firmwareBuildYear);
         }
