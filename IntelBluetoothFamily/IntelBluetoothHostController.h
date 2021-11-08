@@ -135,23 +135,23 @@ protected:
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 23);
     
 protected:
-    void * mVersionInfo;
+    void * mVersionInfo {NULL};
     BluetoothHCICommandOpCode mMicrosoftExtensionOpCode;
 
-    bool mValidLEStates;
-    bool mStrictDuplicateFilter;
-    bool mSimultaneousDiscovery;
-    bool mDiagnosticModeNotPersistent;
-    bool mWidebandSpeechSupported;
-    bool mInvalidDeviceAddress;
-    bool mIsLegacyROMDevice;
-    bool mBootloaderMode;
-    bool mBooting;
-    bool mDownloading;
-    bool mFirmwareLoaded;
-    bool mFirmwareLoadingFailed;
-    bool mBrokenLED;
-    bool mBrokenInitialNumberOfCommands;
+    bool mValidLEStates {false};
+    bool mStrictDuplicateFilter {false};
+    bool mSimultaneousDiscovery {false};
+    bool mDiagnosticModeNotPersistent {false};
+    bool mWidebandSpeechSupported {false};
+    bool mInvalidDeviceAddress {false};
+    bool mIsLegacyROMDevice {false};
+    bool mBootloaderMode {false};
+    bool mBooting {false};
+    bool mDownloading {false};
+    bool mFirmwareLoaded {false};
+    bool mFirmwareLoadingFailed {false};
+    bool mBrokenLED {false};
+    bool mBrokenInitialNumberOfCommands {false};
     bool mQualityReportSet {false};
 
     struct ExpansionData

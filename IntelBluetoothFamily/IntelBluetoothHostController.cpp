@@ -321,12 +321,12 @@ IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
     HCIRequestCreate(&id);
     err = BluetoothHCIIntelReadDebugFeatures(id, &features);
     HCIRequestDelete(NULL, id);
-    if (err)
+    if ( err )
         return err;
 
     /* Set or reset the debug features. */
     HCIRequestCreate(&id);
-    if (enable)
+    if ( enable )
         err = BluetoothHCIIntelSetDebugFeatures(id, &features);
     else
         err = BluetoothHCIIntelResetDebugFeatures(id, &features);
@@ -334,6 +334,57 @@ IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
 
     return err;
 }
+
+/*
+ static int btintel_get_codec_config_data(struct hci_dev *hdev,
+                       __u8 link, struct bt_codec *codec,
+                       __u8 *ven_len, __u8 **ven_data)
+  {
+      int err = 0;
+
+      if (!ven_data || !ven_len)
+          return -EINVAL;
+
+      *ven_len = 0;
+      *ven_data = NULL;
+
+      if (link != ESCO_LINK) {
+          bt_dev_err(hdev, "Invalid link type(%u)", link);
+          return -EINVAL;
+      }
+
+      *ven_data = kmalloc(sizeof(__u8), GFP_KERNEL);
+      if (!*ven_data) {
+          err = -ENOMEM;
+          goto error;
+      }
+
+      /* supports only CVSD and mSBC offload codecs
+      switch (codec->id) {
+      case 0x02:
+          **ven_data = 0x00;
+          break;
+      case 0x05:
+          **ven_data = 0x01;
+          break;
+      default:
+          err = -EINVAL;
+          bt_dev_err(hdev, "Invalid codec id(%u)", codec->id);
+          goto error;
+      }
+      /* codec and its capabilities are pre-defined to ids
+       * preset id = 0x00 represents CVSD codec with sampling rate 8K
+       * preset id = 0x01 represents mSBC codec with sampling rate 16K
+
+      *ven_len = sizeof(__u8);
+      return err;
+
+  error:
+      kfree(*ven_data);
+      *ven_data = NULL;
+      return err;
+  }
+ */
 
 IOReturn IntelBluetoothHostController::ConfigureOffload()
 {
@@ -344,6 +395,14 @@ IOReturn IntelBluetoothHostController::ConfigureOffload()
     HCIRequestCreate(&id);
     err = BluetoothHCIIntelReadOffloadUseCases(id, &cases);
     HCIRequestDelete(NULL, id);
+
+    if ( cases.preset[0] & 0x03 )
+    {
+        /* Intel uses 1 as data path id for all the usecases */
+        //*data_path_id = 1;
+        //hdev->get_data_path_id = btintel_get_data_path_id;
+        //hdev->get_codec_config_data = btintel_get_codec_config_data;
+    }
 
     return err;
 }
