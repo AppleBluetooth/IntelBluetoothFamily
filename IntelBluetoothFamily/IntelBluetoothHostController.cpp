@@ -791,12 +791,42 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDebugFeatures(Bluetoo
         return err;
     }
     
-    err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbbbbbbbbbbbb", 0xFC8B, 11, 0x0A, 0x92, 0x02, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+    err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbbbbbbbbbbbb", 0xFC8B, 11, 0x0A, 0x92, 0x02, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to set telemetry DDC event mask: 0x%x", 0xFC8B, err);
         return err;
     }
+
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
+
+    err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbbbbbb", 0xFC8B, 5, 0x04, 0x91, 0x02, 0x05, 0x00);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to set periodicity for link statistics traces: 0x%x", 0xFC8B, err);
+        return err;
+    }
+
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
+
+    err = SendHCIRequestFormatted(inID, 0xFCA1, 0, NULL, "Hbb", 0xFCA1, 1, 0x02);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to enable tracing of link statistics events: 0x%x", 0xFCA1, err);
+        return err;
+    }
+
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x", 0x02, 0x7f);
 
     return kIOReturnSuccess;
 }
