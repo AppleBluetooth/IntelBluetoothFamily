@@ -125,6 +125,9 @@ bool IntelGen3BluetoothHostControllerUSBTransport::start(IOService * provider)
                 controller->HCIRequestDelete(NULL, id);
             }
 
+            /* Read supported use cases and set callbacks to fetch datapath id */
+            controller->ConfigureOffload();
+
             controller->SetQualityReport(controller->mQualityReportSet);
             controller->mQualityReportSet = true;
 

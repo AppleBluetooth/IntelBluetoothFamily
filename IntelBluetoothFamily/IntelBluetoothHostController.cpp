@@ -335,6 +335,19 @@ IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
     return err;
 }
 
+IOReturn IntelBluetoothHostController::ConfigureOffload()
+{
+    IOReturn err;
+    BluetoothHCIRequestID id;
+    BluetoothIntelOffloadUseCases cases;
+
+    HCIRequestCreate(&id);
+    err = BluetoothHCIIntelReadOffloadUseCases(id, &cases);
+    HCIRequestDelete(NULL, id);
+
+    return err;
+}
+
 IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline)
 {
     IOReturn err;
@@ -950,6 +963,34 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelWriteDDC(BluetoothHCIReq
         return err;
     }
     
+    return kIOReturnSuccess;
+}
+
+IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadOffloadUseCases(BluetoothHCIRequestID inID, BluetoothIntelOffloadUseCases * cases)
+{
+    IOReturn err;
+    IOBluetoothHCIRequest * request;
+
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
+
+    err = SendHCIRequestFormatted(inID, 0xFC86, sizeof(BluetoothIntelOffloadUseCases), cases, "Hb", 0xFC86, 0);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read offload use cases: 0x%x", 0xFC86, err);
+        return err;
+    }
+
+    if ( LookupRequest(inID, &request) || !request )
+        return kIOReturnInvalid;
+
+    if ( request->mStatus )
+        return request->mStatus;
+
     return kIOReturnSuccess;
 }
 

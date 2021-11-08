@@ -66,6 +66,7 @@ public:
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);
     virtual IOReturn SetQualityReport(bool enable);
+    virtual IOReturn ConfigureOffload();
 
     virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
@@ -99,6 +100,7 @@ public:
     virtual IOReturn BluetoothHCIIntelResetDebugFeatures(BluetoothHCIRequestID inID, const BluetoothIntelDebugFeatures * features);
     virtual IOReturn BluetoothHCIIntelTurnOffDeviceLED(BluetoothHCIRequestID inID);
     virtual IOReturn BluetoothHCIIntelWriteDDC(BluetoothHCIRequestID inID, UInt8 * data, UInt8 dataSize);
+    virtual IOReturn BluetoothHCIIntelReadOffloadUseCases(BluetoothHCIRequestID inID, BluetoothIntelOffloadUseCases * cases);
     
 protected:
     virtual IOReturn BroadcastCommandCompleteEvent(BluetoothHCICommandOpCode opCode);

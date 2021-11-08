@@ -194,6 +194,11 @@ struct BluetoothIntelSecureSendResultEventParams
     UInt8  status;
 } __attribute__((packed));
 
+struct BluetoothIntelOffloadUseCases
+{
+    UInt8  preset[8];
+} __attribute__((packed));
+
 #define IntelCNVXExtractHardwarePlatform(cnvx)      ((UInt8)(((cnvx) & 0x0000ff00) >> 8))
 #define IntelCNVXExtractHardwareVariant(cnvx)       ((UInt8)(((cnvx) & 0x003f0000) >> 16))
 #define IntelCNVXTopExtractType(cnvxTop)            ((cnvxTop) & 0x00000fff)
