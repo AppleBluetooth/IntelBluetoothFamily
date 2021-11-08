@@ -50,7 +50,8 @@ copyright = '''/*
  *
  */
 
-#include '''
+#include <FirmwareList.h>
+'''
 
 def hash(data):
     sha1sum = hashlib.sha1()
@@ -102,14 +103,12 @@ def write_single_file(target_file, file_path, fw_root, file_hashes):
 
     src_file.close()
 
-def process_files(target_file, dir, header, extensions):
+def process_files(target_file, dir, extensions):
     if not os.path.exists(target_file):
         if not os.path.exists(os.path.dirname(target_file)):
             os.mkdir(os.path.dirname(target_file))
     target_file_handle = open(target_file, "w")
     target_file_handle.write(copyright)
-    target_file_handle.write(str(header))
-    target_file_handle.write("\n");
     file_hashes = []
     for root, _, files in os.walk(dir):
         for file in files:
@@ -138,4 +137,4 @@ def process_files(target_file, dir, header, extensions):
     target_file_handle.close()
 
 if __name__ == '__main__':
-    process_files(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4].split(','))
+    process_files(sys.argv[1], sys.argv[2], sys.argv[3].split(','))
