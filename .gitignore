@@ -1,6 +1,7 @@
 .DS_Store
 DerivedData
 OpenFirmwareManager.kext
+MacKernelSDK
 xcshareddata
 xcuserdata
 project.xcworkspace
