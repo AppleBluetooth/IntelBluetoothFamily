@@ -37,7 +37,6 @@ bool IntelGen3BluetoothHostControllerUSBTransport::start(IOService * provider)
     IOReturn err;
     BluetoothHCIRequestID id;
     BluetoothIntelVersionInfoTLV version;
-    BluetoothIntelDebugFeatures features;
     OSData * fwData;
     UInt32 bootAddress;
 
@@ -126,19 +125,8 @@ bool IntelGen3BluetoothHostControllerUSBTransport::start(IOService * provider)
                 controller->HCIRequestDelete(NULL, id);
             }
 
-            /* Read the Intel supported features and if new exception formats
-             * supported, need to load the additional DDC config to enable.
-             */
-            controller->HCIRequestCreate(&id);
-            err = controller->BluetoothHCIIntelReadDebugFeatures(id, &features);
-            controller->HCIRequestDelete(NULL, id);
-            if ( !err )
-            {
-                /* Set DDC mask for available debug features */
-                controller->HCIRequestCreate(&id);
-                controller->BluetoothHCIIntelSetDebugFeatures(id, &features);
-                controller->HCIRequestDelete(NULL, id);
-            }
+            controller->SetQualityReport(controller->mQualityReportSet);
+            controller->mQualityReportSet = true;
 
             /* Read the Intel version information after loading the FW  */
             controller->HCIRequestCreate(&id);

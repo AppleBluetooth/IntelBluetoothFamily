@@ -33,10 +33,10 @@
 		BC9BCE7F27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C20272B963100E83996 /* IntelGen3BluetoothHostControllerUSBTransport.h */; };
 		BC9BCE8327350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6A4C1C272B963000E83996 /* IntelGen3BluetoothHostControllerUSBTransport.cpp */; };
 		BC9BCE8527350CBA00383496 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC6A4C2D272B96FA00E83996 /* libkmod.a */; };
-		BC9BCE8C27350D2500383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC9BCE8D27350D2500383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC9BCE8E27350D2500383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC9BCE8F27350D2500383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC9BCE8C27350D2500383496 /* IntelBluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransport15.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC9BCE8D27350D2500383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC9BCE8E27350D2500383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC9BCE8F27350D2500383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCA3E43F2733173B00AC8038 /* IntelGen1BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = BC6A4C1A272B963000E83996 /* IntelGen1BluetoothHostControllerUSBTransport.h */; };
 		BCAAACE327339179005667DB /* IntelGen1BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCAAACE427339179005667DB /* IntelGen2BluetoothHostControllerUSBTransport.kext in Copy to PlugIns */ = {isa = PBXBuildFile; fileRef = BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -78,10 +78,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				BC9BCE8C27350D2500383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */,
-				BC9BCE8D27350D2500383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */,
-				BC9BCE8E27350D2500383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */,
-				BC9BCE8F27350D2500383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext in Copy to PlugIns */,
+				BC9BCE8C27350D2500383496 /* IntelBluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */,
+				BC9BCE8D27350D2500383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */,
+				BC9BCE8E27350D2500383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */,
+				BC9BCE8F27350D2500383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext in Copy to PlugIns */,
 			);
 			name = "Copy to PlugIns";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,11 +107,11 @@
 		BC716BF92735A80B002905A8 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC716BFB2735A8ED002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC716BFD2735A969002905A8 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen3BluetoothHostControllerUSBTransport-Catalina.build/DerivedSources/Gen3FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamilyLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen2BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen3BluetoothHostControllerUSBTransportLegacy.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE4D27350BF500383496 /* IntelBluetoothFamily15.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily15.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransport15.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransport15.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransport15.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen2BluetoothHostControllerUSBTransport15.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen3BluetoothHostControllerUSBTransport15.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA3E4312732E9AC00AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCA3E4332732E9BE00AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCA3E4382732E9F100AC8038 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -260,11 +260,11 @@
 				BCB1346B2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
 				BCB1347B2731904800D29EE3 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
 				BCB1348B2731904A00D29EE3 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
-				BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */,
-				BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */,
-				BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */,
-				BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */,
-				BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */,
+				BC9BCE4D27350BF500383496 /* IntelBluetoothFamily15.kext */,
+				BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransport15.kext */,
+				BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext */,
+				BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext */,
+				BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext */,
 				BCB28BFD2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.kext */,
 			);
 			name = Products;
@@ -487,7 +487,7 @@
 			);
 			name = "IntelBluetoothFamily-Catalina";
 			productName = IntelBluetoothFamily;
-			productReference = BC9BCE4D27350BF500383496 /* IntelBluetoothFamilyLegacy.kext */;
+			productReference = BC9BCE4D27350BF500383496 /* IntelBluetoothFamily15.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BC9BCE4F27350CA300383496 /* IntelBluetoothHostControllerUSBTransport-Catalina */ = {
@@ -505,7 +505,7 @@
 			);
 			name = "IntelBluetoothHostControllerUSBTransport-Catalina";
 			productName = IntelBluetoothHostControllerUSBTransport;
-			productReference = BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransportLegacy.kext */;
+			productReference = BC9BCE5A27350CA300383496 /* IntelBluetoothHostControllerUSBTransport15.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BC9BCE5C27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport-Catalina */ = {
@@ -524,7 +524,7 @@
 			);
 			name = "IntelGen1BluetoothHostControllerUSBTransport-Catalina";
 			productName = IntelBluetoothHostControllerUSBTransport;
-			productReference = BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransportLegacy.kext */;
+			productReference = BC9BCE6A27350CAE00383496 /* IntelGen1BluetoothHostControllerUSBTransport15.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BC9BCE6C27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport-Catalina */ = {
@@ -543,7 +543,7 @@
 			);
 			name = "IntelGen2BluetoothHostControllerUSBTransport-Catalina";
 			productName = IntelBluetoothHostControllerUSBTransport;
-			productReference = BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransportLegacy.kext */;
+			productReference = BC9BCE7A27350CB300383496 /* IntelGen2BluetoothHostControllerUSBTransport15.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BC9BCE7C27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport-Catalina */ = {
@@ -562,7 +562,7 @@
 			);
 			name = "IntelGen3BluetoothHostControllerUSBTransport-Catalina";
 			productName = IntelBluetoothHostControllerUSBTransport;
-			productReference = BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransportLegacy.kext */;
+			productReference = BC9BCE8A27350CBA00383496 /* IntelGen3BluetoothHostControllerUSBTransport15.kext */;
 			productType = "com.apple.product-type.kernel-extension";
 		};
 		BCB1345D2731904600D29EE3 /* IntelGen1BluetoothHostControllerUSBTransport-Big Sur */ = {
@@ -1188,7 +1188,7 @@
 				MODULE_NAME = com.cjiang.IntelBluetoothFamily;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothFamily;
-				PRODUCT_NAME = IntelBluetoothFamilyLegacy;
+				PRODUCT_NAME = IntelBluetoothFamily15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1212,7 +1212,7 @@
 				MODULE_VERSION = 1.0.0d1;
 				"MTL_ENABLE_DEBUG_INFO[arch=*]" = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothFamily;
-				PRODUCT_NAME = IntelBluetoothFamilyLegacy;
+				PRODUCT_NAME = IntelBluetoothFamily15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1236,7 +1236,7 @@
 				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelBluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelBluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1260,7 +1260,7 @@
 				MODULE_NAME = com.cjiang.IntelBluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelBluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelBluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelBluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1284,7 +1284,7 @@
 				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1308,7 +1308,7 @@
 				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen1BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1332,7 +1332,7 @@
 				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1356,7 +1356,7 @@
 				MODULE_NAME = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen2BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen2BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1380,7 +1380,7 @@
 				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;
@@ -1404,7 +1404,7 @@
 				MODULE_NAME = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
 				MODULE_VERSION = 1.0.0d1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen3BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransportLegacy;
+				PRODUCT_NAME = IntelGen3BluetoothHostControllerUSBTransport15;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				WRAPPER_EXTENSION = kext;

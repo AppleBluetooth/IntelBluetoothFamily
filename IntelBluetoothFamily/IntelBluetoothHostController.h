@@ -150,6 +150,7 @@ protected:
     bool mFirmwareLoadingFailed;
     bool mBrokenLED;
     bool mBrokenInitialNumberOfCommands;
+    bool mQualityReportSet {false};
 
     struct ExpansionData
     {
