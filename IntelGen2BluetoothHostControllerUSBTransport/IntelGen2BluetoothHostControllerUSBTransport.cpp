@@ -165,7 +165,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
         return false;
 
     IOReturn err;
-    AbsoluteTime callTime;
+    UInt32 callTime;
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     OSData * fwData;
 
