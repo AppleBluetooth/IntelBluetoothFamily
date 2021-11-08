@@ -201,40 +201,17 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
-    char fwName[64];
-    char ** fwNames = IONew(char *, 1);
-    fwNames[0] = fwName;
-
+    /* If the correct firmware patch file is not found, use the
+     * default firmware patch file instead
+     */
     if ( !mIsDefaultFirmware )
-        GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
-    else
-        GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
-
-    setProperty("FirmwareName", fwName);
-
-    mFirmware = OpenFirmwareManager::withNames(fwNames, 1, fwCandidates, fwCount);
-    IOSafeDeleteNULL(fwNames, char *, 1);
-    if ( !mFirmware )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to open firmware file %s!!!", fwName);
-
-        /* If the correct firmware patch file is not found, use the
-         * default firmware patch file instead
-         */
-        if ( !mIsDefaultFirmware )
-        {
-            mIsDefaultFirmware = true;
-            return GetFirmwareWL(version, params, suffix, fwData);
-        }
-        return kIOReturnError;
+        mIsDefaultFirmware = true;
+        return GetFirmware(version, params, suffix, fwData);
     }
-    *fwData = mFirmware->getFirmwareUncompressed(fwName);
-
-    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Found firmware file: %s", fwName);
-
-    return kIOReturnSuccess;
+    return kIOReturnError;
 }
 
 IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)

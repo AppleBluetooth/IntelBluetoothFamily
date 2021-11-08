@@ -276,32 +276,6 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen3BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
-{
-    char fwName[64];
-    char ** fwNames = IONew(char *, 1);
-    fwNames[0] = fwName;
-    
-    if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
-    {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][GetFirmwareWL] Unsupported firmware name!");
-        return kIOReturnInvalid;
-    }
-    setProperty("FirmwareName", fwName);
-    
-    mFirmware = OpenFirmwareManager::withNames(fwNames, 1, fwCandidates, fwCount);
-    IOSafeDeleteNULL(fwNames, char *, 1);
-    if ( !mFirmware )
-    {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to obtain firmware file %s!!!", fwName);
-        return kIOReturnUnsupported;
-    }
-    *fwData = mFirmware->getFirmwareUncompressed(fwName);
-    
-    os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][GetFirmwareWL] Found firmware file: %s", fwName);
-    return kIOReturnSuccess;
-}
-
 IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * ver, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);

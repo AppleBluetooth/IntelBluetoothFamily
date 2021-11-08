@@ -24,7 +24,7 @@
 #define IntelBluetoothHostControllerUSBTransport_h
 
 #include <IOKit/bluetooth/transport/IOBluetoothHostControllerUSBTransport.h>
-#include <OpenFirmwareManager.h>
+#include <FirmwareList.h>
 #include <IntelBluetoothHostController.h>
 
 class IntelBluetoothHostControllerUSBTransport : public IOBluetoothHostControllerUSBTransport
@@ -42,8 +42,7 @@ public:
     static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
     virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
-    static IOReturn GetFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
-    virtual IOReturn GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
+    virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
     virtual IOReturn DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
     static IOReturn DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
     virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);

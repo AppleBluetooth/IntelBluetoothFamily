@@ -152,11 +152,7 @@ void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
 
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size)
 {
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return kIOReturnError;
-
-    return controller->mCommandGate->runAction(GetFirmwareAction, version, params, (void *) suffix, fwName);
+    return mCommandGate->runAction(GetFirmwareNameAction, version, params, (void *) suffix, fwName);
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
@@ -172,31 +168,41 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * vers
 
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return kIOReturnError;
+    char fwName[64];
+    char ** fwNames = IONew(char *, 1);
+    fwNames[0] = fwName;
 
-    return controller->mCommandGate->runAction(GetFirmwareAction, version, params, (void *) suffix, *fwData);
+    if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Unsupported firmware name!");
+        return kIOReturnInvalid;
+    }
+
+    setProperty("FirmwareName", fwName);
+
+    mFirmware = OpenFirmwareManager::withNames(fwNames, 1, fwCandidates, fwCount);
+    IOSafeDeleteNULL(fwNames, char *, 1);
+    if ( !mFirmware )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Failed to obtain firmware file %s!!!", fwName);
+        return GetFirmwareErrorHandler(version, params, suffix, fwData);
+    }
+
+    *fwData = mFirmware->getFirmwareUncompressed(fwName);
+
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Found firmware file: %s", fwName);
+
+    return kIOReturnSuccess;
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
-{
-    IntelBluetoothHostControllerUSBTransport * object = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, owner);
-    return object->GetFirmwareWL(arg0, (BluetoothIntelBootParams *) arg1, (const char *) arg2, (OSData **) &arg3);
-}
-
-IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
     return kIOReturnUnsupported;
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return kIOReturnError;
-
-    return controller->mCommandGate->runAction(DownloadFirmwareAction, &inID, version, params, bootAddress);
+    return mCommandGate->runAction(DownloadFirmwareAction, &inID, version, params, bootAddress);
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
