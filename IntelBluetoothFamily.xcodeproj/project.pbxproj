@@ -121,6 +121,7 @@
 		BCB134912731A94700D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
 		BCB134922731A95100D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
 		BCB134932731A95A00D29EE3 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
+		BCB1C1E9273957260082F32D /* ibt-firmware-license */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ibt-firmware-license"; sourceTree = "<group>"; };
 		BCB28BFD2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUARTTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCB28BFF2736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerUARTTransport.h; sourceTree = "<group>"; };
 		BCB28C012736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUARTTransport.cpp; sourceTree = "<group>"; };
@@ -244,6 +245,7 @@
 				BCB67CBF272E3468007711DB /* fw_gen.py */,
 				BC6B9AC527301E1B0097B209 /* .gitignore */,
 				BC6B9AC127301DE30097B209 /* LICENSE */,
+				BCB1C1E9273957260082F32D /* ibt-firmware-license */,
 				BC6B9AC227301DE40097B209 /* README.md */,
 				BC6A4C0C272B960100E83996 /* Products */,
 				BC6A4C2C272B96FA00E83996 /* Frameworks */,
