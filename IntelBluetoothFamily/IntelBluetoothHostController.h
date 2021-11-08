@@ -65,6 +65,7 @@ public:
     virtual IOReturn CallBluetoothHCIIntelReadVersionInfo(UInt8 param);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);
+    virtual IOReturn SetQualityReport(bool enable);
 
     virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);

@@ -307,6 +307,34 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
     return kIOReturnSuccess;
 }
 
+IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
+{
+    IOReturn err;
+    BluetoothHCIRequestID id;
+    BluetoothIntelDebugFeatures features;
+
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetQualityReport] %s quality report...", enable ? "Setting" : "Resetting");
+
+     /* Read the Intel supported features and if new exception formats
+      * supported, need to load the additional DDC config to enable.
+      */
+    HCIRequestCreate(&id);
+    err = BluetoothHCIIntelReadDebugFeatures(id, &features);
+    HCIRequestDelete(NULL, id);
+    if (err)
+        return err;
+
+    /* Set or reset the debug features. */
+    HCIRequestCreate(&id);
+    if (enable)
+        err = BluetoothHCIIntelSetDebugFeatures(id, &features);
+    else
+        err = BluetoothHCIIntelResetDebugFeatures(id, &features);
+    HCIRequestDelete(NULL, id);
+
+    return err;
+}
+
 IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline)
 {
     IOReturn err;
