@@ -128,7 +128,7 @@
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.cjiang.OpenFirmwareManager</key>
-		<string>1.0</string>
+		<string>1.1.0</string>
 		<key>com.apple.iokit.IOACPIFamily</key>
 		<string>1.0.0</string>
 		<key>com.apple.iokit.IOBluetoothFamily</key>

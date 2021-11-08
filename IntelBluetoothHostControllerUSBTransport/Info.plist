@@ -23,7 +23,7 @@
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.cjiang.OpenFirmwareManager</key>
-		<string>1.0</string>
+		<string>1.1.0</string>
 		<key>com.apple.iokit.IOACPIFamily</key>
 		<string>1.0.0</string>
 		<key>com.apple.iokit.IOBluetoothFamily</key>
@@ -38,16 +38,16 @@
 		<string>1.0.0</string>
 		<key>com.apple.iokit.IOUSBHostFamily</key>
 		<string>1.0.1</string>
-        <key>com.apple.kpi.bsd</key>
-        <string>9.0.0</string>
-        <key>com.apple.kpi.iokit</key>
-        <string>9.0.0</string>
-        <key>com.apple.kpi.libkern</key>
-        <string>9.0.0</string>
-        <key>com.apple.kpi.mach</key>
-        <string>9.0.0</string>
-        <key>com.apple.kpi.unsupported</key>
-        <string>9.0.0</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>9.0.0</string>
 	</dict>
 </dict>
 </plist>
