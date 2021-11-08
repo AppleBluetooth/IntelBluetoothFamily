@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -136,7 +136,6 @@
 		BCB28C012736DFA5008634D0 /* IntelBluetoothHostControllerUARTTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUARTTransport.cpp; sourceTree = "<group>"; };
 		BCB28C032736DFA5008634D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCB28C072736E030008634D0 /* hci_intel.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hci_intel.c; sourceTree = "<group>"; };
-		BCB67C52272DC2F1007711DB /* Lilu.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = Lilu.kext; sourceTree = "<group>"; };
 		BCB67CBF272E3468007711DB /* fw_gen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = fw_gen.py; sourceTree = "<group>"; };
 		BCB8A6AF2735A7B400253917 /* Gen2FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen2FirmwareBinary.cpp; path = "../../Intermediates.noindex/IntelBluetoothFamily.build/Debug/IntelGen2BluetoothHostControllerUSBTransport-Big Sur.build/DerivedSources/Gen2FirmwareBinary.cpp"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = OpenFirmwareManager.kext; sourceTree = "<group>"; };
@@ -243,7 +242,6 @@
 			isa = PBXGroup;
 			children = (
 				BCE72E922735A61A00C62911 /* FirmwareBinaries */,
-				BCB67C52272DC2F1007711DB /* Lilu.kext */,
 				BCC55EAA272BB89500A116A2 /* OpenFirmwareManager.kext */,
 				BC6A4C2A272B965E00E83996 /* MacKernelSDK */,
 				BC6A4C0D272B960100E83996 /* IntelBluetoothFamily */,
@@ -697,7 +695,7 @@
 				};
 			};
 			buildConfigurationList = BC6A4C05272B960100E83996 /* Build configuration list for PBXProject "IntelBluetoothFamily" */;
-			compatibilityVersion = "Xcode 13.0";
+			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
