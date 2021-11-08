@@ -776,7 +776,10 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDebugFeatures(Bluetoo
     IOReturn err;
     
     if ( !features )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Debug features are not read!");
         return kIOReturnInvalid;
+    }
 
     if ( !(features->page1[0] & 0x3F) )
     {
@@ -827,6 +830,56 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDebugFeatures(Bluetoo
     }
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x", 0x02, 0x7f);
+
+    return kIOReturnSuccess;
+}
+
+IOReturn IntelBluetoothHostController::BluetoothHCIIntelResetDebugFeatures(BluetoothHCIRequestID inID, const BluetoothIntelDebugFeatures * features)
+{
+    IOReturn err;
+
+    if ( !features )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Debug features are not read!");
+        return kIOReturnInvalid;
+    }
+
+    if ( !(features->page1[0] & 0x3F) )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Telemetry exception format not supported.");
+        return kIOReturnSuccess;
+    }
+
+     /* Should stop the trace before writing ddc event mask. */
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
+
+    err = SendHCIRequestFormatted(inID, 0xFCA1, 0, NULL, "Hbb", 0xFCA1, 1, 0x00);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to stop tracing of link statistics events: 0x%x", 0xFCA1, err);
+        return err;
+    }
+
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
+
+    err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbbbbbbbbbbbb", 0xFC8B, 11, 0x0A, 0x92, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to set telemetry DDC event mask: 0x%x", 0xFC8B, err);
+        return err;
+    }
+
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelResetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x", 0x00, 0x00);
 
     return kIOReturnSuccess;
 }
