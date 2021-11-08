@@ -284,10 +284,6 @@ download:
             /* Skip version checking */
             break;
         default:
-            /* Skip reading firmware file version in bootloader mode */
-            if ( version->firmwareVariant == 0x06 )
-                break;
-
             /* Skip download if firmware has the same version */
             if ( controller->ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {

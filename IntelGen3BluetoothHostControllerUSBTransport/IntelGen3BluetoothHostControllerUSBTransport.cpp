@@ -342,18 +342,16 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
 
     controller->mDownloading = true;
 
-    /* Skip reading firmware file version in bootloader mode */
-    if ( version->imageType != 0x01 )
+
+    /* Skip download if firmware has the same version */
+    if ( controller->ParseFirmwareVersion(version->firmwareBuildNumber, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
     {
-        /* Skip download if firmware has the same version */
-        if ( controller->ParseFirmwareVersion(version->firmwareBuildNumber, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
-        {
-            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] Firmware already loaded!");
-            controller->mFirmwareLoaded = true;
-            setProperty("FirmwareLoaded", true);
-            return kIOReturnSuccess;
-        }
+        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] Firmware already loaded!");
+        controller->mFirmwareLoaded = true;
+        setProperty("FirmwareLoaded", true);
+        return kIOReturnSuccess;
     }
+
     
     /* The firmware variant determines if the device is in bootloader
      * mode or is running operational firmware. The value 0x01 identifies
