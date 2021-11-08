@@ -204,6 +204,8 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
 IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareWL(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
     char fwName[64];
+    char ** fwNames = IONew(char *, 1);
+    fwNames[0] = fwName;
 
     if ( !mIsDefaultFirmware )
         GetFirmwareName(version, NULL, suffix, fwName, sizeof(fwName));
@@ -212,7 +214,8 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareWL(void * vers
 
     setProperty("FirmwareName", fwName);
 
-    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
+    mFirmware = OpenFirmwareManager::withNames(fwNames, 1, fwCandidates, fwCount);
+    IOSafeDeleteNULL(fwNames, char *, 1);
     if ( !mFirmware )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Failed to open firmware file %s!!!", fwName);
@@ -227,7 +230,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareWL(void * vers
         }
         return kIOReturnError;
     }
-    *fwData = mFirmware->getFirmwareUncompressed();
+    *fwData = mFirmware->getFirmwareUncompressed(fwName);
 
     os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][GetFirmwareWL] Found firmware file: %s", fwName);
 
