@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef IntelGen3FirmwareList_h
-#define IntelGen3FirmwareList_h
+#ifndef FirmwareList_h
+#define FirmwareList_h
 
 #include <OpenFirmwareManager.h>
 
