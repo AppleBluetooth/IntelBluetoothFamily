@@ -67,7 +67,6 @@
 				50BDB5EE273F862000DED64C /* Info.plist */,
 				500F70AA273E902900B1FBD2 /* Products */,
 				50BDB5F5273F888C00DED64C /* Frameworks */,
-				50FFE36E2740F4F000176708 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,17 +84,6 @@
 				50BDB5F6273F888D00DED64C /* libkmod.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		50FFE36E2740F4F000176708 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				5040DB6F2740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext */,
-				5040DB732740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
-				5040DB752740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
-				5040DB772740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
