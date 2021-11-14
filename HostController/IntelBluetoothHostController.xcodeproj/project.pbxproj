@@ -120,7 +120,6 @@
 				50BDB5E3273F862000DED64C /* Headers */,
 				50BDB5E4273F862000DED64C /* Sources */,
 				50BDB5E5273F862000DED64C /* Frameworks */,
-				50BDB5E6273F862000DED64C /* Resources */,
 				5040DB592740CCB400D2B548 /* CopyFiles */,
 			);
 			buildRules = (
@@ -163,16 +162,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		50BDB5E6273F862000DED64C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		50BDB5E4273F862000DED64C /* Sources */ = {
