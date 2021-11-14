@@ -2,7 +2,6 @@
 DerivedData
 OpenFirmwareManager.kext
 MacKernelSDK
-xcshareddata
 xcuserdata
 project.xcworkspace
 build

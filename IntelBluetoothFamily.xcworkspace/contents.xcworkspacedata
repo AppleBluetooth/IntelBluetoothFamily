@@ -25,4 +25,7 @@
    <FileRef
       location = "group:ibt-firmware-license">
    </FileRef>
+   <FileRef
+      location = "group:.gitignore">
+   </FileRef>
 </Workspace>
