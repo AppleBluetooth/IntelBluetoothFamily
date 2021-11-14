@@ -120,7 +120,7 @@ def process_files(target_file, dir, extensions):
     target_file_handle.write("FirmwareDescriptor fwCandidates[] = \n{\n")
 
     for file_hash in file_hashes:
-        target_file_handle.write('\t{ (char *) "')
+        target_file_handle.write('\t{ "')
         target_file_handle.write(file_hash[0])
         target_file_handle.write('", ')
         fw_var_name = format_var_name(file_hash[1])
