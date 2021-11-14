@@ -1,0 +1,356 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 53;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5040DB242740921000D2B548 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5040DB232740921000D2B548 /* libkmod.a */; };
+		5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */; };
+		5040DB262740922E00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
+		50FFE36F2740F6D100176708 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IntelGen1BluetoothHostControllerUSBTransport.hpp; sourceTree = "<group>"; };
+		5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen1BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
+		5040DB232740921000D2B548 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
+		5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "$(SYMROOT)/../Intermediates.noindex/Firmwares/Gen1FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
+		50A4D73D273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		50A4D744273FB35F00ABE8E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		50A4D73A273FB35F00ABE8E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5040DB242740921000D2B548 /* libkmod.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5040DB222740920F00D2B548 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5040DB232740921000D2B548 /* libkmod.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50A4D733273FB35F00ABE8E1 = {
+			isa = PBXGroup;
+			children = (
+				5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */,
+				5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */,
+				50A4D744273FB35F00ABE8E1 /* Info.plist */,
+				50A4D73E273FB35F00ABE8E1 /* Products */,
+				5040DB222740920F00D2B548 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		50A4D73E273FB35F00ABE8E1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50A4D73D273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		50A4D738273FB35F00ABE8E1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		50A4D73C273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50A4D747273FB35F00ABE8E1 /* Build configuration list for PBXNativeTarget "IntelGen1BluetoothHostControllerUSBTransport" */;
+			buildPhases = (
+				5040DB3427409F2600D2B548 /* Firmware Generation */,
+				50A4D738273FB35F00ABE8E1 /* Headers */,
+				50A4D739273FB35F00ABE8E1 /* Sources */,
+				50A4D73A273FB35F00ABE8E1 /* Frameworks */,
+				50A4D73B273FB35F00ABE8E1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IntelGen1BluetoothHostControllerUSBTransport;
+			productName = IntelGen1BluetoothHostController;
+			productReference = 50A4D73D273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport.kext */;
+			productType = "com.apple.product-type.kernel-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50A4D734273FB35F00ABE8E1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1310;
+				TargetAttributes = {
+					50A4D73C273FB35F00ABE8E1 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+				};
+			};
+			buildConfigurationList = 50A4D737273FB35F00ABE8E1 /* Build configuration list for PBXProject "IntelGen1BluetoothHostControllerUSBTransport" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 50A4D733273FB35F00ABE8E1;
+			productRefGroup = 50A4D73E273FB35F00ABE8E1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50A4D73C273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		50A4D73B273FB35F00ABE8E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5040DB3427409F2600D2B548 /* Firmware Generation */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Firmware Generation";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SYMROOT)/../Intermediates.noindex/Firmwares/Gen1FirmwareBinary.cpp",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n#\n# Released under \"The GNU General Public License (GPL-2.0)\"\n#\n# Copyright (c) 2021 cjiang. All rights reserved.\n#\n# This program is free software; you can redistribute it and/or modify it\n# under the terms of the GNU General Public License as published by the\n# Free Software Foundation; either version 2 of the License, or (at your\n# option) any later version.\n#\n# This program is distributed in the hope that it will be useful, but\n# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n# for more details.\n#\n# You should have received a copy of the GNU General Public License along\n# with this program; if not, write to the Free Software Foundation, Inc.,\n# 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA\n#\n\nscript_file=\"${PROJECT_DIR}/../../Scripts/fw_gen.py\"\ntarget_file=\"${SYMROOT}/../Intermediates.noindex/Firmwares/Gen1FirmwareBinary.cpp\"\nfw_files=\"${PROJECT_DIR}/Firmwares/\"\n\nrm \"$target_file\"\n\npython \"$script_file\" \"$target_file\" \"$fw_files\" \"bseq\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		50A4D739273FB35F00ABE8E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50FFE36F2740F6D100176708 /* Gen1FirmwareBinary.cpp in Sources */,
+				5040DB262740922E00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5040DB542740CA2A00D2B548 /* Big Sur */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../OpenFirmwareManager.kext/Contents/Resources;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2021 cjiang. All rights reserved.";
+				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
+			};
+			name = "Big Sur";
+		};
+		5040DB552740CA2A00D2B548 /* Big Sur */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
+				MODULE_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				WRAPPER_EXTENSION = kext;
+			};
+			name = "Big Sur";
+		};
+		50A4D745273FB35F00ABE8E1 /* Catalina */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../OpenFirmwareManager.kext/Contents/Resources;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2021 cjiang. All rights reserved.";
+				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
+			};
+			name = Catalina;
+		};
+		50A4D748273FB35F00ABE8E1 /* Catalina */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
+				MODULE_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Catalina;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		50A4D737273FB35F00ABE8E1 /* Build configuration list for PBXProject "IntelGen1BluetoothHostControllerUSBTransport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50A4D745273FB35F00ABE8E1 /* Catalina */,
+				5040DB542740CA2A00D2B548 /* Big Sur */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Catalina;
+		};
+		50A4D747273FB35F00ABE8E1 /* Build configuration list for PBXNativeTarget "IntelGen1BluetoothHostControllerUSBTransport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50A4D748273FB35F00ABE8E1 /* Catalina */,
+				5040DB552740CA2A00D2B548 /* Big Sur */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Catalina;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 50A4D734273FB35F00ABE8E1 /* Project object */;
+}

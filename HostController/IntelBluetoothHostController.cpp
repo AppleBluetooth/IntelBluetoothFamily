@@ -20,13 +20,15 @@
  *
  */
 
-#include "IntelBluetoothHostController.h"
+#include "IntelBluetoothHostController.hpp"
+#include "../Transports/USB/IntelBluetoothHostControllerUSBTransport.hpp"
 
 #define super IOBluetoothHostController
 OSDefineMetaClassAndAbstractStructors(IntelBluetoothHostController, super)
 
 bool IntelBluetoothHostController::init(IOBluetoothHCIController * family, IOBluetoothHostControllerTransport * transport)
 {
+    CreateOSLogObject();
     if ( !super::init(family, transport) )
         return false;
     mExpansionData = IONewZero(ExpansionData, 1);
@@ -41,6 +43,474 @@ void IntelBluetoothHostController::free()
     mVersionInfo = NULL;
     IOSafeDeleteNULL(mExpansionData, ExpansionData, 1);
     super::free();
+}
+
+bool IntelBluetoothHostController::InitializeController()
+{
+    return true;
+}
+
+IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
+{
+    IOReturn err;
+
+    setConfigState(kIOBluetoothHCIControllerConfigStateKernelSetupPending);
+
+    /* The some controllers have a bug with the first HCI command sent to it
+     * returning number of completed commands as zero. This would stall the
+     * command processing in the Bluetooth core.
+     *
+     * As a workaround, send HCI Reset command first which will reset the
+     * number of completed commands and allow normal command processing
+     * from now on.
+     */
+
+    if ( mProductID == 2012 )
+    {
+        mBrokenInitialNumberOfCommands = true;
+        err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
+        if ( err )
+            return err;
+    }
+
+    setConfigState(kIOBluetoothHCIControllerConfigStateKernelPostResetSetupPending);
+
+    /* Starting from TyP device, the command parameter and response are
+     * changed even though the OCF for HCI_Intel_Read_Version command
+     * remains same. The legacy devices can handle even if the
+     * command has a parameter and returns a correct version information.
+     * So, it uses new format to support both legacy and new format.
+     */
+    err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
+    if ( err )
+        return false;
+
+    /* Apply the common HCI quirks for Intel device */
+    mStrictDuplicateFilter = true;
+    mSimultaneousDiscovery = true;
+    mDiagnosticModeNotPersistent = true;
+
+    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
+
+    if ( version->hardwarePlatform == 0x37 )
+    {
+        PrintVersionInfo(version);
+
+        switch ( version->hardwareVariant )
+        {
+            case kBluetoothIntelHardwareVariantWP:
+            case kBluetoothIntelHardwareVariantStP:
+                err = SetupGen1Controller();
+                break;
+
+            case kBluetoothIntelHardwareVariantSfP:
+            case kBluetoothIntelHardwareVariantWsP:
+            case kBluetoothIntelHardwareVariantJfP:
+            case kBluetoothIntelHardwareVariantThP:
+            case kBluetoothIntelHardwareVariantHrP:
+            case kBluetoothIntelHardwareVariantCcP:
+SETUP_GEN2:
+                err = SetupGen2Controller();
+                break;
+
+            default:
+                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupController] Unsupported hardware variant: %u", version->hardwareVariant);
+                err = kIOReturnInvalid;
+        }
+
+        if ( err )
+            return err;
+        goto COMPLETE;
+    }
+
+    err = SetupGen3Controller();
+    if ( err == kIOReturnUnsupported )
+    {
+        /* Some legacy bootloader devices from JfP supports both old
+         * and TLV based HCI_Intel_Read_Version command. But we don't
+         * want to use the TLV based setup routines for those legacy
+         * bootloader device.
+         *
+         * Also, it is not easy to convert TLV based version from the
+         * legacy version format.
+         *
+         * So, as a workaround for those devices, use the legacy
+         * HCI_Intel_Read_Version to get the version information and
+         * run the legacy bootloader setup.
+         */
+        err = CallBluetoothHCIIntelReadVersionInfo(0x00);
+        if (err)
+            return err;
+        goto SETUP_GEN2;
+    }
+
+COMPLETE:
+    err = SetupGeneralController();
+    if ( err && mBluetoothTransport )
+    {
+        if ( hardReset )
+            *hardReset = true;
+        err = HardResetController(1);
+    }
+
+    return err;
+}
+
+IOReturn IntelBluetoothHostController::SetupGen1Controller()
+{
+    IOReturn err;
+    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
+    OSData * fwData;
+    UInt8 * fwPtr;
+    BluetoothHCIRequestID id;
+    int disablePatch;
+    IntelBluetoothHostControllerUSBTransport * transport = (IntelBluetoothHostControllerUSBTransport *) mBluetoothTransport;
+
+    mIsLegacyROMDevice = true;
+
+    /* Apply the device specific HCI quirks
+     *
+     * WBS for SdP - SdP and Stp have a same hw_varaint but
+     * different fw_variant
+     */
+    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantStP && version->firmwareVariant == 0x22 )
+        mWidebandSpeechSupported = true;
+
+    /* These devices have an issue with LED which doesn't
+     * go off immediately during shutdown. Set the flag
+     * here to send the LED OFF command during shutdown.
+     */
+    mBrokenLED = true;
+
+    /* fw_patch_num indicates the version of patch the device currently
+     * have. If there is no patch data in the device, it is always 0x00.
+     * So, if it is other than 0x00, no need to patch the device again.
+     */
+    if ( version->firmwarePatchVersion )
+    {
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
+        goto complete;
+    }
+
+    /* Opens the firmware patch file based on the firmware version read
+     * from the controller. If it fails to open the matching firmware
+     * patch file, it tries to open the default firmware patch file.
+     * If no patch file is found, allow the device to operate without
+     * a patch.
+     */
+    transport->GetFirmware(version, NULL, "bseq", &fwData);
+    if ( !fwData )
+        goto complete;
+    fwPtr = (UInt8 *) fwData->getBytesNoCopy();
+
+    /* Enable the manufacturer mode of the controller.
+     * Only while this mode is enabled, the driver can download the
+     * firmware patch data and configuration parameters.
+     */
+
+    HCIRequestCreate(&id);
+    err = BluetoothHCIIntelEnterManufacturerMode(id);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
+
+    disablePatch = 1;
+
+    /* The firmware data file consists of list of Intel specific HCI
+     * commands and its expected events. The first byte indicates the
+     * type of the message, either HCI command or HCI event.
+     *
+     * It reads the command and its expected event from the firmware file,
+     * and send to the controller. Once __hci_cmd_sync_ev() returns,
+     * the returned event is compared with the event read from the firmware
+     * file and it will continue until all the messages are downloaded to
+     * the controller.
+     *
+     * Once the firmware patching is completed successfully,
+     * the manufacturer mode is disabled with reset and activating the
+     * downloaded patch.
+     *
+     * If the firmware patching fails, the manufacturer mode is
+     * disabled with reset and deactivating the patch.
+     *
+     * If the default patch file is used, no reset is done when disabling
+     * the manufacturer.
+     */
+    while ( fwData->getLength() > fwPtr - (UInt8 *) fwData->getBytesNoCopy() )
+    {
+        HCIRequestCreate(&id);
+        err = transport->PatchFirmware(id, fwData, &fwPtr, &disablePatch);
+        HCIRequestDelete(NULL, id);
+
+        if ( err )
+        {
+            /* Patching failed. Disable the manufacturer mode with reset and
+             * deactivate the downloaded firmware patches.
+             */
+            HCIRequestCreate(&id);
+            err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches);
+            HCIRequestDelete(NULL, id);
+            if ( err )
+                return err;
+
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed and deactivated.");
+            goto complete;
+        }
+    }
+
+    if ( disablePatch )
+    {
+        /* Disable the manufacturer mode without reset */
+        HCIRequestCreate(&id);
+        err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+            return err;
+
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed");
+        goto complete;
+    }
+
+    /* Patching completed successfully and disable the manufacturer mode
+     * with reset and activate the downloaded firmware patches.
+     */
+    HCIRequestCreate(&id);
+    err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetActivatePatches);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
+
+    /* Need build number for downloaded fw patches in
+     * every power-on boot
+     */
+    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
+    if ( err )
+        return err;
+
+    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
+
+complete:
+    /* Set the event mask for Intel specific vendor events. This enables
+     * a few extra events that are useful during general operation.
+     */
+    HCIRequestCreate(&id);
+    BluetoothHCIIntelSetEventMask(id, false);
+    HCIRequestDelete(NULL, id);
+
+    HCIRequestCreate(&id);
+    CheckDeviceAddress(id);
+    HCIRequestDelete(NULL, id);
+
+    return kIOReturnSuccess;
+}
+
+IOReturn IntelBluetoothHostController::SetupGen2Controller()
+{
+    IOReturn err;
+    BluetoothHCIRequestID id;
+    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
+    BluetoothIntelBootParams params;
+    UInt32 bootAddress;
+    OSData * fwData;
+    IntelBluetoothHostControllerUSBTransport * transport = (IntelBluetoothHostControllerUSBTransport *) mBluetoothTransport;
+
+    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantJfP || version->hardwareVariant == kBluetoothIntelHardwareVariantThP )
+        mValidLEStates = true;
+
+    mWidebandSpeechSupported = true;
+
+    /* Setup MSFT Extension support */
+    SetMicrosoftExtensionOpCode(version->hardwareVariant);
+
+    /* Set the default boot parameter to 0x0 and it is updated to
+     * SKU specific boot parameter after reading Intel_Write_Boot_Params
+     * command while downloading the firmware.
+     */
+    bootAddress = 0x00000000;
+
+    mBootloaderMode = true;
+
+    HCIRequestCreate(&id);
+    err = transport->DownloadFirmware(id, version, &params, &bootAddress);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
+
+    /* controller is already having an operational firmware */
+    if ( version->firmwareVariant == 0x23 )
+        goto finish;
+
+    err = BootDevice(bootAddress);
+    if ( err )
+        return err;
+
+    mBootloaderMode = false;
+
+    err = transport->GetFirmware(version, &params, "ddc", &fwData);
+    if ( !err )
+    {
+        /* Once the device is running in operational mode, it needs to
+         * apply the device configuration (DDC) parameters.
+         *
+         * The device can work without DDC parameters, so even if it
+         * fails to load the file, no need to fail the setup.
+         */
+        HCIRequestCreate(&id);
+        LoadDDCConfig(id, fwData);
+        HCIRequestDelete(NULL, id);
+    }
+
+    SetQualityReport(mQualityReportSet);
+    mQualityReportSet = true;
+
+    /* Read the Intel version information after loading the FW */
+    err = CallBluetoothHCIIntelReadVersionInfo(0x00);
+    if ( err )
+        return err;
+
+    version = (BluetoothIntelVersionInfo *) mVersionInfo;
+    PrintVersionInfo(version);
+
+finish:
+    /* Set the event mask for Intel specific vendor events. This enables
+     * a few extra events that are useful during general operation. It
+     * does not enable any debugging related events.
+     *
+     * The device will function correctly without these events enabled
+     * and thus no need to fail the setup.
+     */
+    HCIRequestCreate(&id);
+    BluetoothHCIIntelSetEventMask(id, false);
+    HCIRequestDelete(NULL, id);
+
+    return kIOReturnSuccess;
+}
+
+IOReturn IntelBluetoothHostController::SetupGen3Controller()
+{
+    IOReturn err;
+    BluetoothHCIRequestID id;
+    BluetoothIntelVersionInfoTLV version;
+    OSData * fwData;
+    UInt32 bootAddress;
+    IntelBluetoothHostControllerUSBTransport * transport = (IntelBluetoothHostControllerUSBTransport *) mBluetoothTransport;
+
+    err = transport->ParseVersionInfoTLV(&version, (UInt8 *) mVersionInfo, kBluetoothHCICommandPacketMaxDataSize);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Failed to parse TLV version information!");
+        return err;
+    }
+
+    if ( IntelCNVXExtractHardwarePlatform(version.cnviBT) != 0x37 )
+    {
+        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware platform: 0x%2x", IntelCNVXExtractHardwarePlatform(version.cnviBT));
+        return kIOReturnInvalid;
+    }
+
+    /* Check for supported iBT hardware variants of this firmware
+     * loading method.
+     *
+     * This check has been put in place to ensure correct forward
+     * compatibility options when newer hardware variants come
+     * along.
+     */
+    switch ( IntelCNVXExtractHardwareVariant(version.cnviBT) )
+    {
+        case kBluetoothIntelHardwareVariantJfP:
+        case kBluetoothIntelHardwareVariantThP:
+        case kBluetoothIntelHardwareVariantHrP:
+        case kBluetoothIntelHardwareVariantCcP:
+            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] This controller is not an Intel new bootloader device!!!");
+            return kIOReturnUnsupported;
+        case kBluetoothIntelHardwareVariantSlr:
+            /* Valid LE States quirk for GfP */
+            mValidLEStates = true;
+        case kBluetoothIntelHardwareVariantTyP:
+        case kBluetoothIntelHardwareVariantSlrF:
+
+            /* Display version information of TLV type */
+            PrintVersionInfo(&version);
+
+            /* Apply the device specific HCI quirks for TLV based devices
+             *
+             * All TLV based devices support WBS
+             */
+            mWidebandSpeechSupported = true;
+
+            /* Setup MSFT Extension support */
+            SetMicrosoftExtensionOpCode(IntelCNVXExtractHardwareVariant(version.cnviBT));
+
+            /* Set the default boot parameter to 0x0 and it is updated to
+             * SKU specific boot parameter after reading Intel_Write_Boot_Params
+             * command while downloading the firmware.
+             */
+            bootAddress = 0x00000000;
+
+            mBootloaderMode = true;
+
+            HCIRequestCreate(&id);
+            err = transport->DownloadFirmware(id, &version, NULL, &bootAddress);
+            HCIRequestDelete(NULL, id);
+            if ( err )
+                return err;
+
+            /* check if controller is already having an operational firmware */
+            if ( version.imageType == 0x03 )
+                goto finish;
+
+            err = BootDevice(bootAddress);
+            if ( err )
+                return err;
+
+            mBootloaderMode = false;
+
+            err = transport->GetFirmware(&version, NULL, "ddc", &fwData);
+            if ( !err )
+            {
+                /* Once the device is running in operational mode, it needs to
+                 * apply the device configuration (DDC) parameters.
+                 *
+                 * The device can work without DDC parameters, so even if it
+                 * fails to load the file, no need to fail the setup.
+                 */
+                HCIRequestCreate(&id);
+                LoadDDCConfig(id, fwData);
+                HCIRequestDelete(NULL, id);
+            }
+
+            /* Read supported use cases and set callbacks to fetch datapath id */
+            ConfigureOffload();
+
+            SetQualityReport(mQualityReportSet);
+            mQualityReportSet = true;
+
+            /* Read the Intel version information after loading the FW  */
+            HCIRequestCreate(&id);
+            err = BluetoothHCIIntelReadVersionInfo(id, 0xFF, (UInt8 *) &version);
+            HCIRequestDelete(NULL, id);
+            if ( err )
+                return err;
+
+            PrintVersionInfo(&version);
+
+finish:
+            /* Set the event mask for Intel specific vendor events. This enables
+             * a few extra events that are useful during general operation. It
+             * does not enable any debugging related events.
+             *
+             * The device will function correctly without these events enabled
+             * and thus no need to fail the setup.
+             */
+            HCIRequestCreate(&id);
+            BluetoothHCIIntelSetEventMask(id, false);
+            HCIRequestDelete(NULL, id);
+
+            return kIOReturnSuccess;
+        default:
+            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware variant: %u", IntelCNVXExtractHardwareVariant(version.cnviBT));
+            return kIOReturnInvalid;
+    }
 }
 
 void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)

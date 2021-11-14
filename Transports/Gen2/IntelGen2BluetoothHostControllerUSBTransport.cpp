@@ -20,7 +20,7 @@
  *
  */
 
-#include "IntelGen2BluetoothHostControllerUSBTransport.h"
+#include "IntelGen2BluetoothHostControllerUSBTransport.hpp"
 
 #define super IntelBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelGen2BluetoothHostControllerUSBTransport, super)
@@ -30,94 +30,7 @@ bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return false;
-
-    IOReturn err;
-    BluetoothHCIRequestID id;
-    BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
-    BluetoothIntelBootParams params;
-    UInt32 bootAddress;
-    OSData * fwData;
-
-    if ( version->hardwarePlatform != 0x37 || (version->hardwareVariant != kBluetoothIntelHardwareVariantJfP && version->hardwareVariant != kBluetoothIntelHardwareVariantThP && version->hardwareVariant != kBluetoothIntelHardwareVariantSfP && version->hardwareVariant != kBluetoothIntelHardwareVariantWsP && version->hardwareVariant != kBluetoothIntelHardwareVariantHrP && version->hardwareVariant != kBluetoothIntelHardwareVariantCcP) )
-    {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][start] This controller is not an Intel Legacy bootloader device!!!");
-        return false;
-    }
-
     setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy Bootloader");
-
-    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantJfP || version->hardwareVariant == kBluetoothIntelHardwareVariantThP )
-        controller->mValidLEStates = true;
-    
-    controller->mWidebandSpeechSupported = true;
-    
-    /* Setup MSFT Extension support */
-    controller->SetMicrosoftExtensionOpCode(version->hardwareVariant);
-    
-    /* Set the default boot parameter to 0x0 and it is updated to
-     * SKU specific boot parameter after reading Intel_Write_Boot_Params
-     * command while downloading the firmware.
-     */
-    bootAddress = 0x00000000;
-
-    controller->mBootloaderMode = true;
-
-    controller->HCIRequestCreate(&id);
-    err = DownloadFirmware(id, version, &params, &bootAddress);
-    controller->HCIRequestDelete(NULL, id);
-    if ( err )
-        return false;
-
-    /* controller is already having an operational firmware */
-    if ( version->firmwareVariant == 0x23 )
-        goto finish;
-
-    err = controller->BootDevice(bootAddress);
-    if ( err )
-        return false;
-
-    controller->mBootloaderMode = false;
-
-    err = GetFirmware(version, &params, "ddc", &fwData);
-    if ( !err )
-    {
-        /* Once the device is running in operational mode, it needs to
-         * apply the device configuration (DDC) parameters.
-         *
-         * The device can work without DDC parameters, so even if it
-         * fails to load the file, no need to fail the setup.
-         */
-        controller->HCIRequestCreate(&id);
-        controller->LoadDDCConfig(id, fwData);
-        controller->HCIRequestDelete(NULL, id);
-    }
-
-    controller->SetQualityReport(controller->mQualityReportSet);
-    controller->mQualityReportSet = true;
-
-    /* Read the Intel version information after loading the FW */
-    err = controller->CallBluetoothHCIIntelReadVersionInfo(0x00);
-    if ( err )
-        return false;
-
-    version = (BluetoothIntelVersionInfo *) controller->mVersionInfo;
-    controller->PrintVersionInfo(version);
-
-finish:
-    /* Set the event mask for Intel specific vendor events. This enables
-     * a few extra events that are useful during general operation. It
-     * does not enable any debugging related events.
-     *
-     * The device will function correctly without these events enabled
-     * and thus no need to fail the setup.
-     */
-    controller->HCIRequestCreate(&id);
-    controller->BluetoothHCIIntelSetEventMask(id, false);
-    controller->HCIRequestDelete(NULL, id);
-    
     return true;
 }
 

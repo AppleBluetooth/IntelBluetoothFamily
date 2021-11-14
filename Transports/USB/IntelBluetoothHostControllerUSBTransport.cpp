@@ -20,7 +20,7 @@
  *
  */
 
-#include "IntelBluetoothHostControllerUSBTransport.h"
+#include "IntelBluetoothHostControllerUSBTransport.hpp"
 
 #define super IOBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelBluetoothHostControllerUSBTransport, super)
@@ -73,48 +73,13 @@ bool IntelBluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-    if ( mVendorID == 32903 )
+    if ( mVendorID == 0x8087 )
     {
         mControllerVendorType = 8;
         setProperty("ActiveBluetoothControllerVendor", "Intel");
     }
     else
         return false;
-        
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return false;
-
-    /* The some controllers have a bug with the first HCI command sent to it
-     * returning number of completed commands as zero. This would stall the
-     * command processing in the Bluetooth core.
-     *
-     * As a workaround, send HCI Reset command first which will reset the
-     * number of completed commands and allow normal command processing
-     * from now on.
-     */
-
-    if ( mProductID == 2012 )
-    {
-        controller->mBrokenInitialNumberOfCommands = true;
-        if ( controller->CallBluetoothHCIReset(false, (char *) __FUNCTION__) )
-            return false;
-    }
-
-    /* Starting from TyP device, the command parameter and response are
-     * changed even though the OCF for HCI_Intel_Read_Version command
-     * remains same. The legacy devices can handle even if the
-     * command has a parameter and returns a correct version information.
-     * So, it uses new format to support both legacy and new format.
-     */
-
-    if ( controller->CallBluetoothHCIIntelReadVersionInfo(0xFF) )
-        return false;
-
-    /* Apply the common HCI quirks for Intel device */
-    controller->mStrictDuplicateFilter = true;
-    controller->mSimultaneousDiscovery = true;
-    controller->mDiagnosticModeNotPersistent = true;
     
     mBluetoothUSBHostDevice->retain();
     registerService();
@@ -169,8 +134,6 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * vers
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
     char fwName[64];
-    char ** fwNames = IONew(char *, 1);
-    fwNames[0] = fwName;
 
     if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
     {
@@ -180,8 +143,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, B
 
     setProperty("FirmwareName", fwName);
 
-    mFirmware = OpenFirmwareManager::withNames(fwNames, 1, fwCandidates, fwCount);
-    IOSafeDeleteNULL(fwNames, char *, 1);
+    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
     if ( !mFirmware )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Failed to obtain firmware file %s!!!", fwName);
@@ -200,6 +162,11 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(void 
     return kIOReturnUnsupported;
 }
 
+IOReturn IntelBluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
+{
+    return kIOReturnUnsupported;
+}
+
 IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
     return mCommandGate->runAction(DownloadFirmwareAction, &inID, version, params, bootAddress);
@@ -212,6 +179,11 @@ IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareAction(OSObje
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+{
+    return kIOReturnUnsupported;
+}
+
+IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize)
 {
     return kIOReturnUnsupported;
 }

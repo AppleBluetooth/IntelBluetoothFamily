@@ -25,7 +25,8 @@
 
 #include <IOKit/bluetooth/transport/IOBluetoothHostControllerUSBTransport.h>
 #include <FirmwareList.h>
-#include <IntelBluetoothHostController.h>
+
+#include "../../HostController/IntelBluetoothHostController.hpp"
 
 class IntelBluetoothHostControllerUSBTransport : public IOBluetoothHostControllerUSBTransport
 {
@@ -43,9 +44,12 @@ public:
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
     virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
+    virtual IOReturn PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch);
     virtual IOReturn DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
     static IOReturn DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
     virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
+
+    virtual IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize);
     
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 1);

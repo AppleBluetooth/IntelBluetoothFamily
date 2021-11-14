@@ -23,7 +23,7 @@
 #ifndef IntelGen3BluetoothHostController_h
 #define IntelGen3BluetoothHostController_h
 
-#include "../IntelBluetoothHostControllerUSBTransport/IntelBluetoothHostControllerUSBTransport.h"
+#include "../USB/IntelBluetoothHostControllerUSBTransport.hpp"
 
 class IntelGen3BluetoothHostControllerUSBTransport : public IntelBluetoothHostControllerUSBTransport
 {
@@ -32,7 +32,7 @@ class IntelGen3BluetoothHostControllerUSBTransport : public IntelBluetoothHostCo
 public:
     virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
     
-    virtual IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize);
+    virtual IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize) APPLE_KEXT_OVERRIDE;
     
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName) APPLE_KEXT_OVERRIDE;
     virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress) APPLE_KEXT_OVERRIDE;

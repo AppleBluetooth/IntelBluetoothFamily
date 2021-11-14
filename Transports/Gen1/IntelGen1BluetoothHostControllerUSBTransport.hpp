@@ -23,7 +23,7 @@
 #ifndef IntelGen1BluetoothHostControllerUSBTransport_h
 #define IntelGen1BluetoothHostControllerUSBTransport_h
 
-#include "../IntelBluetoothHostControllerUSBTransport/IntelBluetoothHostControllerUSBTransport.h"
+#include "../USB/IntelBluetoothHostControllerUSBTransport.hpp"
 
 class IntelGen1BluetoothHostControllerUSBTransport : public IntelBluetoothHostControllerUSBTransport
 {
@@ -34,7 +34,7 @@ public:
 
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName) APPLE_KEXT_OVERRIDE;
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData) APPLE_KEXT_OVERRIDE;
-    virtual IOReturn PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch);
+    virtual IOReturn PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch) APPLE_KEXT_OVERRIDE;
     
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 1);

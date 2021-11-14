@@ -57,6 +57,12 @@ public:
 
     virtual void free() APPLE_KEXT_OVERRIDE;
 
+    virtual bool InitializeController() APPLE_KEXT_OVERRIDE;
+    virtual IOReturn SetupController(bool *) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn SetupGen1Controller();
+    virtual IOReturn SetupGen2Controller();
+    virtual IOReturn SetupGen3Controller();
+
     virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);
     virtual void HandleHardwareError(BluetoothHCIRequestID inID, UInt8 code);

@@ -20,7 +20,7 @@
  *
  */
 
-#include "IntelGen3BluetoothHostControllerUSBTransport.h"
+#include "IntelGen3BluetoothHostControllerUSBTransport.hpp"
 
 #define super IntelBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelGen3BluetoothHostControllerUSBTransport, super)
@@ -30,133 +30,8 @@ bool IntelGen3BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-    IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
-    if ( !controller )
-        return false;
-
-    IOReturn err;
-    BluetoothHCIRequestID id;
-    BluetoothIntelVersionInfoTLV version;
-    OSData * fwData;
-    UInt32 bootAddress;
-
-    err = ParseVersionInfoTLV(&version, (UInt8 *) controller->mVersionInfo, kBluetoothHCICommandPacketMaxDataSize);
-    if ( err )
-    {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Failed to parse TLV version information!");
-        return false;
-    }
-    
-    if ( IntelCNVXExtractHardwarePlatform(version.cnviBT) != 0x37 )
-    {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware platform: 0x%2x", IntelCNVXExtractHardwarePlatform(version.cnviBT));
-        return false;
-    }
-    
-    /* Check for supported iBT hardware variants of this firmware
-     * loading method.
-     *
-     * This check has been put in place to ensure correct forward
-     * compatibility options when newer hardware variants come
-     * along.
-     */
-    switch ( IntelCNVXExtractHardwareVariant(version.cnviBT) )
-    {
-        case kBluetoothIntelHardwareVariantJfP:
-        case kBluetoothIntelHardwareVariantThP:
-        case kBluetoothIntelHardwareVariantHrP:
-        case kBluetoothIntelHardwareVariantCcP:
-            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] This controller is not an Intel new bootloader device!!!");
-            return false;
-        case 0x18:
-            /* Valid LE States quirk for GfP */
-            controller->mValidLEStates = true;
-        case 0x17:
-        case 0x19:
-            setProperty("ActiveBluetoothControllerVendor", "Intel - New Bootloader");
-
-            /* Display version information of TLV type */
-            controller->PrintVersionInfo(&version);
-
-            /* Apply the device specific HCI quirks for TLV based devices
-             *
-             * All TLV based devices support WBS
-             */
-            controller->mWidebandSpeechSupported = true;
-
-            /* Setup MSFT Extension support */
-            controller->SetMicrosoftExtensionOpCode(IntelCNVXExtractHardwareVariant(version.cnviBT));
-
-            /* Set the default boot parameter to 0x0 and it is updated to
-             * SKU specific boot parameter after reading Intel_Write_Boot_Params
-             * command while downloading the firmware.
-             */
-            bootAddress = 0x00000000;
-
-            controller->mBootloaderMode = true;
-
-            controller->HCIRequestCreate(&id);
-            err = DownloadFirmware(id, &version, NULL, &bootAddress);
-            controller->HCIRequestDelete(NULL, id);
-            if ( err )
-                return false;
-
-            /* check if controller is already having an operational firmware */
-            if ( version.imageType == 0x03 )
-                goto finish;
-
-            err = controller->BootDevice(bootAddress);
-            if ( err )
-                return false;
-
-            controller->mBootloaderMode = false;
-
-            err = GetFirmware(&version, NULL, "ddc", &fwData);
-            if ( !err )
-            {
-                /* Once the device is running in operational mode, it needs to
-                 * apply the device configuration (DDC) parameters.
-                 *
-                 * The device can work without DDC parameters, so even if it
-                 * fails to load the file, no need to fail the setup.
-                 */
-                controller->HCIRequestCreate(&id);
-                controller->LoadDDCConfig(id, fwData);
-                controller->HCIRequestDelete(NULL, id);
-            }
-
-            /* Read supported use cases and set callbacks to fetch datapath id */
-            controller->ConfigureOffload();
-
-            controller->SetQualityReport(controller->mQualityReportSet);
-            controller->mQualityReportSet = true;
-
-            /* Read the Intel version information after loading the FW  */
-            controller->HCIRequestCreate(&id);
-            err = controller->BluetoothHCIIntelReadVersionInfo(id, 0xFF, (UInt8 *) &version);
-            controller->HCIRequestDelete(NULL, id);
-            if ( err )
-                return false;
-
-            controller->PrintVersionInfo(&version);
-
-finish:
-            /* Set the event mask for Intel specific vendor events. This enables
-             * a few extra events that are useful during general operation. It
-             * does not enable any debugging related events.
-             *
-             * The device will function correctly without these events enabled
-             * and thus no need to fail the setup.
-             */
-            controller->HCIRequestCreate(&id);
-            controller->BluetoothHCIIntelSetEventMask(id, false);
-            controller->HCIRequestDelete(NULL, id);
-
-            return true;
-        default:
-            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware variant: %u", IntelCNVXExtractHardwareVariant(version.cnviBT));
-            return false;
-    }
+    setProperty("ActiveBluetoothControllerVendor", "Intel - New Bootloader");
+    return true;
 }
 
 IOReturn IntelGen3BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * ver, BluetoothIntelBootParams * params, const char * suffix, char * fwName)
