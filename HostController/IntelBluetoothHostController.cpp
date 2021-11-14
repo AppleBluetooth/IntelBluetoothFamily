@@ -188,7 +188,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
      */
     if ( version->firmwarePatchVersion )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Device is already patched -- patch number: %02x", version->firmwarePatchVersion);
         goto complete;
     }
 
@@ -253,7 +253,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
             if ( err )
                 return err;
 
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed and deactivated.");
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch completed and deactivated.");
             goto complete;
         }
     }
@@ -267,7 +267,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
         if ( err )
             return err;
 
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch completed");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch completed");
         goto complete;
     }
 
@@ -287,7 +287,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     if ( err )
         return err;
 
-    os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][start] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
 
 complete:
     /* Set the event mask for Intel specific vendor events. This enables
@@ -398,13 +398,13 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
     err = transport->ParseVersionInfoTLV(&version, (UInt8 *) mVersionInfo, kBluetoothHCICommandPacketMaxDataSize);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Failed to parse TLV version information!");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!");
         return err;
     }
 
     if ( IntelCNVXExtractHardwarePlatform(version.cnviBT) != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware platform: 0x%2x", IntelCNVXExtractHardwarePlatform(version.cnviBT));
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware platform: 0x%2x", IntelCNVXExtractHardwarePlatform(version.cnviBT));
         return kIOReturnInvalid;
     }
 
@@ -421,7 +421,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
         case kBluetoothIntelHardwareVariantThP:
         case kBluetoothIntelHardwareVariantHrP:
         case kBluetoothIntelHardwareVariantCcP:
-            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] This controller is not an Intel new bootloader device!!!");
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] This controller is not an Intel new bootloader device!!!");
             return kIOReturnUnsupported;
         case kBluetoothIntelHardwareVariantSlr:
             /* Valid LE States quirk for GfP */
@@ -508,7 +508,7 @@ finish:
 
             return kIOReturnSuccess;
         default:
-            os_log(mInternalOSLogObject, "[IntelGen3BluetoothHostControllerUSBTransport][start] Unsupported hardware variant: %u", IntelCNVXExtractHardwareVariant(version.cnviBT));
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware variant: %u", IntelCNVXExtractHardwareVariant(version.cnviBT));
             return kIOReturnInvalid;
     }
 }

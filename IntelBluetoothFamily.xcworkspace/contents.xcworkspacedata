@@ -2,15 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:README.md">
-   </FileRef>
-   <FileRef
-      location = "group:LICENSE">
-   </FileRef>
-   <FileRef
-      location = "group:ibt-firmware-license">
-   </FileRef>
-   <FileRef
       location = "group:HostController/IntelBluetoothHostController.xcodeproj">
    </FileRef>
    <FileRef
@@ -26,6 +17,12 @@
       location = "group:Transports/Gen3/IntelGen3BluetoothHostControllerUSBTransport.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:OpenFirmwareManager.kext">
+      location = "group:README.md">
+   </FileRef>
+   <FileRef
+      location = "group:LICENSE">
+   </FileRef>
+   <FileRef
+      location = "group:ibt-firmware-license">
    </FileRef>
 </Workspace>
