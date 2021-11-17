@@ -68,7 +68,11 @@ IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
     if ( mProductID == 2012 )
     {
         mBrokenInitialNumberOfCommands = true;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
         err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
+#else
+        err = CallBluetoothHCIReset(false);
+#endif
         if ( err )
             return err;
     }
@@ -565,7 +569,11 @@ void IntelBluetoothHostController::HandleHardwareError(BluetoothHCIRequestID inI
     
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Hardware error: 0x%2.2x", code);
 
-    err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
+        err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
+#else
+        err = CallBluetoothHCIReset(false);
+#endif
     if ( err )
         return;
     
