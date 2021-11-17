@@ -99,7 +99,11 @@ void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
      * were triggered. This will help to save power and maintain the
      * sync b/w Host and controller
      */
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
     if ( controller->CallBluetoothHCIReset(false, (char *) __FUNCTION__) )
+#else
+    if ( controller->CallBluetoothHCIReset(false) )
+#endif
         return;
 
     /* Some platforms have an issue with BT LED when the interface is

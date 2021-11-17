@@ -50,7 +50,11 @@ bool IntelBluetoothHostController::InitializeController()
     return true;
 }
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
+#else
+IOReturn IntelBluetoothHostController::SetupController()
+#endif
 {
     IOReturn err;
 
@@ -152,9 +156,15 @@ COMPLETE:
     err = SetupGeneralController();
     if ( err && mBluetoothTransport )
     {
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
         if ( hardReset )
             *hardReset = true;
+#endif
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_15
         err = HardResetController(1);
+#else
+        err = BluetoothResetDevice(1);
+#endif
     }
 
     return err;
@@ -1037,7 +1047,11 @@ IOReturn IntelBluetoothHostController::BroadcastCommandCompleteEvent(BluetoothHC
     eventParams[3] = 0x00; //returnParams
 
     FindQueuedRequest(opCode, NULL, 0xFFFF, true, &request);
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
     BroadcastEventNotification(request->mID, kBluetoothHCIEventCommandComplete, 0, eventParams, 4, opCode, false, 255); // Need to verify...
+#else
+    BroadcastEventNotification(request->mID, kBluetoothHCIEventCommandComplete, 0, eventParams, 4, opCode);
+#endif
     return kIOReturnSuccess;
 }
 

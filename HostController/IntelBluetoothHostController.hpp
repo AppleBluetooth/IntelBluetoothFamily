@@ -58,7 +58,11 @@ public:
     virtual void free() APPLE_KEXT_OVERRIDE;
 
     virtual bool InitializeController() APPLE_KEXT_OVERRIDE;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
     virtual IOReturn SetupController(bool *) APPLE_KEXT_OVERRIDE;
+#else
+    virtual IOReturn SetupController() APPLE_KEXT_OVERRIDE;
+#endif
     virtual IOReturn SetupGen1Controller();
     virtual IOReturn SetupGen2Controller();
     virtual IOReturn SetupGen3Controller();
