@@ -160,7 +160,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		5040DB542740CA2A00D2B548 /* Big Sur */ = {
+		504D1C452746758200BCB513 /* High Sierra */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -215,21 +215,20 @@
 				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
 			};
-			name = "Big Sur";
+			name = "High Sierra";
 		};
-		5040DB552740CA2A00D2B548 /* Big Sur */ = {
+		504D1C462746758200BCB513 /* High Sierra */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
 				MODULE_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
@@ -237,7 +236,85 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = kext;
 			};
-			name = "Big Sur";
+			name = "High Sierra";
+		};
+		504D1C4F274676F500BCB513 /* Mojave */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../OpenFirmwareManager.kext/Contents/Resources;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2021 cjiang. All rights reserved.";
+				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
+			};
+			name = Mojave;
+		};
+		504D1C50274676F500BCB513 /* Mojave */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
+				MODULE_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Mojave;
 		};
 		50A4D745273FB35F00ABE8E1 /* Catalina */ = {
 			isa = XCBuildConfiguration;
@@ -308,7 +385,6 @@
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
 				MODULE_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
@@ -318,7 +394,7 @@
 			};
 			name = Catalina;
 		};
-		BC3C903A274491DC00272652 /* Mojave */ = {
+		5040DB542740CA2A00D2B548 /* Big Sur */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -373,21 +449,20 @@
 				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
 			};
-			name = Mojave;
+			name = "Big Sur";
 		};
-		BC3C903B274491DC00272652 /* Mojave */ = {
+		5040DB552740CA2A00D2B548 /* Big Sur */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
 				MODULE_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
@@ -395,86 +470,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = kext;
 			};
-			name = Mojave;
-		};
-		BC3C903C274491E400272652 /* High Sierra */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = x86_64;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../OpenFirmwareManager.kext/Contents/Resources;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2021 cjiang. All rights reserved.";
-				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
-				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
-			};
-			name = "High Sierra";
-		};
-		BC3C903D274491E400272652 /* High Sierra */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				MODULE_NAME = com.cjiang.IntelGen1BluetoothHostController;
-				MODULE_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cjiang.IntelGen1BluetoothHostControllerUSBTransport;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				WRAPPER_EXTENSION = kext;
-			};
-			name = "High Sierra";
+			name = "Big Sur";
 		};
 /* End XCBuildConfiguration section */
 
@@ -482,24 +478,24 @@
 		50A4D737273FB35F00ABE8E1 /* Build configuration list for PBXProject "IntelGen1BluetoothHostControllerUSBTransport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-                5040DB542740CA2A00D2B548 /* Big Sur */,
+				504D1C452746758200BCB513 /* High Sierra */,
+				504D1C4F274676F500BCB513 /* Mojave */,
 				50A4D745273FB35F00ABE8E1 /* Catalina */,
-                BC3C903A274491DC00272652 /* Mojave */,
-				BC3C903C274491E400272652 /* High Sierra */,
+				5040DB542740CA2A00D2B548 /* Big Sur */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Big Sur";
+			defaultConfigurationName = Catalina;
 		};
 		50A4D747273FB35F00ABE8E1 /* Build configuration list for PBXNativeTarget "IntelGen1BluetoothHostControllerUSBTransport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-                5040DB542740CA2A00D2B548 /* Big Sur */,
-                50A4D745273FB35F00ABE8E1 /* Catalina */,
-                BC3C903A274491DC00272652 /* Mojave */,
-                BC3C903C274491E400272652 /* High Sierra */,
+				504D1C462746758200BCB513 /* High Sierra */,
+				504D1C50274676F500BCB513 /* Mojave */,
+				50A4D748273FB35F00ABE8E1 /* Catalina */,
+				5040DB552740CA2A00D2B548 /* Big Sur */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Big Sur";
+			defaultConfigurationName = Catalina;
 		};
 /* End XCConfigurationList section */
 	};

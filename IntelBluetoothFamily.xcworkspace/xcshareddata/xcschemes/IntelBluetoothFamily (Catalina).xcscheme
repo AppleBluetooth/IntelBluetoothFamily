@@ -7,9 +7,9 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
+            buildForProfiling = "NO"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
@@ -17,13 +17,13 @@
                BlueprintIdentifier = "50BDB5E7273F862000DED64C"
                BuildableName = "IntelBluetoothFamily.kext"
                BlueprintName = "IntelBluetoothFamily"
-               ReferencedContainer = "container:IntelBluetoothHostController.xcodeproj">
+               ReferencedContainer = "container:HostController/IntelBluetoothHostController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "High Sierra"
+      buildConfiguration = "Catalina"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
@@ -31,7 +31,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "High Sierra"
+      buildConfiguration = "Catalina"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -42,7 +42,7 @@
       allowLocationSimulation = "YES">
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "High Sierra"
+      buildConfiguration = "Catalina"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -53,15 +53,15 @@
             BlueprintIdentifier = "50BDB5E7273F862000DED64C"
             BuildableName = "IntelBluetoothFamily.kext"
             BlueprintName = "IntelBluetoothFamily"
-            ReferencedContainer = "container:IntelBluetoothHostController.xcodeproj">
+            ReferencedContainer = "container:HostController/IntelBluetoothHostController.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "High Sierra">
+      buildConfiguration = "Catalina">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "High Sierra"
+      buildConfiguration = "Catalina"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

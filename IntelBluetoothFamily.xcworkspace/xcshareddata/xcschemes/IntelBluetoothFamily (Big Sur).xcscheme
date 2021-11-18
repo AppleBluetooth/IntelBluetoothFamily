@@ -7,9 +7,9 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
+            buildForProfiling = "NO"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
@@ -17,7 +17,7 @@
                BlueprintIdentifier = "50BDB5E7273F862000DED64C"
                BuildableName = "IntelBluetoothFamily.kext"
                BlueprintName = "IntelBluetoothFamily"
-               ReferencedContainer = "container:IntelBluetoothHostController.xcodeproj">
+               ReferencedContainer = "container:HostController/IntelBluetoothHostController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,15 +47,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "50BDB5E7273F862000DED64C"
-            BuildableName = "IntelBluetoothFamily.kext"
-            BlueprintName = "IntelBluetoothFamily"
-            ReferencedContainer = "container:IntelBluetoothHostController.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Big Sur">
