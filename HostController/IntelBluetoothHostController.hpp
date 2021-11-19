@@ -24,7 +24,6 @@
 #define IntelBluetoothHostController_h
 
 #include <IOKit/bluetooth/IOBluetoothHCIController.h>
-#include <IOKit/bluetooth/IOBluetoothHostController.h>
 #include <IOKit/bluetooth/IOBluetoothHCIRequest.h>
 #include <IOKit/IOLib.h>
 #include "IntelBluetoothHostControllerTypes.h"
