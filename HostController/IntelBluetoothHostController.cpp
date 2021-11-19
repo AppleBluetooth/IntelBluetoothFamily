@@ -527,6 +527,16 @@ finish:
     }
 }
 
+bool IntelBluetoothHostController::InitializeHostControllerVariables(bool setup)
+{
+	if ( !super::InitializeHostControllerVariables(setup) )
+		return false;
+
+	setProperty("ActiveBluetoothControllerVendor", "Intel");
+	setProperty("BluetoothVendor", "Intel");
+	return true;
+}
+
 void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)
 {
     switch ( hardwareVariant )
