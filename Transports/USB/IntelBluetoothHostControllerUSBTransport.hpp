@@ -23,9 +23,8 @@
 #ifndef IntelBluetoothHostControllerUSBTransport_h
 #define IntelBluetoothHostControllerUSBTransport_h
 
+#include <OpenFirmwareManager.h>
 #include <IOKit/bluetooth/transport/IOBluetoothHostControllerUSBTransport.h>
-#include <FirmwareList.h>
-
 #include "../../HostController/IntelBluetoothHostController.hpp"
 
 class IntelBluetoothHostControllerUSBTransport : public IOBluetoothHostControllerUSBTransport
@@ -78,6 +77,8 @@ public:
     
 protected:
     OpenFirmwareManager * mFirmware;
+	FirmwareDescriptor * mFirmwareCandidates;
+	int mNumFirmwares;
     
     struct ExpansionData
     {

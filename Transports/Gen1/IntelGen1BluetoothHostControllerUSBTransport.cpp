@@ -30,6 +30,8 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
+	mFirmwareCandidates = fwCandidates;
+	mNumFirmwares = fwCount;
     setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy ROM");
     return true;
 }

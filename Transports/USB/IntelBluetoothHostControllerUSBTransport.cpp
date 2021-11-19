@@ -147,7 +147,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, B
 
     setProperty("FirmwareName", fwName);
 
-    mFirmware = OpenFirmwareManager::withName(fwName, fwCandidates, fwCount);
+    mFirmware = OpenFirmwareManager::withName(fwName, mFirmwareCandidates, mNumFirmwares);
     if ( !mFirmware )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Failed to obtain firmware file %s!!!", fwName);
@@ -187,7 +187,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothH
     return kIOReturnUnsupported;
 }
 
-IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize)
+IOReturn IntelBluetoothHostControllerUSBTransport::ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize)
 {
     return kIOReturnUnsupported;
 }
