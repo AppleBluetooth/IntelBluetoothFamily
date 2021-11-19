@@ -52,13 +52,11 @@
 		<key>IntelGen3USBBluetoothHCIController_AX210</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen3BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen3BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>3</integer>
 			<key>idProduct</key>
 			<integer>50</integer>
 			<key>idVendor</key>
@@ -67,13 +65,11 @@
 		<key>IntelGen3USBBluetoothHCIController_AX211</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen3BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen3BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>3</integer>
 			<key>idProduct</key>
 			<integer>51</integer>
 			<key>idVendor</key>

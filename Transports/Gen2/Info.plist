@@ -52,13 +52,11 @@
 		<key>IntelGen2USBBluetoothHCIController_AC8260_AC8265</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>2603</integer>
 			<key>idVendor</key>
@@ -67,13 +65,11 @@
 		<key>IntelGen2USBBluetoothHCIController_AC9460_AC9565</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>2730</integer>
 			<key>idVendor</key>
@@ -82,13 +78,11 @@
 		<key>IntelGen2USBBluetoothHCIController_AC9260</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>37</integer>
 			<key>idVendor</key>
@@ -97,13 +91,11 @@
 		<key>IntelGen2USBBluetoothHCIController_AX201</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>38</integer>
 			<key>idVendor</key>
@@ -112,13 +104,11 @@
 		<key>IntelGen2USBBluetoothHCIController_AX200</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>com.cjiang.IntelBluetoothHostControllerUSBTransport</string>
+			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOClass</key>
-			<string>IntelBluetoothHostControllerUSBTransport</string>
+			<string>IntelGen2BluetoothHostControllerUSBTransport</string>
 			<key>IOProviderClass</key>
 			<string>IOUSBHostDevice</string>
-			<key>deviceGeneration</key>
-			<integer>2</integer>
 			<key>idProduct</key>
 			<integer>41</integer>
 			<key>idVendor</key>
