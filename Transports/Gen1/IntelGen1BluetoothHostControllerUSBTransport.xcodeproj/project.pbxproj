@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		5040DB242740921000D2B548 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5040DB232740921000D2B548 /* libkmod.a */; };
-		5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */; };
+		5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h */; };
 		5040DB262740922E00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */; };
 		50FFE36F2740F6D100176708 /* Gen1FirmwareBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = IntelGen1BluetoothHostControllerUSBTransport.hpp; sourceTree = "<group>"; };
+		5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelGen1BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
 		5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen1BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
 		5040DB232740921000D2B548 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "$(SYMROOT)/../Intermediates.noindex/Firmwares/Gen1FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
@@ -45,11 +45,12 @@
 		50A4D733273FB35F00ABE8E1 = {
 			isa = PBXGroup;
 			children = (
-				5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp */,
+				5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h */,
 				5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */,
 				50A4D744273FB35F00ABE8E1 /* Info.plist */,
 				50A4D73E273FB35F00ABE8E1 /* Products */,
 				5040DB222740920F00D2B548 /* Frameworks */,
+				BC04437A274AE5F700397DED /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -61,6 +62,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BC04437A274AE5F700397DED /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -68,7 +77,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.hpp in Headers */,
+				5040DB252740922700D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,7 +247,7 @@
 			};
 			name = "Big Sur";
 		};
-		50A4D745273FB35F00ABE8E1 /* Catalina */ = {
+		504D1C452746758200BCB513 /* High Sierra */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -293,14 +302,14 @@
 				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
 			};
-			name = Catalina;
+			name = "High Sierra";
 		};
-		50A4D748273FB35F00ABE8E1 /* Catalina */ = {
+		504D1C462746758200BCB513 /* High Sierra */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -314,7 +323,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = kext;
 			};
-			name = Catalina;
+			name = "High Sierra";
 		};
 		504D1C4F274676F500BCB513 /* Mojave */ = {
 			isa = XCBuildConfiguration;
@@ -394,7 +403,7 @@
 			};
 			name = Mojave;
 		};
-		504D1C452746758200BCB513 /* High Sierra */ = {
+		50A4D745273FB35F00ABE8E1 /* Catalina */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -449,14 +458,14 @@
 				KERNEL_EXTENSION_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				KERNEL_FRAMEWORK_HEADERS = "$(PROJECT_DIR)/../../MacKernelSDK/Headers";
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../MacKernelSDK/Library/x86_64";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SYMROOT = "$(SYMROOT)/$(CONFIGURATION)";
 			};
-			name = "High Sierra";
+			name = Catalina;
 		};
-		504D1C462746758200BCB513 /* High Sierra */ = {
+		50A4D748273FB35F00ABE8E1 /* Catalina */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -470,7 +479,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = kext;
 			};
-			name = "High Sierra";
+			name = Catalina;
 		};
 /* End XCBuildConfiguration section */
 
