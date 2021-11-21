@@ -45,8 +45,10 @@ bool IntelBluetoothHostControllerUSBTransport::init( OSDictionary * dictionary )
 void IntelBluetoothHostControllerUSBTransport::free()
 {
     IOSafeDeleteNULL(mExpansionData, ExpansionData, 1);
-    mFirmware->removeFirmwares();
-    OSSafeReleaseNULL(mFirmware);
+	if ( mFirmware )
+		mFirmware->removeFirmwares();
+	OSSafeReleaseNULL(mFirmware);
+	
     super::free();
 }
 
