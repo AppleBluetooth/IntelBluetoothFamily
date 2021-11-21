@@ -23,7 +23,7 @@
 #ifndef IntelGen1BluetoothHostControllerUSBTransport_h
 #define IntelGen1BluetoothHostControllerUSBTransport_h
 
-#include "../USB/IntelBluetoothHostControllerUSBTransport.hpp"
+#include "../USB/IntelBluetoothHostControllerUSBTransport.h"
 #include <FirmwareList.h>
 
 class IntelGen1BluetoothHostControllerUSBTransport : public IntelBluetoothHostControllerUSBTransport

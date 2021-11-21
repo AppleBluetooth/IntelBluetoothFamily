@@ -20,7 +20,7 @@
  *
  */
 
-#include "IntelGen2BluetoothHostControllerUSBTransport.hpp"
+#include "IntelGen2BluetoothHostControllerUSBTransport.h"
 
 #define super IntelBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelGen2BluetoothHostControllerUSBTransport, super)
