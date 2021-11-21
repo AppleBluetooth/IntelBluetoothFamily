@@ -32,7 +32,7 @@ class IntelBluetoothHostControllerUSBTransport;
 
 class IntelBluetoothHostController : public IOBluetoothHostController
 {
-    OSDeclareAbstractStructors(IntelBluetoothHostController)
+    OSDeclareDefaultStructors(IntelBluetoothHostController)
     
     friend class IntelBluetoothHostControllerUSBTransport;
     friend class IntelGen1BluetoothHostControllerUSBTransport;

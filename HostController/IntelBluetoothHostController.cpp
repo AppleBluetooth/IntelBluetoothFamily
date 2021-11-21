@@ -24,7 +24,7 @@
 #include "../Transports/USB/IntelBluetoothHostControllerUSBTransport.h"
 
 #define super IOBluetoothHostController
-OSDefineMetaClassAndAbstractStructors(IntelBluetoothHostController, super)
+OSDefineMetaClassAndStructors(IntelBluetoothHostController, super)
 
 bool IntelBluetoothHostController::init(IOBluetoothHCIController * family, IOBluetoothHostControllerTransport * transport)
 {
