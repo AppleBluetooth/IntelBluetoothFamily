@@ -26,6 +26,7 @@
 #include <IOKit/bluetooth/IOBluetoothHCIController.h>
 #include <IOKit/bluetooth/IOBluetoothHCIRequest.h>
 #include <IOKit/IOLib.h>
+#include "Logs.h"
 #include "IntelBluetoothHostControllerTypes.h"
 
 class IntelBluetoothHostControllerUSBTransport;
