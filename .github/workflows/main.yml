@@ -60,12 +60,12 @@ jobs:
 
     - name: Generate Release Notes
       run: |
-        echo '***This alpha version is for testing only. It is not yet ready for daily use. Use at your own risk.***' >> ReleaseNotes.md
-        echo '### Change Log:' > ReleaseNotes.md
         NON_ALPHA_TAG="$(git tag -l | grep -v 'alpha' | tail -1)"
         if [[ -z ${NON_ALPHA_TAG} ]]; then
           RANGE="HEAD"
         else
+          echo '***This alpha version is for testing only. It is not yet ready for daily use. Use at your own risk.***' >> ReleaseNotes.md
+          echo '### Change Log:' > ReleaseNotes.md
           RANGE="$(git rev-list -1 ${NON_ALPHA_TAG})..HEAD"
         fi
         git log -"$(git rev-list --count ${RANGE})" --format="- %H %s" | grep -v '.git\|Merge\|yml\|CI' | sed '/^$/d' >> ReleaseNotes.md
