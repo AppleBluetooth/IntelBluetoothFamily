@@ -63,8 +63,20 @@ void IntelBluetoothHostController::free()
     super::free();
 }
 
+bool IntelBluetoothHostController::start(IOService * provider)
+{
+	if ( !super::start(provider) )
+		return false;
+	mSupportConcurrentCreateConnection = false;
+	return true;
+}
+
 bool IntelBluetoothHostController::InitializeController()
 {
+	mBluetoothTransport->SetRemoteWakeUp(true);
+	mControllerPowerOptions |= 0x0F;
+	SetControllerPowerOptions(mControllerPowerOptions);
+	SetControllerFeatureFlags(GetControllerFeatureFlags() | 0x06);
     return true;
 }
 
@@ -203,9 +215,6 @@ COMPLETE:
         err = BluetoothResetDevice(1);
 #endif
     }
-
-	mSupportWoBT = true;
-	mSupportPowerOff = true;
 
     return err;
 }
@@ -585,6 +594,9 @@ bool IntelBluetoothHostController::InitializeHostControllerVariables(bool setup)
 	if ( !super::InitializeHostControllerVariables(setup) )
 		return false;
 
+	if ( mBluetoothTransport )
+		mSupportWoBT = mBluetoothTransport->ControllerSupportWoBT();
+	
 	setProperty("ActiveBluetoothControllerVendor", "Intel");
 	setProperty("BluetoothVendor", "Intel");
 	return true;

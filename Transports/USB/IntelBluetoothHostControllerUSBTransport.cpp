@@ -465,49 +465,24 @@ IOReturn IntelBluetoothHostControllerUSBTransport::SecureSendBulkOutWrite(IOMemo
 	return err;
 }
 
-#if 0
+bool IntelBluetoothHostControllerUSBTransport::SupportNewIdlePolicy()
+{
+	mSupportNewIdlePolicy = true;
+	return setProperty("SupportNewIdlePolicy", true);
+}
+
 bool IntelBluetoothHostControllerUSBTransport::ConfigurePM(IOService * policyMaker)
 {
-	IOService * root;
-
-	if ( mBluetoothUSBHostDevice )
-	{
-		root = mBluetoothUSBHostDevice->getProvider();
-		if ( !root )
-			return false;
-
-		if ( root->getProvider()->getProvider() )
-			mBluetoothUSBHub = OSDynamicCast(IOUSBHostDevice, root->getProvider()->getProvider());
-
-		if ( !pm_vars )
-		{
-			PMinit();
-			policyMaker->joinPMtree(this);
-			if ( !pm_vars )
-				return false;
-		}
-	}
+	if ( !super::ConfigurePM(policyMaker) )
+		return false;
 
 	mSupportPowerOff = true;
-	registerPowerDriver(this, powerStateArray, kIOBluetoothHCIControllerPowerStateOrdinalCount);
+	//registerPowerDriver(this, powerStateArray, kIOBluetoothHCIControllerPowerStateOrdinalCount);
 	setProperty("SupportPowerOff", true);
-
-	if ( mBluetoothFamily )
-	{
-		mBluetoothFamily->setProperty("TransportType", "USB");
-		mConrollerTransportType = kBluetoothTransportTypeUSB;
-	}
-
-	mConfiguredPM = true; //waked up from controller?
-
-	BluetoothFamilyLogPacket(mBluetoothFamily, 251, "USB Low Power");
-	changePowerStateTo(kIOBluetoothHCIControllerPowerStateOrdinalIdle);
-	ReadyToGo(mConfiguredPM);
 
 	SetRadioPowerState(4);
 	return true;
 }
-#endif
 
 void IntelBluetoothHostControllerUSBTransport::systemWillShutdownWL(IOOptionBits options, void * parameter)
 {

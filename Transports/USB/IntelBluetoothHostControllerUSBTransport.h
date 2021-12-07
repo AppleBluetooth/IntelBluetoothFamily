@@ -49,9 +49,8 @@ public:
 	virtual IOReturn TransportSecureSendBulkOutWrite(UInt8 * buffer, UInt32 size);
 	virtual IOReturn SecureSendBulkOutWrite(IOMemoryDescriptor * memDescriptor);
 
-#if 0
+	virtual bool SupportNewIdlePolicy() APPLE_KEXT_OVERRIDE;
 	virtual bool ConfigurePM(IOService * provider) APPLE_KEXT_OVERRIDE;
-#endif
 	
 	virtual void systemWillShutdownWL(IOOptionBits options, void * parameter) APPLE_KEXT_OVERRIDE;
 	virtual bool ControllerSupportWoBT() APPLE_KEXT_OVERRIDE;
