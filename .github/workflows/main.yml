@@ -1,0 +1,90 @@
+name: CD
+
+on:
+  push:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+
+  CD:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Bootstrap OpenFirmwareManager
+      run: |
+        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/AppleBluetooth/OpenFirmwareManager/master/bootstrap.sh) && eval "$src" || exit 1
+
+    - name: Install MacKernelSDK
+      run: |
+        git clone --depth=1 https://github.com/CharlieJiangXXX/MacKernelSDK.git
+
+    - name: Manage Version
+      run: |
+        git fetch --prune --unshallow --tags
+        GIT_SHA="$(git rev-parse --short HEAD)"
+        CUR_TAG="$(git tag -l | grep -i 'alpha' | tail -1)"
+        if [[ -z $CUR_TAG ]]; then
+          CUR_TAG="NULL"
+        fi
+        eval $(grep -m 1 "MODULE_VERSION =" HostController/IntelBluetoothHostController.xcodeproj/project.pbxproj | tr -d ';' | tr -d '\t' | tr -d " ")
+        echo "VER=$MODULE_VERSION" >> $GITHUB_ENV
+        echo "SHORT_SHA=$GIT_SHA" >> $GITHUB_ENV
+        echo "OLD_PRE_TAG=$CUR_TAG">> $GITHUB_ENV
+      shell: zsh {0}
+
+    - name: Build IntelBluetoothFamily (Big Sur)
+      run: xcodebuild -workspace IntelBluetoothFamily.xcworkspace -scheme "IntelBluetoothFamily (Big Sur)" -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
+
+    - name: Build IntelBluetoothFamily (Catalina)
+      run: xcodebuild -workspace IntelBluetoothFamily.xcworkspace -scheme "IntelBluetoothFamily (Catalina)" -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
+
+    - name: Build IntelBluetoothFamily (Mojave)
+      run: xcodebuild -workspace IntelBluetoothFamily.xcworkspace -scheme "IntelBluetoothFamily (Mojave)" -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
+
+    - name: Build IntelBluetoothFamily (High Sierra)
+      run: xcodebuild -workspace IntelBluetoothFamily.xcworkspace -scheme "IntelBluetoothFamily (High Sierra)" -derivedDataPath build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
+
+    - name: Pack Artifacts
+      run: |
+        mkdir Artifacts
+        XCBUILD_PATH="build/Build/Products/"
+        cp LICENSE ./Artifacts
+        cd $XCBUILD_PATH
+        while read -r tgt ; do
+          zip -r IntelBluetoothFamily-${tgt// /_}-v${VER}-alpha-${SHORT_SHA}.zip "$tgt"/IntelBluetoothFamily.kext
+        done < <(find . -mindepth 1 -maxdepth 1 -type d -not -path "IntelBluetoothFamily.kext" | cut -c 3-)
+        cd -
+        cp -R ${XCBUILD_PATH}/Intel*.zip ./Artifacts
+
+    - name: Generate Release Notes
+      run: |
+        echo '### Change Log' > ReleaseNotes.md
+        NON_ALPHA_TAG="$(git tag -l | grep -v 'alpha' | tail -1)"
+        if [[ -z ${NON_ALPHA_TAG} ]]; then
+          RANGE="HEAD"
+        else
+          RANGE="$(git rev-list -1 ${NON_ALPHA_TAG})..HEAD"
+        fi
+        git log -"$(git rev-list --count ${RANGE})" --format="- %H %s" | grep -v '.git\|Merge\|yml\|CI' | sed '/^$/d' >> ReleaseNotes.md
+
+    - name: Delete Old Prerelease
+      uses: dev-drprasad/delete-tag-and-release@v0.1.2
+      with:
+        tag_name: ${{ env.OLD_PRE_TAG }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish GitHub Release
+      if: contains(github.event.head_commit.message, 'Bump version') == false
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        replacesArtifacts: true
+        prerelease: true
+        bodyFile: ReleaseNotes.md
+        artifacts: "./Artifacts/*"
+        tag: "v${{ env.VER }}-alpha"
+        token: ${{ secrets.GITHUB_TOKEN }}
