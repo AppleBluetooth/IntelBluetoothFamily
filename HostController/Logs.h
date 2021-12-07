@@ -22,8 +22,8 @@
 #ifndef Logs_h
 #define Logs_h
 
-#define RequireFailureLog(err) os_log(OS_LOG_DEFAULT, "REQUIRE failure: %s - file: %s:%d\n", err, __FILE__, __LINE__)
-#define CheckFailureLog(err) os_log(OS_LOG_DEFAULT, "CHECK failure: %s - file: %s:%d\n", err, __FILE__, __LINE__)
+#define REQUIRE(err) os_log(OS_LOG_DEFAULT, "REQUIRE failure: %s - file: %s:%d\n", err, __FILE__, __LINE__)
+#define CHECK(err) os_log(OS_LOG_DEFAULT, "CHECK failure: %s - file: %s:%d\n", err, __FILE__, __LINE__)
 #define REQUIRE_NO_ERR(err) os_log(OS_LOG_DEFAULT, "REQUIRE_NO_ERR failure: 0x%x - file: %s:%d\n", err, __FILE__, __LINE__)
 
 #endif /* Logs_h */

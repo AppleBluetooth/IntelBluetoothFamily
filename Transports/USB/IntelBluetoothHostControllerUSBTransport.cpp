@@ -21,11 +21,20 @@
  */
 
 #include "IntelBluetoothHostControllerUSBTransport.h"
+#include <IOKit/IOPlatformExpert.h>
+#include <IOKit/bluetooth/IOBluetoothMemoryBlock.h>
+
+static IOPMPowerState powerStateArray[kIOBluetoothHCIControllerPowerStateOrdinalCount] =
+{
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{1, kIOPMInitialDeviceState, kIOPMPowerOn, kIOPMInitialDeviceState, 0, 0, 0, 0, 0, 0, 0, 0},
+	{1, kIOPMDeviceUsable, kIOPMPowerOn, kIOPMPowerOn, 0, 0, 0, 0, 0, 0, 0, 0}
+};
 
 #define super IOBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelBluetoothHostControllerUSBTransport, super)
 
-bool IntelBluetoothHostControllerUSBTransport::init( OSDictionary * dictionary )
+bool IntelBluetoothHostControllerUSBTransport::init(OSDictionary * dictionary)
 {
     CreateOSLogObject();
     if ( !super::init() )
@@ -39,6 +48,7 @@ bool IntelBluetoothHostControllerUSBTransport::init( OSDictionary * dictionary )
         return false;
     
     mFirmware = NULL;
+
     return true;
 }
 
@@ -52,7 +62,7 @@ void IntelBluetoothHostControllerUSBTransport::free()
     super::free();
 }
 
-IOService * IntelBluetoothHostControllerUSBTransport::probe( IOService * provider, SInt32 * score )
+IOService * IntelBluetoothHostControllerUSBTransport::probe(IOService * provider, SInt32 * score)
 {
     IOService * result = super::probe(provider, score);
     IOUSBHostDevice * device;
@@ -91,6 +101,7 @@ bool IntelBluetoothHostControllerUSBTransport::start(IOService * provider)
 
 void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
 {
+	IOReturn err;
     BluetoothHCIRequestID id;
 
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
@@ -114,11 +125,490 @@ void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
      */
     if ( controller->mBrokenLED )
     {
-        controller->HCIRequestCreate(&id);
+        err = controller->HCIRequestCreate(&id);
+		if ( err )
+		{
+			REQUIRE_NO_ERR(err);
+			return;
+		}
         controller->BluetoothHCIIntelTurnOffDeviceLED(id);
         controller->HCIRequestDelete(NULL, id);
     }
     super::stop(provider);
+}
+
+bool IntelBluetoothHostControllerUSBTransport::InitializeTransportWL(IOService * provider)
+{
+	if ( !provider )
+		return false;
+
+	IOService * platformProvider;
+	OSNumber * maxPower;
+
+	platformProvider = getPlatform()->getProvider();
+	if ( platformProvider )
+	{
+		maxPower = OSDynamicCast(OSNumber, platformProvider->getProperty("bt-maxpower"));
+		if ( maxPower != NULL )
+		{
+			if ( !mBluetoothController )
+				return false;
+			mBluetoothController->mMaxPower = maxPower->unsigned16BitValue();
+		}
+	}
+
+	if ( super::InitializeTransportWL(provider) )
+	{
+		SetRemoteWakeUp(true);
+		mHardwareInitialized = true;
+		return true;
+	}
+
+	mHardwareInitialized = false;
+	return false;
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::SendHCIRequest(UInt8 * buffer, IOByteCount size)
+{
+	IOReturn err;
+
+	if ( !buffer || size < kBluetoothHCICommandPacketHeaderSize )
+		return kIOReturnInvalid;
+
+	if ( *(UInt16 *) buffer == 0xFC09 && mBluetoothController && ((IntelBluetoothHostController *) mBluetoothController)->mBootloaderMode )
+	{
+		err = TransportSecureSendBulkOutWrite(buffer, (UInt32) size);
+		if ( err )
+		{
+			REQUIRE_NO_ERR(err);
+			return err;
+		}
+		if ( PostSecureSendBulkPipeRead() )
+			return kIOReturnSuccess;
+		return kIOReturnError;
+	}
+
+	err = super::SendHCIRequest(buffer, size);
+	if ( err )
+		return err;
+
+	if ( *(UInt16 *) buffer == 0xFC01 )
+		InjectCommandCompleteEvent(0xFC01);
+
+	return kIOReturnSuccess;
+}
+
+void IntelBluetoothHostControllerUSBTransport::InjectCommandCompleteEvent(BluetoothHCICommandOpCode opCode)
+{
+	UInt8 * packet;
+	UInt32 packetSize;
+
+	packetSize = kBluetoothHCIEventPacketHeaderSize + sizeof(BluetoothHCIEventCommandCompleteResults) + 1;
+	packet = IONewZero(UInt8, packetSize);
+	if ( !packet )
+	{
+		REQUIRE("( packet != NULL )");
+		return;
+	}
+
+	BluetoothHCIEventPacketHeader * header = (BluetoothHCIEventPacketHeader *) packet;
+	header->eventCode = kBluetoothHCIEventCommandComplete;
+	header->dataSize  = sizeof(BluetoothHCIEventCommandCompleteResults) + 1;
+
+	BluetoothHCIEventCommandCompleteResults * event = (BluetoothHCIEventCommandCompleteResults *) (packet + kBluetoothHCIEventPacketHeaderSize);
+	event->numCommands = 0x01;
+	event->opCode = opCode;
+
+	packet[packetSize - 1] = 0x00;
+
+	ReceiveInterruptData(packet, packetSize, false);
+}
+
+bool IntelBluetoothHostControllerUSBTransport::PostSecureSendBulkPipeRead()
+{
+	IOReturn err;
+	IOUSBHostCompletion completion;
+	char errStrLong[100];
+	char errStrShort[50];
+
+	if ( !mBulkInPipe )
+		return false;
+
+	err = mBulkInPipe->clearStall(true);
+	if ( err )
+	{
+		mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
+		os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] -- ERROR -- clearStall (true) failed with error 0x%04X (%s) -- 0x%04x\n", err, errStrLong, ConvertAddressToUInt32(this));
+		BluetoothFamilyLogPacket(mBluetoothFamily, 250, "SecureSend - clearStall 0x%04X %s", err, errStrShort);
+		return false;
+	}
+
+	completion.owner 	 = this;
+	completion.action 	 = IntelBluetoothHostControllerUSBTransport::SecureSendBulkInReadHandler;
+	completion.parameter = NULL;
+
+	RetainTransport((char *) __FUNCTION__);
+
+	err = mBulkInPipe->io(mBulkInReadDataBuffer, 1021, &completion);
+	if ( !err )
+	{
+		++mBulkInPipeOutstandingIOCount;
+		return true;
+	}
+
+	ReleaseTransport((char *) __FUNCTION__);
+
+	mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
+	os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] -- ERROR -- failed to read on the bulk in pipe: 0x%04X (%s) -- this = 0x%04x\n", err, errStrLong, ConvertAddressToUInt32(this));
+	BluetoothFamilyLogPacket(mBluetoothFamily, 250, "SecureSend - Read 0x%04X %s", err, errStrShort);
+	return false;
+}
+
+void IntelBluetoothHostControllerUSBTransport::SecureSendBulkInReadHandler(void * owner, void * parameter, IOReturn inStatus, uint32_t dataSize)
+{
+	IntelBluetoothHostControllerUSBTransport * that = (IntelBluetoothHostControllerUSBTransport *) owner;
+	char errStrLong[100];
+	char errStrShort[50];
+
+	--that->mBulkInPipeOutstandingIOCount;
+
+	that->mBluetoothFamily->ConvertErrorCodeToString(inStatus, errStrLong, errStrShort);
+
+	if ( inStatus && dataSize )
+		BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- inStatus = 0x%04X (%s), dataSize = %u ****\n", inStatus, errStrLong, dataSize);
+
+	if ( !that->mBulkInPipe )
+	{
+		that->mBulkInPipeStarted = false;
+		os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Pipe Is Gone\n");
+		BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "Bulk In Pipe Gone");
+FAIL:
+		that->ReleaseTransport((char *) __FUNCTION__);
+		return;
+	}
+
+	if ( that->mBluetoothController && !that->mBluetoothController->mHardResetPerformed && that->mBluetoothFamily->mTestNotRespondingHardReset && (that->mBluetoothFamily->GetCurrentTime() - that->mBluetoothFamily->mUSBHardResetWLCallTime) >= 0x3938701 )
+	{
+		os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- mBluetoothFamily->mTestNotRespondingHardReset is true ****");
+		if ( that->mBuiltIn )
+		{
+			that->mHardResetState = 2;
+			that->mBluetoothController->mHardResetPerformed = true;
+			os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset() ****");
+			that->HardReset();
+		}
+	}
+
+	if ( !inStatus )
+	{
+		that->mBulkInReadNumRetries = 0;
+		that->ReceiveInterruptData(that->mBulkInReadDataBuffer->getBytesNoCopy(), dataSize, false);
+		return;
+	}
+
+	if ( inStatus == kIOReturnAborted )
+	{
+		if ( that->mBulkInPipeOutstandingIOCount )
+			OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 \n", that->mBulkInPipeOutstandingIOCount);
+		else
+			BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe = %d \n", 0);
+
+		BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In Pipe: Aborted");
+		BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- dataSize = %u -- inTarget = 0x%04x ****\n", dataSize, that->ConvertAddressToUInt32(that));
+
+		if ( dataSize )
+		{
+			BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted but dataSize (%u) is non zero -- calling ReceiveInterruptData() ****\n", dataSize);
+			that->ReceiveInterruptData(that->mBulkInReadDataBuffer->getBytesNoCopy(), dataSize, false);
+		}
+		else if ( bcmp(that->mEmptyInterruptReadData, that->mBulkInReadDataBuffer->getBytesNoCopy(), 0x3FD) )
+		{
+			BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted and dataSize is zero but contains data -- calling ReceiveInterruptData() ****\n");
+			that->ReceiveInterruptData(that->mBulkInReadDataBuffer->getBytesNoCopy(), 0, true);
+		}
+
+		if ( (that->isInactive() || that->mBulkInReadNumRetries >= 5) && !that->TransportWillReEnumerate() )
+		{
+			os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received kIOReturnAborted error - no more retries - bailing out -- 0x%04x ****\n", that->ConvertAddressToUInt32(that));
+			goto ABORT;
+		}
+
+		++that->mInterruptReadNumRetries;
+		os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received kIOReturnAborted error - retrying: %d -- 0x%04x\n", that->mInterruptReadNumRetries, that->ConvertAddressToUInt32(that));
+		return;
+	}
+
+	BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "Bulk In Read %s", errStrShort);
+
+	if ( inStatus == kIOReturnNotResponding || inStatus == kUSBHostReturnPipeStalled )
+	{
+		os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnNotResponding or kUSBHostReturnPipeStalled -- dataSize = %u -- inTarget = 0x%04x ****\n", dataSize, that->ConvertAddressToUInt32(that));
+
+		if ( that->mBluetoothController )
+			that->mBluetoothController->BroadcastNotification(11, kIOBluetoothHCIControllerConfigStateUninitialized, kIOBluetoothHCIControllerConfigStateUninitialized);
+
+		if ( inStatus == kIOReturnNotResponding )
+		{
+			os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnNotResponding -- dataSize = %u -- inTarget = 0x%04x ****\n", dataSize, that->ConvertAddressToUInt32(that));
+			if ( dataSize )
+			{
+				BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnNotResponding -- but dataSize (%u) is non zero -- calling ReceiveInterruptData() ****\n", dataSize);
+				that->ReceiveInterruptData(that->mBulkInReadDataBuffer->getBytesNoCopy(), dataSize, false);
+				if ( that->mStopInterruptPipeReadCounter )
+					--that->mStopInterruptPipeReadCounter;
+			}
+			else if ( bcmp(that->mEmptyInterruptReadData, that->mBulkInReadDataBuffer->getBytesNoCopy(), 0x3FD) )
+			{
+				BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnNotResponding and dataSize is zero but contains data -- calling ReceiveInterruptData() ****\n");
+				that->ReceiveInterruptData(that->mInterruptReadDataBuffer->getBytesNoCopy(), 0, true);
+			}
+		}
+
+		if ( that->TerminateCalled() || that->isInactive() || that->mStopAllPipesCalled || that->mBluetoothController->mHardResetPerformed )
+			goto ABORT;
+
+		++that->mInterruptReadNumRetries;
+		if ( that->mInterruptReadNumRetries >= 5 )
+		{
+			OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received %s error - no more retries \n", errStrLong);
+			BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "Bulk In Read - no more retry");
+
+			if ( that->mBluetoothFamily )
+				*(UInt8 *)(((UInt8 *) that->mBluetoothController) + 969) = 0;
+
+			if ( !that->mBluetoothController->mHardResetPerformed && that->mBuiltIn )
+			{
+				that->mHardResetState = 2;
+				that->mBluetoothController->mHardResetPerformed = 1;
+				BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In Read -- Hardware Reset");
+				os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset()\n");
+				that->HardReset();
+			}
+			goto ABORT;
+		}
+		return;
+	}
+
+ABORT:
+	if ( that->mStopAllPipesCalled )
+	{
+		if ( that->mBulkInPipeOutstandingIOCount )
+			OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 \n", that->mBulkInPipeOutstandingIOCount);
+		else
+			BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe = %d \n", that->mBulkInPipeOutstandingIOCount);
+
+		BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In: IO %d", that->mBulkInPipeOutstandingIOCount);
+	}
+
+	if ( inStatus == kIOReturnAborted && !that->mInterruptPipeOutstandingIOCount && that->mCommandGate )
+		that->mCommandGate->commandWakeup(&that->mInterruptPipeOutstandingIOCount);
+	goto FAIL;
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::TransportSecureSendBulkOutWrite(UInt8 * buffer, UInt32 size)
+{
+	IOReturn err;
+	IOMemoryDescriptor * md = IOMemoryDescriptor::withAddress(buffer, size, kIODirectionOut);
+	if ( !md )
+		return -536870211;
+	err = SecureSendBulkOutWrite(md);
+	OSSafeReleaseNULL(md);
+	return err;
+}
+
+IOReturn IntelBluetoothHostControllerUSBTransport::SecureSendBulkOutWrite(IOMemoryDescriptor * memDescriptor)
+{
+	IOReturn err;
+	uint32_t bytesTransferred = 0;
+	char errStrLong[100];
+	char errStrShort[50];
+
+	if ( !mBulkOutPipe )
+		return -536870208;
+
+	if ( !memDescriptor )
+		return -536870206;
+
+	if ( memDescriptor->prepare(kIODirectionOut) )
+		return -536870211;
+
+	if ( mCurrentInternalPowerState == kIOBluetoothHCIControllerInternalPowerStateOn )
+		err = mBulkOutPipe->io(memDescriptor, (UInt32) memDescriptor->getLength(), bytesTransferred, 2000);
+	else
+	{
+		OSLogAndLogPacket(mInternalOSLogObject, mBluetoothFamily, 250, "Error -- trying to call mBulkOutPipe->io() when power is not ON");
+		err = -536870173;
+	}
+
+	memDescriptor->complete(kIODirectionOut);
+
+	if ( !err )
+		return kIOReturnSuccess;
+
+	mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
+	os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkOutWrite] -- mBulkOutPipe->io() failed: 0x%04X (%s) -- 0x%04x ****\n", err, errStrLong, ConvertAddressToUInt32(this));
+	BluetoothFamilyLogPacket(mBluetoothFamily, 250, "mBulkOutPipe->io() 0x%04X %s", err, errStrShort);
+	return err;
+}
+
+#if 0
+bool IntelBluetoothHostControllerUSBTransport::ConfigurePM(IOService * policyMaker)
+{
+	IOService * root;
+
+	if ( mBluetoothUSBHostDevice )
+	{
+		root = mBluetoothUSBHostDevice->getProvider();
+		if ( !root )
+			return false;
+
+		if ( root->getProvider()->getProvider() )
+			mBluetoothUSBHub = OSDynamicCast(IOUSBHostDevice, root->getProvider()->getProvider());
+
+		if ( !pm_vars )
+		{
+			PMinit();
+			policyMaker->joinPMtree(this);
+			if ( !pm_vars )
+				return false;
+		}
+	}
+
+	mSupportPowerOff = true;
+	registerPowerDriver(this, powerStateArray, kIOBluetoothHCIControllerPowerStateOrdinalCount);
+	setProperty("SupportPowerOff", true);
+
+	if ( mBluetoothFamily )
+	{
+		mBluetoothFamily->setProperty("TransportType", "USB");
+		mConrollerTransportType = kBluetoothTransportTypeUSB;
+	}
+
+	mConfiguredPM = true; //waked up from controller?
+
+	BluetoothFamilyLogPacket(mBluetoothFamily, 251, "USB Low Power");
+	changePowerStateTo(kIOBluetoothHCIControllerPowerStateOrdinalIdle);
+	ReadyToGo(mConfiguredPM);
+
+	SetRadioPowerState(4);
+	return true;
+}
+#endif
+
+void IntelBluetoothHostControllerUSBTransport::systemWillShutdownWL(IOOptionBits options, void * parameter)
+{
+	if ( !mCurrentInternalPowerState )
+		return;
+
+	if ( options == kIOMessageSystemWillRestart )
+	{
+		AbortPipesAndClose(true, true);
+		terminate();
+	}
+
+	super::systemWillShutdownWL(options, parameter);
+}
+
+bool IntelBluetoothHostControllerUSBTransport::ControllerSupportWoBT()
+{
+	mSupportWoBT = true;
+	return true;
+}
+
+UInt8 IntelBluetoothHostControllerUSBTransport::GetRadioPowerState()
+{
+	return mRadioPowerState;
+}
+
+void IntelBluetoothHostControllerUSBTransport::SetRadioPowerState(UInt8 state)
+{
+	mRadioPowerState = state;
+}
+
+bool IntelBluetoothHostControllerUSBTransport::SearchForUSBCompositeDriver(IOUSBHostDevice * device)
+{
+	OSIterator * clientIterator;
+	OSObject * obj;
+	IOService * service;
+	OSString * ioClass;
+
+	if ( !device )
+		return false;
+
+	clientIterator = device->getClientIterator();
+	if ( !clientIterator )
+		return false;
+
+	obj = clientIterator->getNextObject();
+	if ( !obj )
+	{
+		OSSafeReleaseNULL(clientIterator);
+		return false;
+	}
+
+	while ( obj )
+	{
+		service = OSDynamicCast(IOService, obj);
+		if ( service && service->getProperty("IOClass") )
+		{
+			ioClass = OSDynamicCast(OSString, service->getProperty("IOClass"));
+			if ( ioClass && ioClass->isEqualTo("AppleUSBHostCompositeDevice") )
+			{
+				OSSafeReleaseNULL(clientIterator);
+				return true;
+			}
+		}
+		obj = clientIterator->getNextObject();
+	}
+	OSSafeReleaseNULL(clientIterator);
+	return false;
+}
+
+bool IntelBluetoothHostControllerUSBTransport::CompositeDeviceAppears()
+{
+	OSIterator * clientIterator;
+	OSObject * obj;
+	IOUSBHostDevice * device;
+	const StandardUSB::DeviceDescriptor * desc;
+
+	if ( !mBluetoothUSBHostDevice || !getProvider() || !getProvider()->getProvider() )
+		return false;
+
+	clientIterator = getProvider()->getProvider()->getClientIterator();
+	if ( !clientIterator )
+		return false;
+
+	obj = clientIterator->getNextObject();
+	if ( !obj )
+	{
+		OSSafeReleaseNULL(clientIterator);
+		return false;
+	}
+
+	while ( obj )
+	{
+		device = OSDynamicCast(IOUSBHostDevice, obj);
+		if ( !device )
+		{
+			obj = clientIterator->getNextObject();
+			continue;
+		}
+
+		desc = device->getDeviceDescriptor();
+		if ( desc && desc->idVendor == 0x8087 )
+		{
+			OSSafeReleaseNULL(clientIterator);
+			return true;
+		}
+	}
+
+	OSSafeReleaseNULL(clientIterator);
+	return false;
+}
+
+bool IntelBluetoothHostControllerUSBTransport::NeedToTurnOnUSBDebug()
+{
+	return false;
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size)
@@ -143,7 +633,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, B
 
     if ( GetFirmwareName(version, params, suffix, fwName, sizeof(fwName)) )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Unsupported firmware name!");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][GetFirmware] -- Unsupported firmware name! ****\n");
         return kIOReturnInvalid;
     }
 
@@ -152,13 +642,13 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, B
     mFirmware = OpenFirmwareManager::withName(fwName, mFirmwareCandidates, mNumFirmwares);
     if ( !mFirmware )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Failed to obtain firmware file %s!!!", fwName);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][GetFirmware] -- Failed to obtain firmware file %s! ****\n", fwName);
         return GetFirmwareErrorHandler(version, params, suffix, fwData);
     }
 
     *fwData = mFirmware->getFirmwareUncompressed(fwName);
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostControllerUSBTransport][GetFirmware] Found firmware file: %s", fwName);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][GetFirmware] -- Found firmware file: %s ****\n", fwName);
 
     return kIOReturnSuccess;
 }
@@ -168,23 +658,23 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(void 
     return kIOReturnUnsupported;
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
+IOReturn IntelBluetoothHostControllerUSBTransport::PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
 {
     return kIOReturnUnsupported;
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmware(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
-    return mCommandGate->runAction(DownloadFirmwareAction, &inID, version, params, bootAddress);
+    return mCommandGate->runAction(DownloadFirmwareAction, version, params, bootAddress);
 }
 
 IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3)
 {
     IntelBluetoothHostControllerUSBTransport * object = OSDynamicCast(IntelBluetoothHostControllerUSBTransport, owner);
-    return object->DownloadFirmwareWL(*(BluetoothHCIRequestID *) arg0, arg1, (BluetoothIntelBootParams *) arg2, (UInt32 *) arg3);
+	return object->DownloadFirmwareWL(arg0, (BluetoothIntelBootParams *) arg1, (UInt32 *) arg2);
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+IOReturn IntelBluetoothHostControllerUSBTransport::DownloadFirmwareWL(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
     return kIOReturnUnsupported;
 }

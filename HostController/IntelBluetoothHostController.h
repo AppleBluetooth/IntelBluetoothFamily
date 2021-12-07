@@ -76,18 +76,28 @@ public:
     virtual IOReturn CallBluetoothHCIIntelReadVersionInfo(UInt8 param);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);
+	virtual IOReturn ConfigureOffload();
     virtual IOReturn SetQualityReport(bool enable);
-    virtual IOReturn ConfigureOffload();
+	virtual IOReturn SetDebugFeatures(const BluetoothIntelDebugFeatures * features);
+	virtual IOReturn ResetDebugFeatures(const BluetoothIntelDebugFeatures * features);
+	virtual IOReturn CallBluetoothHCIIntelSetEventMask(bool debug);
+	virtual IOReturn CallBluetoothHCIIntelSetDiagnosticMode(bool enable);
 
     virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
 
-    virtual IOReturn HandleSpecialOpcodes(BluetoothHCICommandOpCode opCode) APPLE_KEXT_OVERRIDE;
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
+	virtual bool GetCompleteCodeForCommand(BluetoothHCICommandOpCode inOpCode, BluetoothHCIEventCode * outEventCode) APPLE_KEXT_OVERRIDE;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
+	virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 * errorCode, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool *) APPLE_KEXT_OVERRIDE;
+#else
+	virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 *, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle) APPLE_KEXT_OVERRIDE;
+#endif
+	virtual bool SetHCIRequestRequireEvents(BluetoothHCICommandOpCode opCode, IOBluetoothHCIRequest * request) APPLE_KEXT_OVERRIDE;
 
-    virtual IOReturn LoadDDCConfig(BluetoothHCIRequestID inID, OSData * fwData);
+    virtual IOReturn LoadDDCConfig(OSData * fwData);
 
-    virtual IOReturn BluetoothHCIIntelSecureSend(BluetoothHCIRequestID inID, UInt8 fragmentType, UInt32 paramSize, const UInt8 * param);
+    virtual IOReturn BluetoothHCIIntelSecureSend(UInt8 fragmentType, UInt32 paramSize, const UInt8 * param);
     
     /*! @function BluetoothHCISendIntelReset
      *   @abstract Sends the Intel Reset HCI command.
@@ -107,17 +117,15 @@ public:
     virtual IOReturn BluetoothHCIIntelReadBootParams(BluetoothHCIRequestID inID, BluetoothIntelBootParams * params);
     virtual IOReturn BluetoothHCIIntelReadVersionInfo(BluetoothHCIRequestID inID, UInt8 param, UInt8 * response);
     virtual IOReturn BluetoothHCIIntelReadDebugFeatures(BluetoothHCIRequestID inID, BluetoothIntelDebugFeatures * features);
-    virtual IOReturn BluetoothHCIIntelSetDebugFeatures(BluetoothHCIRequestID inID, const BluetoothIntelDebugFeatures * features);
-    virtual IOReturn BluetoothHCIIntelResetDebugFeatures(BluetoothHCIRequestID inID, const BluetoothIntelDebugFeatures * features);
     virtual IOReturn BluetoothHCIIntelTurnOffDeviceLED(BluetoothHCIRequestID inID);
     virtual IOReturn BluetoothHCIIntelWriteDDC(BluetoothHCIRequestID inID, UInt8 * data, UInt8 dataSize);
     virtual IOReturn BluetoothHCIIntelReadOffloadUseCases(BluetoothHCIRequestID inID, BluetoothIntelOffloadUseCases * cases);
+	virtual IOReturn BluetoothHCIIntelSetLinkStatisticsEventsTracing(BluetoothHCIRequestID inID, UInt8 param);
     
 protected:
-    virtual IOReturn BroadcastCommandCompleteEvent(BluetoothHCICommandOpCode opCode);
-    virtual IOReturn DownloadFirmwarePayload(BluetoothHCIRequestID inID, OSData * fwData, size_t offset);
-    virtual IOReturn SecureSendSFIRSAFirmwareHeader(BluetoothHCIRequestID inID, OSData * fwData);
-    virtual IOReturn SecureSendSFIECDSAFirmwareHeader(BluetoothHCIRequestID inID, OSData * fwData);
+    virtual IOReturn DownloadFirmwarePayload(OSData * fwData, size_t offset);
+    virtual IOReturn SecureSendSFIRSAFirmwareHeader(OSData * fwData);
+    virtual IOReturn SecureSendSFIECDSAFirmwareHeader(OSData * fwData);
     virtual bool ParseFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress);
     
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 0);
@@ -144,26 +152,27 @@ protected:
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 21);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 22);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 23);
-    
+
 protected:
-    void * mVersionInfo {NULL};
+    UInt8 * mVersionInfo;
+	UInt32 mGeneration;
     BluetoothHCICommandOpCode mMicrosoftExtensionOpCode;
 
-    bool mValidLEStates {false};
-    bool mStrictDuplicateFilter {false};
-    bool mSimultaneousDiscovery {false};
-    bool mDiagnosticModeNotPersistent {false};
-    bool mWidebandSpeechSupported {false};
-    bool mInvalidDeviceAddress {false};
-    bool mIsLegacyROMDevice {false};
-    bool mBootloaderMode {false};
-    bool mBooting {false};
-    bool mDownloading {false};
-    bool mFirmwareLoaded {false};
-    bool mFirmwareLoadingFailed {false};
-    bool mBrokenLED {false};
-    bool mBrokenInitialNumberOfCommands {false};
-    bool mQualityReportSet {false};
+    bool mValidLEStates;
+    bool mStrictDuplicateFilter;
+    bool mSimultaneousDiscovery;
+    bool mDiagnosticModeNotPersistent;
+    bool mWidebandSpeechSupported;
+    bool mInvalidDeviceAddress;
+    bool mIsLegacyROMDevice;
+    bool mBootloaderMode;
+    bool mBooting;
+    bool mDownloading;
+    bool mFirmwareLoaded;
+    bool mFirmwareLoadingFailed;
+    bool mBrokenLED;
+    bool mBrokenInitialNumberOfCommands;
+    bool mQualityReportSet;
 
     struct ExpansionData
     {

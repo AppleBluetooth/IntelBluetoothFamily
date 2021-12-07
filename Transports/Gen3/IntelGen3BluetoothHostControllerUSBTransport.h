@@ -36,7 +36,7 @@ public:
     virtual IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize) APPLE_KEXT_OVERRIDE;
     
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName) APPLE_KEXT_OVERRIDE;
-    virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn DownloadFirmwareWL(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress) APPLE_KEXT_OVERRIDE;
     
     OSMetaClassDeclareReservedUnused(IntelGen3BluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelGen3BluetoothHostControllerUSBTransport, 1);

@@ -61,16 +61,17 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
     return kIOReturnSuccess;
 }
 
-IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(BluetoothHCIRequestID inID, void * ver, BluetoothIntelBootParams * params, UInt32 * bootAddress)
+IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void * ver, BluetoothIntelBootParams * params, UInt32 * bootAddress)
 {
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
     if ( !controller )
         return false;
 
-    IOReturn err;
+    IOReturn err, ret;
     UInt32 callTime;
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     OSData * fwData;
+	BluetoothHCIRequestID id;
 
     if ( !version || !params )
         return kIOReturnInvalid;
@@ -91,7 +92,14 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
     if ( version->firmwareVariant == 0x23 )
     {
         controller->mBootloaderMode = false;
-        controller->CheckDeviceAddress(inID);
+		err = controller->HCIRequestCreate(&id);
+		if ( err )
+		{
+			REQUIRE_NO_ERR(err);
+			return err;
+		}
+        controller->CheckDeviceAddress(id);
+		controller->HCIRequestDelete(NULL, id);
 
         /* SfP and WsP don't seem to update the firmware version on file
          * so version checking is currently possible.
@@ -106,9 +114,16 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
     /* Read the secure boot parameters to identify the operating
      * details of the bootloader.
      */
-    err = controller->BluetoothHCIIntelReadBootParams(inID, params);
-    if ( err )
-        return err;
+	err = controller->HCIRequestCreate(&id);
+	if ( err )
+	{
+		REQUIRE_NO_ERR(err);
+		return err;
+	}
+    ret = controller->BluetoothHCIIntelReadBootParams(id, params);
+	controller->HCIRequestDelete(NULL, id);
+    if ( ret )
+        return ret;
 
     /* It is required that every single firmware fragment is acknowledged
      * with a command complete event. If the boot parameters indicate
@@ -116,7 +131,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
      */
     if ( params->limitedCCE != 0x00 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Unsupported firmware loading method: %u!", params->limitedCCE);
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Unsupported firmware loading method: %u ****!", params->limitedCCE);
         return kIOReturnInvalid;
     }
 
@@ -125,7 +140,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(Blueto
      */
     if ( params->otpDeviceAddress.data[0] == 0 && params->otpDeviceAddress.data[1] == 0 && params->otpDeviceAddress.data[2] == 0 && params->otpDeviceAddress.data[3] == 0 && params->otpDeviceAddress.data[4] == 0 && params->otpDeviceAddress.data[5] == 0 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] No device address configured!");
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- No device address configured! ****");
         controller->mInvalidDeviceAddress = true;
     }
     
@@ -152,8 +167,8 @@ download:
      *
      */
     
-    err = GetFirmware(version, params, "sfi", &fwData);
-    if ( err )
+    ret = GetFirmware(version, params, "sfi", &fwData);
+    if ( ret )
     {
         if ( !controller->mBootloaderMode )
         {
@@ -162,12 +177,12 @@ download:
             setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
         }
-        return err;
+        return ret;
     }
 
     if ( fwData->getLength() < 644 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Size of firmware file is invalid: %u!", fwData->getLength());
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Size of firmware file is invalid: %u! ****", fwData->getLength());
         return kIOReturnUnsupported;
     }
 
@@ -190,7 +205,7 @@ download:
             /* Skip download if firmware has the same version */
             if ( controller->ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {
-                os_log(mInternalOSLogObject, "[IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] Firmware already loaded!");
+                os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****");
                 controller->mFirmwareLoaded = true;
                 setProperty("FirmwareLoaded", true);
                 return kIOReturnSuccess;
@@ -207,16 +222,16 @@ download:
      */
     if ( version->firmwareVariant == 0x23 )
     {
-        err = kIOReturnInvalid;
+        ret = kIOReturnInvalid;
         goto done;
     }
 
-    err = controller->SecureSendSFIRSAFirmwareHeader(inID, fwData);
-    if ( err )
+    ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
+    if ( ret )
         goto done;
 
-    err = controller->DownloadFirmwarePayload(inID, fwData, kIntelRSAHeaderLength);
-    if ( err )
+    ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
+    if ( ret )
         goto done;
 
     /* Before switching the device into operational mode and with that
@@ -230,11 +245,20 @@ download:
      * and thus just timeout if that happens and fail the setup
      * of this device.
      */
-    err = controller->WaitForFirmwareDownload(callTime, 5000);
-    if ( err == kIOReturnTimeout )
+    ret = controller->WaitForFirmwareDownload(callTime, 5000);
+    if ( ret == kIOReturnTimeout )
+	{
 done:
-        controller->ResetToBootloader(inID);
-    return err;
+		err = controller->HCIRequestCreate(&id);
+		if ( err )
+		{
+			REQUIRE_NO_ERR(err);
+			return err;
+		}
+		controller->ResetToBootloader(id);
+		controller->HCIRequestDelete(NULL, id);
+	}
+    return ret;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0)

@@ -63,9 +63,10 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(v
     return kIOReturnError;
 }
 
-IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
+IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
 {
     IOReturn err;
+	BluetoothHCIRequestID id;
     BluetoothHCICommandPacket cmd;
     BluetoothHCIEventPacketHeader * event = NULL;
     UInt8 * actualEvent;
@@ -155,7 +156,14 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
         return kIOReturnError;
     }
 
-    err = controller->SendRawHCICommand(inID, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
+	err = controller->HCIRequestCreate(&id);
+	if ( err )
+	{
+		REQUIRE_NO_ERR(err);
+		return err;
+	}
+    err = controller->SendRawHCICommand(id, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
+	controller->HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
@@ -166,9 +174,6 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(BluetoothHC
      * the firmware file. At fist, it checks the length and then
      * the contents of the event.
      */
-
-    if ( !StartInterruptPipeRead() )
-        return false;
 
     actualSize = mInterruptReadDataBuffer->getLength();
     actualEvent = (UInt8 *) mInterruptReadDataBuffer->getBytesNoCopy();

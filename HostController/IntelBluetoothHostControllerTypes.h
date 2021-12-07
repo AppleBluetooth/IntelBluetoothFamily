@@ -127,11 +127,12 @@ struct BluetoothIntelTLV
 {
     UInt8  type;
     UInt8  length;
-    UInt8 * value;
+    UInt8  value[];
 } __attribute__((packed));
 
 struct BluetoothIntelVersionInfo
 {
+	UInt8  status;
     UInt8  hardwarePlatform;
     UInt8  hardwareVariant;
     UInt8  hardwareRevision;
@@ -145,6 +146,7 @@ struct BluetoothIntelVersionInfo
 
 struct BluetoothIntelBootParams
 {
+	UInt8  status;
     UInt8  otpFormat;
     UInt8  otpContent;
     UInt8  otpPatch;
@@ -196,6 +198,7 @@ struct BluetoothIntelSecureSendResultEventParams
 
 struct BluetoothIntelOffloadUseCases
 {
+	UInt8  status;
     UInt8  preset[8];
 } __attribute__((packed));
 

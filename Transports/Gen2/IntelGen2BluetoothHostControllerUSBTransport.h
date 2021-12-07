@@ -34,7 +34,7 @@ public:
     virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
     
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName) APPLE_KEXT_OVERRIDE;
-    virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn DownloadFirmwareWL(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress) APPLE_KEXT_OVERRIDE;
     
     OSMetaClassDeclareReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 1);

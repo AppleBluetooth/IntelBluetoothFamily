@@ -38,18 +38,44 @@ public:
     virtual bool start( IOService * provider ) APPLE_KEXT_OVERRIDE;
     virtual void stop( IOService * provider ) APPLE_KEXT_OVERRIDE;
 
+	virtual bool InitializeTransportWL(IOService * provider) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn SendHCIRequest(UInt8 * buffer, IOByteCount size) APPLE_KEXT_OVERRIDE;
+
+	virtual void InjectCommandCompleteEvent(BluetoothHCICommandOpCode opCode);
+
+	virtual bool PostSecureSendBulkPipeRead();
+	static void SecureSendBulkInReadHandler(void * owner, void * parameter, IOReturn status, uint32_t bytesTransferred);
+
+	virtual IOReturn TransportSecureSendBulkOutWrite(UInt8 * buffer, UInt32 size);
+	virtual IOReturn SecureSendBulkOutWrite(IOMemoryDescriptor * memDescriptor);
+
+#if 0
+	virtual bool ConfigurePM(IOService * provider) APPLE_KEXT_OVERRIDE;
+#endif
+	
+	virtual void systemWillShutdownWL(IOOptionBits options, void * parameter) APPLE_KEXT_OVERRIDE;
+	virtual bool ControllerSupportWoBT() APPLE_KEXT_OVERRIDE;
+
+	virtual UInt8 GetRadioPowerState() APPLE_KEXT_OVERRIDE;
+	virtual void SetRadioPowerState(UInt8 state) APPLE_KEXT_OVERRIDE;
+
+	virtual bool SearchForUSBCompositeDriver(IOUSBHostDevice * device);
+	virtual bool CompositeDeviceAppears();
+
+	virtual bool NeedToTurnOnUSBDebug() APPLE_KEXT_OVERRIDE;
+
     virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
     static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
     virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
-    virtual IOReturn PatchFirmware(BluetoothHCIRequestID inID, OSData * fwData, UInt8 ** fwPtr, int * disablePatch);
-    virtual IOReturn DownloadFirmware(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
+    virtual IOReturn PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch);
+    virtual IOReturn DownloadFirmware(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
     static IOReturn DownloadFirmwareAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
-    virtual IOReturn DownloadFirmwareWL(BluetoothHCIRequestID inID, void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
+    virtual IOReturn DownloadFirmwareWL(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
 
     virtual IOReturn ParseVersionInfoTLV(BluetoothIntelVersionInfoTLV * version, UInt8 * data, IOByteCount dataSize);
-    
+
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 1);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 2);
@@ -76,10 +102,11 @@ public:
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostControllerUSBTransport, 23);
     
 protected:
-    OpenFirmwareManager * mFirmware;
-	FirmwareDescriptor * mFirmwareCandidates;
-	int mNumFirmwares;
-    
+    OpenFirmwareManager *      mFirmware;
+	FirmwareDescriptor *       mFirmwareCandidates;
+	int	                       mNumFirmwares;
+	UInt8	   				   mRadioPowerState;
+
     struct ExpansionData
     {
         void * mRefCon;
@@ -88,3 +115,12 @@ protected:
 };
 
 #endif
+
+/*
+ BroadcomBluetoothHostControllerUSBTransport::ProcessPowerStateChangeAfterResumed(char *)
+ BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForSleep(void)
+ BroadcomBluetoothHostControllerUSBTransport::PrepareControllerWakeFromSleep(void)
+ BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForPowerOff(bool)
+ BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForPowerOn(void)
+ BroadcomBluetoothHostControllerUSBTransport::ReConfigure(void)
+ */
