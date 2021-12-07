@@ -51,7 +51,6 @@ jobs:
       run: |
         mkdir Artifacts
         XCBUILD_PATH="build/Build/Products/"
-        cp LICENSE ./Artifacts
         cd $XCBUILD_PATH
         while read -r tgt ; do
           zip -r IntelBluetoothFamily-${tgt// /_}-v${VER}-alpha-${SHORT_SHA}.zip "$tgt"/IntelBluetoothFamily.kext
