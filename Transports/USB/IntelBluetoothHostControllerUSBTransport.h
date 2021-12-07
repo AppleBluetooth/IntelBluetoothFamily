@@ -62,7 +62,9 @@ public:
 	virtual bool SearchForUSBCompositeDriver(IOUSBHostDevice * device);
 	virtual bool CompositeDeviceAppears();
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 	virtual bool NeedToTurnOnUSBDebug() APPLE_KEXT_OVERRIDE;
+#endif
 
     virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
     static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);

@@ -295,7 +295,11 @@ FAIL:
 			that->mHardResetState = 2;
 			that->mBluetoothController->mHardResetPerformed = true;
 			os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset() ****");
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_15
 			that->HardReset();
+#else
+			that->PerformHardReset();
+#endif
 		}
 	}
 
@@ -345,7 +349,13 @@ FAIL:
 		os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnNotResponding or kUSBHostReturnPipeStalled -- dataSize = %u -- inTarget = 0x%04x ****\n", dataSize, that->ConvertAddressToUInt32(that));
 
 		if ( that->mBluetoothController )
+		{
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 			that->mBluetoothController->BroadcastNotification(11, kIOBluetoothHCIControllerConfigStateUninitialized, kIOBluetoothHCIControllerConfigStateUninitialized);
+#else
+			that->mBluetoothController->BroadcastConfigStateChangeNotification(kIOBluetoothHCIControllerConfigStateUninitialized, kIOBluetoothHCIControllerConfigStateUninitialized);
+#endif
+		}
 
 		if ( inStatus == kIOReturnNotResponding )
 		{
@@ -382,7 +392,11 @@ FAIL:
 				that->mBluetoothController->mHardResetPerformed = 1;
 				BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In Read -- Hardware Reset");
 				os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset()\n");
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_15
 				that->HardReset();
+#else
+				that->PerformHardReset();
+#endif
 			}
 			goto ABORT;
 		}
@@ -606,10 +620,12 @@ bool IntelBluetoothHostControllerUSBTransport::CompositeDeviceAppears()
 	return false;
 }
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 bool IntelBluetoothHostControllerUSBTransport::NeedToTurnOnUSBDebug()
 {
 	return false;
 }
+#endif
 
 IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size)
 {
