@@ -473,15 +473,62 @@ bool IntelBluetoothHostControllerUSBTransport::SupportNewIdlePolicy()
 
 bool IntelBluetoothHostControllerUSBTransport::ConfigurePM(IOService * policyMaker)
 {
-	if ( !super::ConfigurePM(policyMaker) )
-		return false;
+    IOService * provider;
+    int err;
+    uint8_t i;
+    
+    if ( !mBluetoothUSBHostDevice )
+      goto CONFIG_PM;
+    
+    provider = mBluetoothUSBHostDevice->getProvider();
+    if ( !provider )
+        return false;
+    
+    if ( provider->getProvider()->getProvider() )
+        mBluetoothUSBHub = OSDynamicCast(IOUSBHostDevice, provider->getProvider()->getProvider());
+        
+CONFIG_PM:
+    if ( !pm_vars )
+    {
+        PMinit();
+        policyMaker->joinPMtree(this);
+        if ( !pm_vars )
+            return false;
+    }
+    
+    mSupportPowerOff = true;
+    registerPowerDriver(this, powerStateArray, kIOBluetoothHCIControllerPowerStateOrdinalCount);
+    setProperty("SupportPowerOff", true);
+    
+    if ( mBluetoothFamily )
+    {
+        mBluetoothFamily->setProperty("TransportType", "USB");
+        mConrollerTransportType = kBluetoothTransportTypeUSB;
+    }
+  
+    if ( !mConfiguredPM && mCommandGate )
+    {
+        for (i = 0; i < 100; ++i)
+        {
+            err = TransportCommandSleep(&mConfiguredPM, 300, (char *) __FUNCTION__, true);
+            
+            if ( isInactive() || mConfiguredPM )
+                goto OVER;
+            
+            if ( err == THREAD_AWAKENED || (err == THREAD_TIMED_OUT && mConfiguredPM) )
+                goto OVER;
+        }
+        os_log(mInternalOSLogObject, "**** [IOBluetoothHostControllerUSBTransport][ConfigurePM] -- ERROR -- waited 30 seconds and still did not get the commandWakeup() notification -- 0x%04x ****\n", ConvertAddressToUInt32(this));
+        mConfiguredPM = true;
+    }
+    
+OVER:
+    BluetoothFamilyLogPacket(mBluetoothFamily, 251, "USB Low Power");
+    changePowerStateTo(1);
+    ReadyToGo(mConfiguredPM);
 
-	mSupportPowerOff = true;
-	//registerPowerDriver(this, powerStateArray, kIOBluetoothHCIControllerPowerStateOrdinalCount);
-	setProperty("SupportPowerOff", true);
-
-	SetRadioPowerState(4);
-	return true;
+    SetRadioPowerState(4);
+    return true;
 }
 
 void IntelBluetoothHostControllerUSBTransport::systemWillShutdownWL(IOOptionBits options, void * parameter)
