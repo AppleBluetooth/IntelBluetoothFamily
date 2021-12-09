@@ -602,6 +602,22 @@ bool IntelBluetoothHostController::InitializeHostControllerVariables(bool setup)
 	return true;
 }
 
+IOReturn IntelBluetoothHostController::SetTransportRadioPowerState(UInt8 inState)
+{
+	if ( !mBluetoothTransport )
+		return kIOReturnInvalid;
+	mBluetoothTransport->SetRadioPowerState(inState);
+	return kIOReturnSuccess;
+}
+
+IOReturn IntelBluetoothHostController::GetTransportRadioPowerState(UInt8 * outState)
+{
+	if ( !mBluetoothTransport )
+		return kIOReturnInvalid;
+	*outState = mBluetoothTransport->GetRadioPowerState();
+	return kIOReturnSuccess;
+}
+
 void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)
 {
     switch ( hardwareVariant )

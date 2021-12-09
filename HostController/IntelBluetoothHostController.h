@@ -68,7 +68,10 @@ public:
     virtual IOReturn SetupGen1Controller();
     virtual IOReturn SetupGen2Controller();
     virtual IOReturn SetupGen3Controller();
-	virtual bool     InitializeHostControllerVariables(bool) APPLE_KEXT_OVERRIDE;
+	virtual bool     InitializeHostControllerVariables(bool setup) APPLE_KEXT_OVERRIDE;
+
+	virtual IOReturn SetTransportRadioPowerState(UInt8 inState) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn GetTransportRadioPowerState(UInt8 * outState) APPLE_KEXT_OVERRIDE;
 
     virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);

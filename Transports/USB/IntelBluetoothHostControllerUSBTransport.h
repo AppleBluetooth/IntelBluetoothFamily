@@ -116,12 +116,3 @@ protected:
 };
 
 #endif
-
-/*
- BroadcomBluetoothHostControllerUSBTransport::ProcessPowerStateChangeAfterResumed(char *)
- BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForSleep(void)
- BroadcomBluetoothHostControllerUSBTransport::PrepareControllerWakeFromSleep(void)
- BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForPowerOff(bool)
- BroadcomBluetoothHostControllerUSBTransport::PrepareControllerForPowerOn(void)
- BroadcomBluetoothHostControllerUSBTransport::ReConfigure(void)
- */
