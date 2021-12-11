@@ -72,6 +72,7 @@ public:
 
 	virtual IOReturn SetTransportRadioPowerState(UInt8 inState) APPLE_KEXT_OVERRIDE;
 	virtual IOReturn GetTransportRadioPowerState(UInt8 * outState) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn CallPowerRadio(bool) APPLE_KEXT_OVERRIDE;
 
     virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);

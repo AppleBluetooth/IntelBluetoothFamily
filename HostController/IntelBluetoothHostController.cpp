@@ -618,6 +618,11 @@ IOReturn IntelBluetoothHostController::GetTransportRadioPowerState(UInt8 * outSt
 	return kIOReturnSuccess;
 }
 
+IOReturn IntelBluetoothHostController::CallPowerRadio(bool)
+{
+	return kIOReturnSuccess;
+}
+
 void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)
 {
     switch ( hardwareVariant )
@@ -1714,7 +1719,6 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelTurnOffDeviceLED(Bluetoo
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelWriteDDC(BluetoothHCIRequestID inID, UInt8 * data, UInt8 dataSize)
 {
     IOReturn err;
-	UInt8 status;
 
 	err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
 	if ( err )
@@ -1723,7 +1727,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelWriteDDC(BluetoothHCIReq
 		return err;
 	}
 
-	err = SendHCIRequestFormatted(inID, 0xFC8B, 1, &status, "Hbn", 0xFC8B, dataSize, dataSize, data);
+	err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbn", 0xFC8B, dataSize, dataSize, data); // we don't need the response for the Intel_Write_DDC command
     if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelWriteDDC] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****", 0xFC8B, err);
@@ -1953,4 +1957,3 @@ OSMetaClassDefineReservedUnused(IntelBluetoothHostController, 20)
 OSMetaClassDefineReservedUnused(IntelBluetoothHostController, 21)
 OSMetaClassDefineReservedUnused(IntelBluetoothHostController, 22)
 OSMetaClassDefineReservedUnused(IntelBluetoothHostController, 23)
-

@@ -51,6 +51,7 @@ public:
 
 	virtual bool SupportNewIdlePolicy() APPLE_KEXT_OVERRIDE;
 	virtual bool ConfigurePM(IOService * provider) APPLE_KEXT_OVERRIDE;
+	virtual IOReturn CallPowerManagerChangePowerStateTo(unsigned long ordinal, char *) APPLE_KEXT_OVERRIDE;
 	
 	virtual void systemWillShutdownWL(IOOptionBits options, void * parameter) APPLE_KEXT_OVERRIDE;
 	virtual bool ControllerSupportWoBT() APPLE_KEXT_OVERRIDE;

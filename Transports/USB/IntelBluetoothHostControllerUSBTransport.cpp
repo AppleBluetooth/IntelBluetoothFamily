@@ -27,7 +27,7 @@
 static IOPMPowerState powerStateArray[kIOBluetoothHCIControllerPowerStateOrdinalCount] =
 {
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{1, kIOPMInitialDeviceState, kIOPMPowerOn, kIOPMInitialDeviceState, 0, 0, 0, 0, 0, 0, 0, 0},
+	{1, kIOPMLowPower, kIOPMPowerOn, kIOPMLowPower, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1, kIOPMDeviceUsable, kIOPMPowerOn, kIOPMPowerOn, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
@@ -471,6 +471,29 @@ bool IntelBluetoothHostControllerUSBTransport::SupportNewIdlePolicy()
 	return setProperty("SupportNewIdlePolicy", true);
 }
 
+IOReturn IntelBluetoothHostControllerUSBTransport::CallPowerManagerChangePowerStateTo(unsigned long ordinal, char * name)
+{
+	if ( mBluetoothController )
+	{
+		mBluetoothController->SetChangingPowerState(true);
+		if ( mSupportNewIdlePolicy )
+			mBluetoothController->ChangeIdleTimerTime((char *) __FUNCTION__, mBluetoothController->mNewIdleTime);
+	}
+	mCurrentPMMethod = 4;
+
+	switch (ordinal)
+	{
+		case kIOBluetoothHCIControllerPowerStateOrdinalOff:
+			return changePowerStateToPriv(0);
+
+		case kIOBluetoothHCIControllerPowerStateOrdinalOn:
+			return changePowerStateToPriv(1);
+
+		default:
+			return kIOPMNoErr;
+	}
+}
+
 bool IntelBluetoothHostControllerUSBTransport::ConfigurePM(IOService * policyMaker)
 {
     IOService * provider;
@@ -527,7 +550,7 @@ OVER:
     changePowerStateTo(1);
     ReadyToGo(mConfiguredPM);
 
-    SetRadioPowerState(4);
+    SetRadioPowerState(kRadioPoweredOn);
     return true;
 }
 
