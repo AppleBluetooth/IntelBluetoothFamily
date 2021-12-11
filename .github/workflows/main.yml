@@ -61,7 +61,7 @@ jobs:
     - name: Generate Release Notes
       run: |
         echo '***This alpha version is for testing only. It is not yet ready for daily use. Use at your own risk.***' > ReleaseNotes.md
-        echo '### Change Log:' > ReleaseNotes.md
+        echo '### Change Log:' >> ReleaseNotes.md
         NON_ALPHA_TAG="$(git tag -l | grep -v 'alpha' | tail -1)"
         if [[ -z ${NON_ALPHA_TAG} ]]; then
           RANGE="HEAD"
