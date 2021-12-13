@@ -30,8 +30,8 @@ bool IntelGen3BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-	mFirmwareCandidates = fwCandidates;
-	mNumFirmwares = fwCount;
+    mFirmwareCandidates = fwCandidates;
+    mNumFirmwares = fwCount;
     setProperty("ActiveBluetoothControllerVendor", "Intel - New Bootloader");
     return true;
 }
@@ -52,12 +52,12 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
 {
     BluetoothIntelTLV * tlv;
 
-	if ( !version || !data )
-		return kIOReturnInvalid;
+    if ( !version || !data )
+        return kIOReturnInvalid;
 
-	/* Consume Command Complete Status field */
-	--dataSize;
-	++data;
+    /* Consume Command Complete Status field */
+    --dataSize;
+    ++data;
 
     /* Event parameters contatin multiple TLVs. Read each of them
      * and only keep the required data. Also, it use existing legacy
@@ -70,7 +70,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
 
         /* Make sure there is enough data */
         if ( dataSize < tlv->length + sizeof(BluetoothIntelTLV) )
-			break;
+            break;
 
         switch ( tlv->type )
         {
@@ -142,7 +142,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
                 /* Ignore rest of information */
                 break;
         }
-        
+
         /* consume the current tlv and move to next */
         dataSize -= (tlv->length + sizeof(BluetoothIntelTLV));
         data     += (tlv->length + sizeof(BluetoothIntelTLV));
@@ -162,7 +162,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     BluetoothIntelVersionInfoTLV * version = (BluetoothIntelVersionInfoTLV *) ver;
     OSData * fwData;
     UInt32 cssHeaderVersion;
-	BluetoothHCIRequestID id;
+    BluetoothHCIRequestID id;
     
     if ( !version || !bootAddress )
         return kIOReturnInvalid;
@@ -183,14 +183,14 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( version->imageType == 0x03 )
     {
         controller->mBootloaderMode = false;
-		err = controller->HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = controller->HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         controller->CheckDeviceAddress(id);
-		controller->HCIRequestDelete(NULL, id);
+        controller->HCIRequestDelete(NULL, id);
     }
 
     /* If the OTP has no valid Bluetooth device address, then there will
@@ -334,17 +334,17 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     ret = controller->WaitForFirmwareDownload(callTime, 5000);
     if ( ret == kIOReturnTimeout )
-	{
+    {
 done:
-		err = controller->HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = controller->HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         controller->ResetToBootloader(id);
-		controller->HCIRequestDelete(NULL, id);
-	}
+        controller->HCIRequestDelete(NULL, id);
+    }
     return ret;
 }
 

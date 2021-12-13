@@ -14,8 +14,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelGen1BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
-		5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen1BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
+		5040DB1627408FCF00D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelGen1BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; usesTabs = 0; };
+		5040DB1727408FD500D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen1BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		5040DB232740921000D2B548 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen1FirmwareBinary.cpp; path = "$(SYMROOT)/../Intermediates.noindex/Firmwares/Gen1FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
 		50A4D73D273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen1BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +50,7 @@
 				50A4D744273FB35F00ABE8E1 /* Info.plist */,
 				50A4D73E273FB35F00ABE8E1 /* Products */,
 				5040DB222740920F00D2B548 /* Frameworks */,
+				BC8F38782767D38000CEEA29 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -59,6 +60,14 @@
 				50A4D73D273FB35F00ABE8E1 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BC8F38782767D38000CEEA29 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				5040DB7D2740F38400D2B548 /* Gen1FirmwareBinary.cpp */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

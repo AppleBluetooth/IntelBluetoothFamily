@@ -14,8 +14,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5040DB1A2740904D00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelGen3BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
-		5040DB1B2740905200D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen3BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
+		5040DB1A2740904D00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelGen3BluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; usesTabs = 0; };
+		5040DB1B2740905200D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelGen3BluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		5040DB1D274090FA00D2B548 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		50A4D73D273FB35F00ABE8E1 /* IntelGen3BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen3BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A4D744273FB35F00ABE8E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -50,6 +50,7 @@
 				50A4D744273FB35F00ABE8E1 /* Info.plist */,
 				50A4D73E273FB35F00ABE8E1 /* Products */,
 				5040DB1C274090FA00D2B548 /* Frameworks */,
+				BC8F387B2767D38000CEEA29 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -59,6 +60,14 @@
 				50A4D73D273FB35F00ABE8E1 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BC8F387B2767D38000CEEA29 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				50FFE3752741000C00176708 /* Gen3FirmwareBinary.cpp */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -30,8 +30,8 @@ bool IntelGen2BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-	mFirmwareCandidates = fwCandidates;
-	mNumFirmwares = fwCount;
+    mFirmwareCandidates = fwCandidates;
+    mNumFirmwares = fwCount;
     setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy Bootloader");
     return true;
 }
@@ -71,7 +71,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     UInt32 callTime;
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     OSData * fwData;
-	BluetoothHCIRequestID id;
+    BluetoothHCIRequestID id;
 
     if ( !version || !params )
         return kIOReturnInvalid;
@@ -92,14 +92,14 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( version->firmwareVariant == 0x23 )
     {
         controller->mBootloaderMode = false;
-		err = controller->HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = controller->HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         controller->CheckDeviceAddress(id);
-		controller->HCIRequestDelete(NULL, id);
+        controller->HCIRequestDelete(NULL, id);
 
         /* SfP and WsP don't seem to update the firmware version on file
          * so version checking is currently possible.
@@ -114,14 +114,14 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     /* Read the secure boot parameters to identify the operating
      * details of the bootloader.
      */
-	err = controller->HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = controller->HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     ret = controller->BluetoothHCIIntelReadBootParams(id, params);
-	controller->HCIRequestDelete(NULL, id);
+    controller->HCIRequestDelete(NULL, id);
     if ( ret )
         return ret;
 
@@ -247,17 +247,17 @@ download:
      */
     ret = controller->WaitForFirmwareDownload(callTime, 5000);
     if ( ret == kIOReturnTimeout )
-	{
+    {
 done:
-		err = controller->HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		controller->ResetToBootloader(id);
-		controller->HCIRequestDelete(NULL, id);
-	}
+        err = controller->HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        controller->ResetToBootloader(id);
+        controller->HCIRequestDelete(NULL, id);
+    }
     return ret;
 }
 

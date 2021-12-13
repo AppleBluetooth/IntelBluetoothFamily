@@ -38,32 +38,32 @@ public:
     virtual bool start( IOService * provider ) APPLE_KEXT_OVERRIDE;
     virtual void stop( IOService * provider ) APPLE_KEXT_OVERRIDE;
 
-	virtual bool InitializeTransportWL(IOService * provider) APPLE_KEXT_OVERRIDE;
-	virtual IOReturn SendHCIRequest(UInt8 * buffer, IOByteCount size) APPLE_KEXT_OVERRIDE;
+    virtual bool InitializeTransportWL(IOService * provider) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn SendHCIRequest(UInt8 * buffer, IOByteCount size) APPLE_KEXT_OVERRIDE;
 
-	virtual void InjectCommandCompleteEvent(BluetoothHCICommandOpCode opCode);
+    virtual void InjectCommandCompleteEvent(BluetoothHCICommandOpCode opCode);
 
-	virtual bool PostSecureSendBulkPipeRead();
-	static void SecureSendBulkInReadHandler(void * owner, void * parameter, IOReturn status, uint32_t bytesTransferred);
+    virtual bool PostSecureSendBulkPipeRead();
+    static void SecureSendBulkInReadHandler(void * owner, void * parameter, IOReturn status, uint32_t bytesTransferred);
 
-	virtual IOReturn TransportSecureSendBulkOutWrite(UInt8 * buffer, UInt32 size);
-	virtual IOReturn SecureSendBulkOutWrite(IOMemoryDescriptor * memDescriptor);
+    virtual IOReturn TransportSecureSendBulkOutWrite(UInt8 * buffer, UInt32 size);
+    virtual IOReturn SecureSendBulkOutWrite(IOMemoryDescriptor * memDescriptor);
 
-	virtual bool SupportNewIdlePolicy() APPLE_KEXT_OVERRIDE;
-	virtual bool ConfigurePM(IOService * provider) APPLE_KEXT_OVERRIDE;
-	virtual IOReturn CallPowerManagerChangePowerStateTo(unsigned long ordinal, char *) APPLE_KEXT_OVERRIDE;
-	
-	virtual void systemWillShutdownWL(IOOptionBits options, void * parameter) APPLE_KEXT_OVERRIDE;
-	virtual bool ControllerSupportWoBT() APPLE_KEXT_OVERRIDE;
+    virtual bool SupportNewIdlePolicy() APPLE_KEXT_OVERRIDE;
+    virtual bool ConfigurePM(IOService * provider) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn CallPowerManagerChangePowerStateTo(unsigned long ordinal, char *) APPLE_KEXT_OVERRIDE;
 
-	virtual UInt8 GetRadioPowerState() APPLE_KEXT_OVERRIDE;
-	virtual void SetRadioPowerState(UInt8 state) APPLE_KEXT_OVERRIDE;
+    virtual void systemWillShutdownWL(IOOptionBits options, void * parameter) APPLE_KEXT_OVERRIDE;
+    virtual bool ControllerSupportWoBT() APPLE_KEXT_OVERRIDE;
 
-	virtual bool SearchForUSBCompositeDriver(IOUSBHostDevice * device);
-	virtual bool CompositeDeviceAppears();
+    virtual UInt8 GetRadioPowerState() APPLE_KEXT_OVERRIDE;
+    virtual void SetRadioPowerState(UInt8 state) APPLE_KEXT_OVERRIDE;
+
+    virtual bool SearchForUSBCompositeDriver(IOUSBHostDevice * device);
+    virtual bool CompositeDeviceAppears();
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
-	virtual bool NeedToTurnOnUSBDebug() APPLE_KEXT_OVERRIDE;
+    virtual bool NeedToTurnOnUSBDebug() APPLE_KEXT_OVERRIDE;
 #endif
 
     virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
@@ -105,9 +105,9 @@ public:
     
 protected:
     OpenFirmwareManager *      mFirmware;
-	FirmwareDescriptor *       mFirmwareCandidates;
-	int	                       mNumFirmwares;
-	UInt8	   				   mRadioPowerState;
+    FirmwareDescriptor *       mFirmwareCandidates;
+    int                        mNumFirmwares;
+    UInt8                      mRadioPowerState;
 
     struct ExpansionData
     {

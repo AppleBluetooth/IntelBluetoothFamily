@@ -30,8 +30,8 @@ bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
     if ( !super::start(provider) )
         return false;
 
-	mFirmwareCandidates = fwCandidates;
-	mNumFirmwares = fwCount;
+    mFirmwareCandidates = fwCandidates;
+    mNumFirmwares = fwCount;
     setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy ROM");
     return true;
 }
@@ -66,7 +66,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(v
 IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch)
 {
     IOReturn err;
-	BluetoothHCIRequestID id;
+    BluetoothHCIRequestID id;
     BluetoothHCICommandPacket cmd;
     BluetoothHCIEventPacketHeader * event = NULL;
     UInt8 * actualEvent;
@@ -156,20 +156,20 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
         return kIOReturnError;
     }
 
-	err = controller->HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = controller->HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = controller->SendRawHCICommand(id, (char *) &cmd, cmd.dataSize + kBluetoothHCICommandPacketHeaderSize, NULL, 0);
-	controller->HCIRequestDelete(NULL, id);
+    controller->HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
         return kIOReturnError;
     }
-     
+
     /* It ensures that the returned event matches the event data read from
      * the firmware file. At fist, it checks the length and then
      * the contents of the event.

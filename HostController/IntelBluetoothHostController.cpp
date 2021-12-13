@@ -36,47 +36,47 @@ bool IntelBluetoothHostController::init(IOBluetoothHCIController * family, IOBlu
     mExpansionData = IONewZero(ExpansionData, 1);
     if ( !mExpansionData )
         return false;
-	mVersionInfo = IONewZero(UInt8, kMaxHCIBufferLength * 4);
+    mVersionInfo = IONewZero(UInt8, kMaxHCIBufferLength * 4);
 
-	mValidLEStates = false;
-	mStrictDuplicateFilter = false;
-	mSimultaneousDiscovery = false;
-	mDiagnosticModeNotPersistent = false;
-	mWidebandSpeechSupported = false;
-	mInvalidDeviceAddress = false;
-	mIsLegacyROMDevice = false;
-	mBootloaderMode = false;
-	mBooting = false;
-	mDownloading = false;
-	mFirmwareLoaded = false;
-	mFirmwareLoadingFailed = false;
-	mBrokenLED = false;
-	mBrokenInitialNumberOfCommands = false;
-	mQualityReportSet = true;
+    mValidLEStates = false;
+    mStrictDuplicateFilter = false;
+    mSimultaneousDiscovery = false;
+    mDiagnosticModeNotPersistent = false;
+    mWidebandSpeechSupported = false;
+    mInvalidDeviceAddress = false;
+    mIsLegacyROMDevice = false;
+    mBootloaderMode = false;
+    mBooting = false;
+    mDownloading = false;
+    mFirmwareLoaded = false;
+    mFirmwareLoadingFailed = false;
+    mBrokenLED = false;
+    mBrokenInitialNumberOfCommands = false;
+    mQualityReportSet = true;
     return true;
 }
 
 void IntelBluetoothHostController::free()
 {
-	IOSafeDeleteNULL(mVersionInfo, UInt8, kMaxHCIBufferLength * 4);
+    IOSafeDeleteNULL(mVersionInfo, UInt8, kMaxHCIBufferLength * 4);
     IOSafeDeleteNULL(mExpansionData, ExpansionData, 1);
     super::free();
 }
 
 bool IntelBluetoothHostController::start(IOService * provider)
 {
-	if ( !super::start(provider) )
-		return false;
-	mSupportConcurrentCreateConnection = false;
-	return true;
+    if ( !super::start(provider) )
+        return false;
+    mSupportConcurrentCreateConnection = false;
+    return true;
 }
 
 bool IntelBluetoothHostController::InitializeController()
 {
-	mBluetoothTransport->SetRemoteWakeUp(true);
-	mControllerPowerOptions |= 0x0F;
-	SetControllerPowerOptions(mControllerPowerOptions);
-	SetControllerFeatureFlags(GetControllerFeatureFlags() | 0x06);
+    mBluetoothTransport->SetRemoteWakeUp(true);
+    mControllerPowerOptions |= 0x0F;
+    SetControllerPowerOptions(mControllerPowerOptions);
+    SetControllerFeatureFlags(GetControllerFeatureFlags() | 0x06);
     return true;
 }
 
@@ -107,10 +107,10 @@ IOReturn IntelBluetoothHostController::SetupController()
         err = CallBluetoothHCIReset(false);
 #endif
         if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
     }
 
     setConfigState(kIOBluetoothHCIControllerConfigStateKernelPostResetSetupPending);
@@ -158,11 +158,11 @@ SETUP_GEN2:
                 err = kIOReturnInvalid;
         }
 
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         goto COMPLETE;
     }
 
@@ -186,21 +186,21 @@ SETUP_GEN2:
             return err;
         goto SETUP_GEN2;
     }
-	else if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    else if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
 
 COMPLETE:
-	/* Set the event mask for Intel specific vendor events. This enables
-	 * a few extra events that are useful during general operation. It
-	 * does not enable any debugging related events.
-	 *
-	 * The device will function correctly without these events enabled
-	 * and thus no need to fail the setup.
-	 */
-	CallBluetoothHCIIntelSetEventMask(false);
+    /* Set the event mask for Intel specific vendor events. This enables
+     * a few extra events that are useful during general operation. It
+     * does not enable any debugging related events.
+     *
+     * The device will function correctly without these events enabled
+     * and thus no need to fail the setup.
+     */
+    CallBluetoothHCIIntelSetEventMask(false);
 
     err = SetupGeneralController();
     if ( err && mBluetoothTransport )
@@ -227,14 +227,14 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     UInt8 * fwPtr;
     BluetoothHCIRequestID id;
     int disablePatch;
-	IntelGen1BluetoothHostControllerUSBTransport * transport = (IntelGen1BluetoothHostControllerUSBTransport *) mBluetoothTransport;
-	if ( !transport )
-	{
-		REQUIRE("( transport != NULL )");
-		return kIOReturnError;
-	}
+    IntelGen1BluetoothHostControllerUSBTransport * transport = (IntelGen1BluetoothHostControllerUSBTransport *) mBluetoothTransport;
+    if ( !transport )
+    {
+        REQUIRE("( transport != NULL )");
+        return kIOReturnError;
+    }
 
-	mGeneration = 1;
+    mGeneration = 1;
     mIsLegacyROMDevice = true;
 
     /* Apply the device specific HCI quirks
@@ -277,12 +277,12 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
      * firmware patch data and configuration parameters.
      */
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = BluetoothHCIIntelEnterManufacturerMode(id);
     HCIRequestDelete(NULL, id);
     if ( err )
@@ -319,12 +319,12 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
             /* Patching failed. Disable the manufacturer mode with reset and
              * deactivate the downloaded firmware patches.
              */
-			err = HCIRequestCreate(&id);
-			if ( err )
-			{
-				REQUIRE_NO_ERR(err);
-				return err;
-			}
+            err = HCIRequestCreate(&id);
+            if ( err )
+            {
+                REQUIRE_NO_ERR(err);
+                return err;
+            }
             err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches);
             HCIRequestDelete(NULL, id);
             if ( err )
@@ -338,12 +338,12 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     if ( disablePatch )
     {
         /* Disable the manufacturer mode without reset */
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
         HCIRequestDelete(NULL, id);
         if ( err )
@@ -356,12 +356,12 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     /* Patching completed successfully and disable the manufacturer mode
      * with reset and activate the downloaded firmware patches.
      */
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionResetActivatePatches);
     HCIRequestDelete(NULL, id);
     if ( err )
@@ -378,12 +378,12 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
 
 complete:
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     CheckDeviceAddress(id);
     HCIRequestDelete(NULL, id);
 
@@ -397,14 +397,14 @@ IOReturn IntelBluetoothHostController::SetupGen2Controller()
     BluetoothIntelBootParams params;
     UInt32 bootAddress;
     OSData * fwData;
-	IntelGen2BluetoothHostControllerUSBTransport * transport = (IntelGen2BluetoothHostControllerUSBTransport *) mBluetoothTransport;
-	if ( !transport )
-	{
-		REQUIRE("( transport != NULL )");
-		return kIOReturnError;
-	}
+    IntelGen2BluetoothHostControllerUSBTransport * transport = (IntelGen2BluetoothHostControllerUSBTransport *) mBluetoothTransport;
+    if ( !transport )
+    {
+        REQUIRE("( transport != NULL )");
+        return kIOReturnError;
+    }
 
-	mGeneration = 2;
+    mGeneration = 2;
 
     if ( version->hardwareVariant == kBluetoothIntelHardwareVariantJfP || version->hardwareVariant == kBluetoothIntelHardwareVariantThP )
         mValidLEStates = true;
@@ -428,7 +428,7 @@ IOReturn IntelBluetoothHostController::SetupGen2Controller()
 
     /* controller is already having an operational firmware */
     if ( version->firmwareVariant == 0x23 )
-		return kIOReturnSuccess;
+        return kIOReturnSuccess;
 
     err = BootDevice(bootAddress);
     if ( err )
@@ -436,12 +436,12 @@ IOReturn IntelBluetoothHostController::SetupGen2Controller()
 
     mBootloaderMode = false;
 
-	/* Once the device is running in operational mode, it needs to
-	 * apply the device configuration (DDC) parameters.
-	 *
-	 * The device can work without DDC parameters, so even if it
-	 * fails to load the file, no need to fail the setup.
-	 */
+    /* Once the device is running in operational mode, it needs to
+     * apply the device configuration (DDC) parameters.
+     *
+     * The device can work without DDC parameters, so even if it
+     * fails to load the file, no need to fail the setup.
+     */
     err = transport->GetFirmware(version, &params, "ddc", &fwData);
     if ( !err )
         LoadDDCConfig(fwData);
@@ -467,17 +467,17 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
     OSData * fwData;
     UInt32 bootAddress;
 
-	if ( !mBluetoothTransport )
-		return kIOReturnError;
+    if ( !mBluetoothTransport )
+        return kIOReturnError;
 
-	IntelGen3BluetoothHostControllerUSBTransport * transport = (IntelGen3BluetoothHostControllerUSBTransport *) mBluetoothTransport;
-	if ( !transport )
-	{
-		REQUIRE("( transport != NULL )");
-		return kIOReturnError;
-	}
+    IntelGen3BluetoothHostControllerUSBTransport * transport = (IntelGen3BluetoothHostControllerUSBTransport *) mBluetoothTransport;
+    if ( !transport )
+    {
+        REQUIRE("( transport != NULL )");
+        return kIOReturnError;
+    }
 
-	err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
+    err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!\n");
@@ -504,7 +504,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
         case kBluetoothIntelHardwareVariantHrP:
         case kBluetoothIntelHardwareVariantCcP:
             os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] This controller is not an Intel new bootloader device!!!");
-			mGeneration = 2;
+            mGeneration = 2;
             return kIOReturnUnsupported;
 
         case kBluetoothIntelHardwareVariantSlr:
@@ -513,7 +513,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
         case kBluetoothIntelHardwareVariantTyP:
         case kBluetoothIntelHardwareVariantSlrF:
 
-			os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Now we are actually setting up!!!\n");
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Now we are actually setting up!!!\n");
 
             /* Display version information of TLV type */
             PrintVersionInfo(&version);
@@ -539,24 +539,24 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
             if ( err )
                 return err;
 
-			os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] transport->DownloadFirmware() succeeded!!!\n");
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] transport->DownloadFirmware() succeeded!!!\n");
 
             /* check if controller is already having an operational firmware */
             if ( version.imageType == 0x03 )
-				return kIOReturnSuccess;
+                return kIOReturnSuccess;
 
             err = BootDevice(bootAddress);
             if ( err )
                 return err;
 
-			mBootloaderMode = false;
+            mBootloaderMode = false;
 
-			/* Once the device is running in operational mode, it needs to
-			 * apply the device configuration (DDC) parameters.
-			 *
-			 * The device can work without DDC parameters, so even if it
-			 * fails to load the file, no need to fail the setup.
-			 */
+            /* Once the device is running in operational mode, it needs to
+             * apply the device configuration (DDC) parameters.
+             *
+             * The device can work without DDC parameters, so even if it
+             * fails to load the file, no need to fail the setup.
+             */
             err = transport->GetFirmware(&version, NULL, "ddc", &fwData);
             if ( !err )
                 LoadDDCConfig(fwData);
@@ -565,19 +565,19 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
             ConfigureOffload();
 
             SetQualityReport(mQualityReportSet);
-			mQualityReportSet = false;
+            mQualityReportSet = false;
 
             /* Read the Intel version information after loading the FW  */
-			err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
+            err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
             if ( err )
                 return err;
 
-			err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
-			if ( err )
-			{
-				os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!\n");
-				return err;
-			}
+            err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
+            if ( err )
+            {
+                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!\n");
+                return err;
+            }
 
             PrintVersionInfo(&version);
 
@@ -591,36 +591,36 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
 
 bool IntelBluetoothHostController::InitializeHostControllerVariables(bool setup)
 {
-	if ( !super::InitializeHostControllerVariables(setup) )
-		return false;
+    if ( !super::InitializeHostControllerVariables(setup) )
+        return false;
 
-	if ( mBluetoothTransport )
-		mSupportWoBT = mBluetoothTransport->ControllerSupportWoBT();
-	
-	setProperty("ActiveBluetoothControllerVendor", "Intel");
-	setProperty("BluetoothVendor", "Intel");
-	return true;
+    if ( mBluetoothTransport )
+        mSupportWoBT = mBluetoothTransport->ControllerSupportWoBT();
+
+    setProperty("ActiveBluetoothControllerVendor", "Intel");
+    setProperty("BluetoothVendor", "Intel");
+    return true;
 }
 
 IOReturn IntelBluetoothHostController::SetTransportRadioPowerState(UInt8 inState)
 {
-	if ( !mBluetoothTransport )
-		return kIOReturnInvalid;
-	mBluetoothTransport->SetRadioPowerState(inState);
-	return kIOReturnSuccess;
+    if ( !mBluetoothTransport )
+        return kIOReturnInvalid;
+    mBluetoothTransport->SetRadioPowerState(inState);
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::GetTransportRadioPowerState(UInt8 * outState)
 {
-	if ( !mBluetoothTransport )
-		return kIOReturnInvalid;
-	*outState = mBluetoothTransport->GetRadioPowerState();
-	return kIOReturnSuccess;
+    if ( !mBluetoothTransport )
+        return kIOReturnInvalid;
+    *outState = mBluetoothTransport->GetRadioPowerState();
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::CallPowerRadio(bool)
 {
-	return kIOReturnSuccess;
+    return kIOReturnSuccess;
 }
 
 void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVariant)
@@ -668,38 +668,27 @@ void IntelBluetoothHostController::ResetToBootloader(BluetoothHCIRequestID inID)
     IOSleep(150);
 }
 
-void IntelBluetoothHostController::HandleHardwareError(BluetoothHCIRequestID inID, UInt8 code)
+IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadExceptionInfo(BluetoothHCIRequestID inID, BluetoothIntelExceptionInfo * info)
 {
     IOReturn err;
-    char * buffer;
-    
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Hardware error: 0x%2.2x", code);
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
-        err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
-#else
-        err = CallBluetoothHCIReset(false);
-#endif
-    if ( err )
-        return;
-    
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Failed to prepare request for new command: 0x%x", err);
-        return;
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] Failed to prepare request for new command: 0x%x", err);
+        return err;
     }
 
-    buffer = IONewZero(char, 12);
-    err = SendHCIRequestFormatted(inID, 0xFC22, 12, buffer, "Hbb", 0xFC22, 1, 0x00);
+    err = SendHCIRequestFormatted(inID, 0xFC22, sizeof(BluetoothIntelExceptionInfo), info, "Hbb", 0xFC22, 1, 0x00);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] ### ERROR: opCode = 0x%04X -- send request failed -- Unable to obtain exception info: 0x%x", 0xFC22, err);
-        return;
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] ### ERROR: opCode = 0x%04X -- send request failed -- Unable to obtain exception info: 0x%x", 0xFC22, err);
+        return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][HandleHardwareError] Exception Info: %s", buffer);
-    IOSafeDeleteNULL(buffer, UInt8, 12);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] Exception Info: %s", info->info);
+
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::WriteDeviceAddress(BluetoothHCIRequestID inID, BluetoothDeviceAddress * inAddress)
@@ -736,14 +725,14 @@ IOReturn IntelBluetoothHostController::CheckDeviceAddress(BluetoothHCIRequestID 
         return err;
     }
 
-	os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Printing device address: 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
-	
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Printing device address: 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
+
     /* For some Intel based controllers, the default Bluetooth device
      * address 00:03:19:9E:8B:00 can be found. These controllers are
      * fully operational, but have the danger of duplicate addresses
      * and that in turn can cause problems with Bluetooth operation.
      */
-    if ( memcmp(&address, &defaultAddress, 6) )
+    if ( !memcmp(&address, &defaultAddress, 6) )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Default device address (%pMR) found!", &address);
         mInvalidDeviceAddress = true;
@@ -757,18 +746,18 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelReadVersionInfo(UInt
     IOReturn err;
     BluetoothHCIRequestID id;
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelReadVersionInfo(id, param, mVersionInfo);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelReadVersionInfo(id, param, mVersionInfo);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     HCIRequestDelete(NULL, id);
     
     return err;
@@ -914,12 +903,12 @@ IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
      /* Read the Intel supported features and if new exception formats
       * supported, need to load the additional DDC config to enable.
       */
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = BluetoothHCIIntelReadDebugFeatures(id, &features);
     HCIRequestDelete(NULL, id);
     if ( err )
@@ -991,12 +980,12 @@ IOReturn IntelBluetoothHostController::ConfigureOffload()
     BluetoothHCIRequestID id;
     BluetoothIntelOffloadUseCases cases;
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = BluetoothHCIIntelReadOffloadUseCases(id, &cases);
     HCIRequestDelete(NULL, id);
 
@@ -1050,12 +1039,12 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     callTime = mBluetoothFamily->GetCurrentTime();
     mBooting = true;
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
     err = BluetoothHCISendIntelReset(id, 0, true, false, 1, bootAddress);
     HCIRequestDelete(NULL, id);
     if ( err )
@@ -1063,12 +1052,12 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Soft reset failed: 0x%x", err);
 
 reset:
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         ResetToBootloader(id);
         HCIRequestDelete(NULL, id);
         return err;
@@ -1098,18 +1087,37 @@ reset:
 
 void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber)
 {
+    IOReturn err;
+    BluetoothHCIRequestID id;
+    BluetoothIntelExceptionInfo info;
 
     if ( inDataSize <= kBluetoothHCIEventPacketHeaderSize )
         return;
 
-	BluetoothHCIEventPacketHeader * event = (BluetoothHCIEventPacketHeader *) inDataPtr;
+    BluetoothHCIEventPacketHeader * event = (BluetoothHCIEventPacketHeader *) inDataPtr;
     if ( event->dataSize != inDataSize - sizeof(BluetoothHCIEventPacketHeader) )
         return;
 
+    if ( event->eventCode == kBluetoothHCIEventHardwareError )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ProcessEventDataWL] Received hardware error: 0x%2.2x\n", *(UInt8 *) (inDataPtr + kBluetoothHCIEventPacketHeaderSize));
+
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return;
+        }
+        err = BluetoothHCIIntelReadExceptionInfo(id, &info);
+        if ( err )
+            return;
+        HCIRequestDelete(NULL, id);
+    }
+
     if ( mBootloaderMode && event->dataSize > 0 && event->eventCode == 0xFF )
     {
-		UInt8 * param = inDataPtr + kBluetoothHCIEventPacketHeaderSize + 1;
-		UInt32 paramSize = inDataSize - kBluetoothHCIEventPacketHeaderSize - 1;
+        UInt8 * param = inDataPtr + kBluetoothHCIEventPacketHeaderSize + 1;
+        UInt32 paramSize = inDataSize - kBluetoothHCIEventPacketHeaderSize - 1;
 
         switch ( inDataPtr[2] )
         {
@@ -1151,64 +1159,64 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
         }
     }
 
-	super::ProcessEventDataWL(inDataPtr, inDataSize, sequenceNumber);
+    super::ProcessEventDataWL(inDataPtr, inDataSize, sequenceNumber);
 }
 
 bool IntelBluetoothHostController::SetHCIRequestRequireEvents(BluetoothHCICommandOpCode opCode, IOBluetoothHCIRequest * request)
 {
-	if ( !request )
-		return false;
+    if ( !request )
+        return false;
 
-	switch ( opCode )
-	{
-		case 0xFC01:
-		case 0xFC05:
-		case 0xFC09:
-		case 0xFC52:
-		case 0xFC86:
-		case 0xFC8B:
-		case 0xFCA1:
-		case 0xFCA6:
-			request->mExpectedEvent = 2; // command complete
-			request->mNumberOfExpectedExplicitCompleteEvents = 0;
-			return true;
+    switch ( opCode )
+    {
+        case 0xFC01:
+        case 0xFC05:
+        case 0xFC09:
+        case 0xFC52:
+        case 0xFC86:
+        case 0xFC8B:
+        case 0xFCA1:
+        case 0xFCA6:
+            request->mExpectedEvent = 2; // command complete
+            request->mNumberOfExpectedExplicitCompleteEvents = 0;
+            return true;
 
-		default:
-			return super::SetHCIRequestRequireEvents(opCode, request);
-	}
+        default:
+            return super::SetHCIRequestRequireEvents(opCode, request);
+    }
 }
 
 bool IntelBluetoothHostController::GetCompleteCodeForCommand(BluetoothHCICommandOpCode inOpCode, BluetoothHCIEventCode * outEventCode)
 {
-	BluetoothHCIEventCode eventCode;
+    BluetoothHCIEventCode eventCode;
 
-	switch ( inOpCode )
-	{
-		case 0xFC01:
-		case 0xFC05:
-		case 0xFC09:
-		case 0xFC52:
-		case 0xFC86:
-		case 0xFC8B:
-		case 0xFCA1:
-		case 0xFCA6:
-			eventCode = kBluetoothHCIEventCommandComplete;
-			break;
+    switch ( inOpCode )
+    {
+        case 0xFC01:
+        case 0xFC05:
+        case 0xFC09:
+        case 0xFC52:
+        case 0xFC86:
+        case 0xFC8B:
+        case 0xFCA1:
+        case 0xFCA6:
+            eventCode = kBluetoothHCIEventCommandComplete;
+            break;
 
-		default:
-			return super::GetCompleteCodeForCommand(inOpCode, outEventCode);
-	}
+        default:
+            return super::GetCompleteCodeForCommand(inOpCode, outEventCode);
+    }
 
-	if ( outEventCode )
-		*outEventCode = eventCode;
+    if ( outEventCode )
+        *outEventCode = eventCode;
 
-	return true;
+    return true;
 }
 
 IOReturn IntelBluetoothHostController::LoadDDCConfig(OSData * fwData)
 {
     IOReturn err;
-	BluetoothHCIRequestID id;
+    BluetoothHCIRequestID id;
     UInt8 * fwPtr;
     UInt8 cmdDataSize;
 
@@ -1221,16 +1229,16 @@ IOReturn IntelBluetoothHostController::LoadDDCConfig(OSData * fwData)
     {
         cmdDataSize = fwPtr[0] + sizeof(UInt8);
 
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
         err = BluetoothHCIIntelWriteDDC(id, fwPtr, cmdDataSize);
         if ( err )
             return err;
-		HCIRequestDelete(NULL, id);
+        HCIRequestDelete(NULL, id);
 
         fwPtr += cmdDataSize;
     }
@@ -1244,31 +1252,31 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSecureSend(UInt8 fragmen
 {
     IOReturn err;
     UInt8 fragmentSize;
-	BluetoothHCIRequestID id;
+    BluetoothHCIRequestID id;
 
     while ( paramSize > 0 )
     {
         fragmentSize = (paramSize > 252) ? 252 : paramSize;
 
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		err = PrepareRequestForNewCommand(id, NULL, 0xFFFF);
-		if ( err )
-		{
-			os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSecureSend] Failed to prepare request for new command: 0x%x", err);
-			return err;
-		}
-		err = SendHCIRequestFormatted(id, 0xFC09, 0, NULL, "Hbbn", 0xFC09, fragmentSize + 1, fragmentType, fragmentSize, param);
-		HCIRequestDelete(NULL, id);
+        err = HCIRequestCreate(&id);
         if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        err = PrepareRequestForNewCommand(id, NULL, 0xFFFF);
+        if ( err )
+        {
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSecureSend] Failed to prepare request for new command: 0x%x", err);
+            return err;
+        }
+        err = SendHCIRequestFormatted(id, 0xFC09, 0, NULL, "Hbbn", 0xFC09, fragmentSize + 1, fragmentType, fragmentSize, param);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
 
         paramSize -= fragmentSize;
         param += fragmentSize;
@@ -1301,7 +1309,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCISendIntelReset(BluetoothHCIRe
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelEnterManufacturerMode(BluetoothHCIRequestID inID)
 {
     IOReturn err;
-	UInt8 status;
+    UInt8 status;
     
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
@@ -1323,7 +1331,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelEnterManufacturerMode(Bl
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelExitManufacturerMode(BluetoothHCIRequestID inID, BluetoothIntelManufacturingExitResetOption resetOption)
 {
     IOReturn err;
-	UInt8 status;
+    UInt8 status;
     
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
@@ -1344,55 +1352,55 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelExitManufacturerMode(Blu
 
 IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetEventMask(bool debug)
 {
-	IOReturn err;
-	BluetoothHCIRequestID id;
+    IOReturn err;
+    BluetoothHCIRequestID id;
 
-	if ( mIsLegacyROMDevice )
-	{
-		err = HCIRequestCreate(&id);
-		if (err)
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		err = BluetoothHCIIntelEnterManufacturerMode(id);
-		HCIRequestDelete(NULL, id);
-		if ( err )
-			return err;
-	}
+    if ( mIsLegacyROMDevice )
+    {
+        err = HCIRequestCreate(&id);
+        if (err)
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        err = BluetoothHCIIntelEnterManufacturerMode(id);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+            return err;
+    }
 
-	err = HCIRequestCreate(&id);
-	if (err)
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelSetEventMask(id, debug);
-	HCIRequestDelete(NULL, id);
-	if ( err )
-		return err;
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelSetEventMask(id, debug);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
 
-	if ( mIsLegacyROMDevice )
-	{
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
-		HCIRequestDelete(NULL, id);
-		if ( err )
-			return err;
-	}
+    if ( mIsLegacyROMDevice )
+    {
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+            return err;
+    }
 
-	return kIOReturnSuccess;
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetEventMask(BluetoothHCIRequestID inID, bool debug)
 {
     IOReturn err;
-	UInt8 status;
+    UInt8 status;
     
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
@@ -1407,106 +1415,106 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetEventMask(BluetoothHC
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetEventMask] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x", 0xFC52, err);
         return err;
     }
-    
+
     return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetDiagnosticMode(bool enable)
 {
-	IOReturn err;
-	BluetoothHCIRequestID id;
+    IOReturn err;
+    BluetoothHCIRequestID id;
 
-	/* Legacy ROM device needs to be in the manufacturer mode to apply
-	 * diagnostic settings.
-	 */
-	if ( mIsLegacyROMDevice ) // This flag is set after reading the Intel version.
-	{
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		err = BluetoothHCIIntelEnterManufacturerMode(id);
-		HCIRequestDelete(NULL, id);
-		if ( err )
-			return err;
-	}
+    /* Legacy ROM device needs to be in the manufacturer mode to apply
+     * diagnostic settings.
+     */
+    if ( mIsLegacyROMDevice ) // This flag is set after reading the Intel version.
+    {
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        err = BluetoothHCIIntelEnterManufacturerMode(id);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+            return err;
+    }
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelSetDiagnosticMode(id, enable);
-	HCIRequestDelete(NULL, id);
-	if ( err )
-		return err;
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelSetDiagnosticMode(id, enable);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	BluetoothHCIIntelSetEventMask(id, enable);
-	HCIRequestDelete(NULL, id);
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    BluetoothHCIIntelSetEventMask(id, enable);
+    HCIRequestDelete(NULL, id);
 
-	if ( mIsLegacyROMDevice )
-	{
-		err = HCIRequestCreate(&id);
-		if ( err )
-		{
-			REQUIRE_NO_ERR(err);
-			return err;
-		}
-		err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
-		HCIRequestDelete(NULL, id);
-		if ( err )
-			return err;
-	}
+    if ( mIsLegacyROMDevice )
+    {
+        err = HCIRequestCreate(&id);
+        if ( err )
+        {
+            REQUIRE_NO_ERR(err);
+            return err;
+        }
+        err = BluetoothHCIIntelExitManufacturerMode(id, kBluetoothIntelManufacturingExitResetOptionsNoReset);
+        HCIRequestDelete(NULL, id);
+        if ( err )
+            return err;
+    }
 
-	return kIOReturnSuccess;
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDiagnosticMode(BluetoothHCIRequestID inID, bool enable)
 {
     IOReturn err;
-	UInt8 status;
-    
+    UInt8 status;
+
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] Failed to prepare request for new command: 0x%x", err);
         return err;
     }
-    
+
     if ( enable )
         err = SendHCIRequestFormatted(inID, 0xFC43, 1, &status, "Hbbbb", 0xFC43, 3, 0x03, 0x03, 0x03);
     else
         err = SendHCIRequestFormatted(inID, 0xFC43, 1, &status, "Hbbbb", 0xFC43, 3, 0x00, 0x00, 0x00);
-    
+
     if ( err ) // && err != -ENODATA
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x", 0xFC43, err);
         return err;
     }
-    
+
     return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadBootParams(BluetoothHCIRequestID inID, BluetoothIntelBootParams * params)
 {
     IOReturn err;
-    
+
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] Failed to prepare request for new command: 0x%x", err);
         return err;
     }
-    
+
     err = SendHCIRequestFormatted(inID, 0xFC0D, sizeof(BluetoothIntelBootParams), params, "Hb", 0xFC0D, 0);
     if ( err )
     {
@@ -1515,24 +1523,24 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadBootParams(Bluetooth
     }
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] Device revision: %u -- Secure boot: %s -- OTP lock: %s -- API lock: %s -- Debug lock: %s -- Minimum firmware build: %u week: %u year: %u", params->deviceRevisionID, params->secureBoot ? "enabled" : "disabled", params->otpLock ? "enabled" : "disabled", params->apiLock ? "enabled" : "disabled", params->debugLock ? "enabled" : "disabled", params->minFirmwareBuildNumber, params->minFirmwareBuildWeek, 2000 + params->minFirmwareBuildYear);
-    
+
     return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadVersionInfo(BluetoothHCIRequestID inID, UInt8 param, UInt8 * response)
 {
     IOReturn err;
-    
+
     if ( !response )
         return kIOReturnInvalid;
-    
+
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] Failed to prepare request for new command: 0x%x", err);
         return err;
     }
-    
+
     if ( param == 0x00 )
         err = SendHCIRequestFormatted(inID, 0xFC05, sizeof(BluetoothIntelVersionInfo), response, "Hb", 0xFC05, 0);
     else if ( param == 0xFF )
@@ -1542,7 +1550,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadVersionInfo(Bluetoot
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] Invalid parameter (0x%02X), should be either 0x00 or 0xFF.", param);
         return kIOReturnInvalid;
     }
-    
+
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x", 0xFC05, err);
@@ -1563,7 +1571,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] Failed to prepare request for new command: 0x%x", err);
         return err;
     }
-    
+
     /* Intel controller supports two pages, each page is of 128-bit
      * feature bit mask. And each bit defines specific feature support
      */
@@ -1574,7 +1582,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read supported features for page 1: 0x%x", 0xFCA6, err);
         return err;
     }
-    
+
     memcpy(features->page1, response + 3, sizeof(features->page1));
     IOSafeDeleteNULL(response, UInt8, sizeof(features->page1) + 3);
 
@@ -1584,9 +1592,9 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
 IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebugFeatures * features)
 {
     IOReturn err;
-	BluetoothHCIRequestID id;
-	UInt8 mask[11] = { 0x0a, 0x92, 0x02, 0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-	UInt8 period[5] = { 0x04, 0x91, 0x02, 0x05, 0x00 };
+    BluetoothHCIRequestID id;
+    UInt8 mask[11] = { 0x0a, 0x92, 0x02, 0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    UInt8 period[5] = { 0x04, 0x91, 0x02, 0x05, 0x00 };
 
     if ( !features )
     {
@@ -1600,44 +1608,44 @@ IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebu
         return kIOReturnSuccess;
     }
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelWriteDDC(id, mask, 11);
-	HCIRequestDelete(NULL, id);
-	if ( err )
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelWriteDDC(id, mask, 11);
+    HCIRequestDelete(NULL, id);
+    if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- BluetoothHCIIntelWriteDDC() failed -- telemetry DDC event mask not set: 0x%x ****\n", err);
         return err;
     }
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelWriteDDC(id, period, 5);
-	HCIRequestDelete(NULL, id);
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelWriteDDC(id, period, 5);
+    HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- BluetoothHCIIntelWriteDDC() failed -- periodicity for link statistics traces not set: 0x%x", err);
         return err;
     }
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
-	err = BluetoothHCIIntelSetLinkStatisticsEventsTracing(id, 0x02);
-	HCIRequestDelete(NULL, id);
-	if ( err )
-		return err;
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIIntelSetLinkStatisticsEventsTracing(id, 0x02);
+    HCIRequestDelete(NULL, id);
+    if ( err )
+        return err;
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x", 0x02, 0x7f);
 
@@ -1647,8 +1655,8 @@ IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebu
 IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDebugFeatures * features)
 {
     IOReturn err;
-	BluetoothHCIRequestID id;
-	UInt8 mask[11] = { 0x0a, 0x92, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    BluetoothHCIRequestID id;
+    UInt8 mask[11] = { 0x0a, 0x92, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
     if ( !features )
     {
@@ -1662,27 +1670,27 @@ IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDe
         return kIOReturnSuccess;
     }
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
 
-	err = BluetoothHCIIntelSetLinkStatisticsEventsTracing(id, 0x00);
-	HCIRequestDelete(NULL, id);
+    err = BluetoothHCIIntelSetLinkStatisticsEventsTracing(id, 0x00);
+    HCIRequestDelete(NULL, id);
     if ( err )
         return err;
 
-	err = HCIRequestCreate(&id);
-	if ( err )
-	{
-		REQUIRE_NO_ERR(err);
-		return err;
-	}
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
 
-	err = BluetoothHCIIntelWriteDDC(id, mask, 11);
-	HCIRequestDelete(NULL, id);
+    err = BluetoothHCIIntelWriteDDC(id, mask, 11);
+    HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetDebugFeatures] -- BluetoothHCIIntelWriteDDC() failed -- telemetry DDC event mask not set: 0x%x ****\n", err);
@@ -1697,7 +1705,7 @@ IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDe
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelTurnOffDeviceLED(BluetoothHCIRequestID inID)
 {
     IOReturn err;
-	UInt8 status;
+    UInt8 status;
 
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
@@ -1705,14 +1713,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelTurnOffDeviceLED(Bluetoo
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] Failed to prepare request for new command: 0x%x", err);
         return err;
     }
-    
+
     err = SendHCIRequestFormatted(inID, 0xFC3F, 1, &status, "Hb", 0xFC3F, 0);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] ### ERROR: opCode = 0x%04X -- send request failed -- failed to turn off device LED: 0x%x", 0xFC3F, err);
         return err;
     }
-    
+
     return kIOReturnSuccess;
 }
 
@@ -1720,14 +1728,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelWriteDDC(BluetoothHCIReq
 {
     IOReturn err;
 
-	err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
-	if ( err )
-	{
-		os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelWriteDDC] -- Failed to prepare request for new command: 0x%x ****\n", err);
-		return err;
-	}
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelWriteDDC] -- Failed to prepare request for new command: 0x%x ****\n", err);
+        return err;
+    }
 
-	err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbn", 0xFC8B, dataSize, dataSize, data); // we don't need the response for the Intel_Write_DDC command
+    err = SendHCIRequestFormatted(inID, 0xFC8B, 0, NULL, "Hbn", 0xFC8B, dataSize, dataSize, data); // we don't need the response for the Intel_Write_DDC command
     if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelWriteDDC] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****", 0xFC8B, err);
@@ -1760,29 +1768,28 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadOffloadUseCases(Blue
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetLinkStatisticsEventsTracing(BluetoothHCIRequestID inID, UInt8 param)
 {
-	IOReturn err;
-	UInt8 status;
+    IOReturn err;
+    UInt8 status;
 
-	err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
-	if ( err )
-	{
-		os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] Failed to prepare request for new command: 0x%x", err);
-		return err;
-	}
+    err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] Failed to prepare request for new command: 0x%x", err);
+        return err;
+    }
 
-	err = SendHCIRequestFormatted(inID, 0xFCA1, 1, &status, "Hbb", 0xFCA1, 1, param);
-	if ( err )
-	{
-		os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] ### ERROR: opCode = 0x%04X -- send request failed -- failed to %s tracing of link statistics events: 0x%x", 0xFCA1, param ? "enable" : "disable", err);
-		return err;
-	}
+    err = SendHCIRequestFormatted(inID, 0xFCA1, 1, &status, "Hbb", 0xFCA1, 1, param);
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] ### ERROR: opCode = 0x%04X -- send request failed -- failed to %s tracing of link statistics events: 0x%x", 0xFCA1, param ? "enable" : "disable", err);
+        return err;
+    }
 
-	return kIOReturnSuccess;
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::DownloadFirmwarePayload(OSData * fwData, size_t offset)
 {
-	os_log(mInternalOSLogObject, "IntelBluetoothHostController::DownloadFirmwarePayload\n");
     IOReturn err;
     BluetoothHCICommandPacket cmd;
     UInt8 * fwPtr;
@@ -1826,7 +1833,6 @@ IOReturn IntelBluetoothHostController::DownloadFirmwarePayload(OSData * fwData, 
 
 IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * fwData)
 {
-	os_log(mInternalOSLogObject, "IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader\n");
     IOReturn err;
 
     /* Start the firmware download transaction with the Init fragment
@@ -1865,7 +1871,6 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
 
 IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData * fwData)
 {
-	os_log(mInternalOSLogObject, "IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader\n");
     IOReturn err;
 
     /* Start the firmware download transaction with the Init fragment

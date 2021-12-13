@@ -57,7 +57,7 @@ public:
 
     virtual void free() APPLE_KEXT_OVERRIDE;
 
-	virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
+    virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
 
     virtual bool InitializeController() APPLE_KEXT_OVERRIDE;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
@@ -68,38 +68,37 @@ public:
     virtual IOReturn SetupGen1Controller();
     virtual IOReturn SetupGen2Controller();
     virtual IOReturn SetupGen3Controller();
-	virtual bool     InitializeHostControllerVariables(bool setup) APPLE_KEXT_OVERRIDE;
+    virtual bool     InitializeHostControllerVariables(bool setup) APPLE_KEXT_OVERRIDE;
 
-	virtual IOReturn SetTransportRadioPowerState(UInt8 inState) APPLE_KEXT_OVERRIDE;
-	virtual IOReturn GetTransportRadioPowerState(UInt8 * outState) APPLE_KEXT_OVERRIDE;
-	virtual IOReturn CallPowerRadio(bool) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn SetTransportRadioPowerState(UInt8 inState) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn GetTransportRadioPowerState(UInt8 * outState) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn CallPowerRadio(bool) APPLE_KEXT_OVERRIDE;
 
-    virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant);
+    virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant); // implement in 1.0.1
     virtual void ResetToBootloader(BluetoothHCIRequestID inID);
-    virtual void HandleHardwareError(BluetoothHCIRequestID inID, UInt8 code);
     virtual IOReturn WriteDeviceAddress(BluetoothHCIRequestID inID, BluetoothDeviceAddress * inAddress) APPLE_KEXT_OVERRIDE;
     virtual IOReturn CheckDeviceAddress(BluetoothHCIRequestID inID);
     virtual IOReturn CallBluetoothHCIIntelReadVersionInfo(UInt8 param);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);
-	virtual IOReturn ConfigureOffload();
+    virtual IOReturn ConfigureOffload(); // implement in 1.0.1
     virtual IOReturn SetQualityReport(bool enable);
-	virtual IOReturn SetDebugFeatures(const BluetoothIntelDebugFeatures * features);
-	virtual IOReturn ResetDebugFeatures(const BluetoothIntelDebugFeatures * features);
-	virtual IOReturn CallBluetoothHCIIntelSetEventMask(bool debug);
-	virtual IOReturn CallBluetoothHCIIntelSetDiagnosticMode(bool enable);
+    virtual IOReturn SetDebugFeatures(const BluetoothIntelDebugFeatures * features);
+    virtual IOReturn ResetDebugFeatures(const BluetoothIntelDebugFeatures * features);
+    virtual IOReturn CallBluetoothHCIIntelSetEventMask(bool debug);
+    virtual IOReturn CallBluetoothHCIIntelSetDiagnosticMode(bool enable);
 
     virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
 
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
-	virtual bool GetCompleteCodeForCommand(BluetoothHCICommandOpCode inOpCode, BluetoothHCIEventCode * outEventCode) APPLE_KEXT_OVERRIDE;
+    virtual bool GetCompleteCodeForCommand(BluetoothHCICommandOpCode inOpCode, BluetoothHCIEventCode * outEventCode) APPLE_KEXT_OVERRIDE;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
-	virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 * errorCode, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool *) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 * errorCode, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool *) APPLE_KEXT_OVERRIDE;
 #else
-	virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 *, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle) APPLE_KEXT_OVERRIDE;
+    virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, BluetoothHCICommandOpCode * outOpCode, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, UInt8 *, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle) APPLE_KEXT_OVERRIDE;
 #endif
-	virtual bool SetHCIRequestRequireEvents(BluetoothHCICommandOpCode opCode, IOBluetoothHCIRequest * request) APPLE_KEXT_OVERRIDE;
+    virtual bool SetHCIRequestRequireEvents(BluetoothHCICommandOpCode opCode, IOBluetoothHCIRequest * request) APPLE_KEXT_OVERRIDE;
 
     virtual IOReturn LoadDDCConfig(OSData * fwData);
 
@@ -126,7 +125,8 @@ public:
     virtual IOReturn BluetoothHCIIntelTurnOffDeviceLED(BluetoothHCIRequestID inID);
     virtual IOReturn BluetoothHCIIntelWriteDDC(BluetoothHCIRequestID inID, UInt8 * data, UInt8 dataSize);
     virtual IOReturn BluetoothHCIIntelReadOffloadUseCases(BluetoothHCIRequestID inID, BluetoothIntelOffloadUseCases * cases);
-	virtual IOReturn BluetoothHCIIntelSetLinkStatisticsEventsTracing(BluetoothHCIRequestID inID, UInt8 param);
+    virtual IOReturn BluetoothHCIIntelSetLinkStatisticsEventsTracing(BluetoothHCIRequestID inID, UInt8 param);
+    virtual IOReturn BluetoothHCIIntelReadExceptionInfo(BluetoothHCIRequestID inID, BluetoothIntelExceptionInfo * info);
     
 protected:
     virtual IOReturn DownloadFirmwarePayload(OSData * fwData, size_t offset);
@@ -161,7 +161,7 @@ protected:
 
 protected:
     UInt8 * mVersionInfo;
-	UInt32 mGeneration;
+    UInt32 mGeneration;
     BluetoothHCICommandOpCode mMicrosoftExtensionOpCode;
 
     bool mValidLEStates;

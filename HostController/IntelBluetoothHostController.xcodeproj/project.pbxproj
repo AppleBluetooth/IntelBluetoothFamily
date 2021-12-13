@@ -38,13 +38,13 @@
 		5040DB732740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = IntelGen1BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		5040DB752740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = IntelGen2BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		5040DB772740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.kernel-extension"; path = IntelGen3BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		50BDB5DF273F85BB00DED64C /* IntelBluetoothHostControllerTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerTypes.h; sourceTree = "<group>"; };
-		50BDB5E0273F85C100DED64C /* IntelBluetoothHostController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostController.h; sourceTree = "<group>"; };
-		50BDB5E1273F85C500DED64C /* IntelBluetoothHostController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostController.cpp; sourceTree = "<group>"; };
+		50BDB5DF273F85BB00DED64C /* IntelBluetoothHostControllerTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerTypes.h; sourceTree = "<group>"; usesTabs = 0; };
+		50BDB5E0273F85C100DED64C /* IntelBluetoothHostController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostController.h; sourceTree = "<group>"; usesTabs = 0; };
+		50BDB5E1273F85C500DED64C /* IntelBluetoothHostController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostController.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		50BDB5E8273F862000DED64C /* IntelBluetoothFamily.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		50BDB5EE273F862000DED64C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50BDB5F6273F888D00DED64C /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
-		BC872F8D274B0DE000B123E3 /* Logs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logs.h; sourceTree = "<group>"; };
+		BC872F8D274B0DE000B123E3 /* Logs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logs.h; sourceTree = "<group>"; usesTabs = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +69,7 @@
 				50BDB5EE273F862000DED64C /* Info.plist */,
 				500F70AA273E902900B1FBD2 /* Products */,
 				50BDB5F5273F888C00DED64C /* Frameworks */,
+				BC8F38792767D38000CEEA29 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,6 +87,17 @@
 				50BDB5F6273F888D00DED64C /* libkmod.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BC8F38792767D38000CEEA29 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				5040DB6F2740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext */,
+				5040DB732740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext */,
+				5040DB752740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
+				5040DB772740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

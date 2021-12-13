@@ -132,7 +132,7 @@ struct BluetoothIntelTLV
 
 struct BluetoothIntelVersionInfo
 {
-	UInt8  status;
+    UInt8  status;
     UInt8  hardwarePlatform;
     UInt8  hardwareVariant;
     UInt8  hardwareRevision;
@@ -146,7 +146,7 @@ struct BluetoothIntelVersionInfo
 
 struct BluetoothIntelBootParams
 {
-	UInt8  status;
+    UInt8  status;
     UInt8  otpFormat;
     UInt8  otpContent;
     UInt8  otpPatch;
@@ -198,8 +198,14 @@ struct BluetoothIntelSecureSendResultEventParams
 
 struct BluetoothIntelOffloadUseCases
 {
-	UInt8  status;
+    UInt8  status;
     UInt8  preset[8];
+} __attribute__((packed));
+
+struct BluetoothIntelExceptionInfo
+{
+    UInt8  status;
+    char   info[12];
 } __attribute__((packed));
 
 #define IntelCNVXExtractHardwarePlatform(cnvx)      ((UInt8)(((cnvx) & 0x0000ff00) >> 8))

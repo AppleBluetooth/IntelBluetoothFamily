@@ -16,8 +16,8 @@
 		5040DB1427408F0A00D2B548 /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
 		5040DB352740A88400D2B548 /* libkmodc++.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libkmodc++.a"; path = "../../MacKernelSDK/Library/universal/libkmodc++.a"; sourceTree = "<group>"; };
 		50A4D723273FA7F000ABE8E1 /* IntelBluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
-		50A4D725273FA7F000ABE8E1 /* IntelBluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; };
-		50A4D727273FA7F000ABE8E1 /* IntelBluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; };
+		50A4D725273FA7F000ABE8E1 /* IntelBluetoothHostControllerUSBTransport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntelBluetoothHostControllerUSBTransport.h; sourceTree = "<group>"; usesTabs = 0; };
+		50A4D727273FA7F000ABE8E1 /* IntelBluetoothHostControllerUSBTransport.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = IntelBluetoothHostControllerUSBTransport.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		50A4D729273FA7F000ABE8E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
