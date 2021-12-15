@@ -92,14 +92,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( version->firmwareVariant == 0x23 )
     {
         controller->mBootloaderMode = false;
-        err = controller->HCIRequestCreate(&id);
-        if ( err )
-        {
-            REQUIRE_NO_ERR(err);
-            return err;
-        }
-        controller->CheckDeviceAddress(id);
-        controller->HCIRequestDelete(NULL, id);
+        controller->CheckDeviceAddress();
 
         /* SfP and WsP don't seem to update the firmware version on file
          * so version checking is currently possible.
@@ -249,14 +242,7 @@ download:
     if ( ret == kIOReturnTimeout )
     {
 done:
-        err = controller->HCIRequestCreate(&id);
-        if ( err )
-        {
-            REQUIRE_NO_ERR(err);
-            return err;
-        }
-        controller->ResetToBootloader(id);
-        controller->HCIRequestDelete(NULL, id);
+        controller->ResetToBootloader();
     }
     return ret;
 }

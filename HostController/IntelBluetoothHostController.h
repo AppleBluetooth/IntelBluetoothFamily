@@ -75,9 +75,9 @@ public:
     virtual IOReturn CallPowerRadio(bool) APPLE_KEXT_OVERRIDE;
 
     virtual void SetMicrosoftExtensionOpCode(UInt8 hardwareVariant); // implement in 1.0.1
-    virtual void ResetToBootloader(BluetoothHCIRequestID inID);
+    virtual void ResetToBootloader();
     virtual IOReturn WriteDeviceAddress(BluetoothHCIRequestID inID, BluetoothDeviceAddress * inAddress) APPLE_KEXT_OVERRIDE;
-    virtual IOReturn CheckDeviceAddress(BluetoothHCIRequestID inID);
+    virtual IOReturn CheckDeviceAddress();
     virtual IOReturn CallBluetoothHCIIntelReadVersionInfo(UInt8 param);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfo * version);
     virtual IOReturn PrintVersionInfo(BluetoothIntelVersionInfoTLV * version);

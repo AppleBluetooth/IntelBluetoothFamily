@@ -377,15 +377,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch (0x%02x) completed and activated", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
 
 complete:
-
-    err = HCIRequestCreate(&id);
-    if ( err )
-    {
-        REQUIRE_NO_ERR(err);
-        return err;
-    }
-    CheckDeviceAddress(id);
-    HCIRequestDelete(NULL, id);
+    CheckDeviceAddress();
 
     return kIOReturnSuccess;
 }
@@ -503,17 +495,19 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
         case kBluetoothIntelHardwareVariantThP:
         case kBluetoothIntelHardwareVariantHrP:
         case kBluetoothIntelHardwareVariantCcP:
+        {
             os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] This controller is not an Intel new bootloader device!!!");
             mGeneration = 2;
             return kIOReturnUnsupported;
+        }
 
         case kBluetoothIntelHardwareVariantSlr:
             /* Valid LE States quirk for GfP */
             mValidLEStates = true;
         case kBluetoothIntelHardwareVariantTyP:
         case kBluetoothIntelHardwareVariantSlrF:
-
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Now we are actually setting up!!!\n");
+        {
+            mGeneration = 3;
 
             /* Display version information of TLV type */
             PrintVersionInfo(&version);
@@ -582,10 +576,13 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
             PrintVersionInfo(&version);
 
             return kIOReturnSuccess;
+        }
 
         default:
+        {
             os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware variant: %u", IntelCNVXExtractHardwareVariant(version.cnviBT));
             return kIOReturnInvalid;
+        }
     }
 }
 
@@ -647,11 +644,19 @@ void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVar
     }
 }
 
-void IntelBluetoothHostController::ResetToBootloader(BluetoothHCIRequestID inID)
+void IntelBluetoothHostController::ResetToBootloader()
 {
     IOReturn err;
+    BluetoothHCIRequestID id;
 
-    err = BluetoothHCISendIntelReset(inID, 0x01, true, true, 0x00, 0x00000000);
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return;
+    }
+    err = BluetoothHCISendIntelReset(id, 0x01, true, true, 0x00, 0x00000000);
+    HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] BluetoothHCISendIntelReset() failed -- cannot deliver Intel reset: 0x%x", err);
@@ -712,13 +717,21 @@ IOReturn IntelBluetoothHostController::WriteDeviceAddress(BluetoothHCIRequestID 
     return kIOReturnSuccess;
 }
 
-IOReturn IntelBluetoothHostController::CheckDeviceAddress(BluetoothHCIRequestID inID)
+IOReturn IntelBluetoothHostController::CheckDeviceAddress()
 {
     IOReturn err;
     BluetoothDeviceAddress address;
     BluetoothDeviceAddress defaultAddress = (BluetoothDeviceAddress) {0x00, 0x8B, 0x9E, 0x19, 0x03, 0x00};
-    
-    err = BluetoothHCIReadDeviceAddress(inID, &address);
+    BluetoothHCIRequestID id;
+
+    err = HCIRequestCreate(&id);
+    if ( err )
+    {
+        REQUIRE_NO_ERR(err);
+        return err;
+    }
+    err = BluetoothHCIReadDeviceAddress(id, &address);
+    HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] BluetoothHCIReadDeviceAddress() failed -- cannot read device address: 0x%x", err);
@@ -759,7 +772,13 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelReadVersionInfo(UInt
         return err;
     }
     HCIRequestDelete(NULL, id);
-    
+
+    if ( !mVersionInfo )
+        return kIOReturnInvalid;
+
+    if ( *(UInt8 *) mVersionInfo )
+        return *(UInt8 *) mVersionInfo;
+
     return err;
 }
 
@@ -1052,14 +1071,7 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Soft reset failed: 0x%x", err);
 
 reset:
-        err = HCIRequestCreate(&id);
-        if ( err )
-        {
-            REQUIRE_NO_ERR(err);
-            return err;
-        }
-        ResetToBootloader(id);
-        HCIRequestDelete(NULL, id);
+        ResetToBootloader();
         return err;
     }
 

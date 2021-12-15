@@ -157,12 +157,11 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( !controller )
         return false;
 
-    IOReturn err, ret;
+    IOReturn ret;
     UInt32 callTime;
     BluetoothIntelVersionInfoTLV * version = (BluetoothIntelVersionInfoTLV *) ver;
     OSData * fwData;
     UInt32 cssHeaderVersion;
-    BluetoothHCIRequestID id;
     
     if ( !version || !bootAddress )
         return kIOReturnInvalid;
@@ -183,14 +182,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( version->imageType == 0x03 )
     {
         controller->mBootloaderMode = false;
-        err = controller->HCIRequestCreate(&id);
-        if ( err )
-        {
-            REQUIRE_NO_ERR(err);
-            return err;
-        }
-        controller->CheckDeviceAddress(id);
-        controller->HCIRequestDelete(NULL, id);
+        controller->CheckDeviceAddress();
     }
 
     /* If the OTP has no valid Bluetooth device address, then there will
@@ -336,14 +328,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( ret == kIOReturnTimeout )
     {
 done:
-        err = controller->HCIRequestCreate(&id);
-        if ( err )
-        {
-            REQUIRE_NO_ERR(err);
-            return err;
-        }
-        controller->ResetToBootloader(id);
-        controller->HCIRequestDelete(NULL, id);
+        controller->ResetToBootloader();
     }
     return ret;
 }
