@@ -81,6 +81,7 @@ bool IntelBluetoothHostController::InitializeController()
     return true;
 }
 
+#if 0
 IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIRequestID inID, BluetoothHCICommandOpCode inOpCode, IOByteCount outResultsSize, void * outResultsPtr, const char * inFormat, ...)
 {
     va_list va;
@@ -212,7 +213,7 @@ OVER:
     va_end(va);
     return err;
 }
-
+#endif
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
