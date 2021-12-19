@@ -70,6 +70,8 @@ public:
     virtual IOReturn SetupGen3Controller();
     virtual bool     InitializeHostControllerVariables(bool setup) APPLE_KEXT_OVERRIDE;
 
+    virtual IOReturn SendHCIRequestFormatted(BluetoothHCIRequestID inID, BluetoothHCICommandOpCode inOpCode, IOByteCount outResultsSize, void * outResultsPtr, const char * inFormat, ...) APPLE_KEXT_OVERRIDE;
+
     virtual IOReturn SetTransportRadioPowerState(UInt8 inState) APPLE_KEXT_OVERRIDE;
     virtual IOReturn GetTransportRadioPowerState(UInt8 * outState) APPLE_KEXT_OVERRIDE;
     virtual IOReturn CallPowerRadio(bool) APPLE_KEXT_OVERRIDE;

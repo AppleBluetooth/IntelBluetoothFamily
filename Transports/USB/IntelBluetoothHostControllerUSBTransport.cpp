@@ -541,7 +541,7 @@ CONFIG_PM:
             if ( err == THREAD_AWAKENED || (err == THREAD_TIMED_OUT && mConfiguredPM) )
                 goto OVER;
         }
-        os_log(mInternalOSLogObject, "**** [IOBluetoothHostControllerUSBTransport][ConfigurePM] -- ERROR -- waited 30 seconds and still did not get the commandWakeup() notification -- 0x%04x ****\n", ConvertAddressToUInt32(this));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][ConfigurePM] -- ERROR -- waited 30 seconds and still did not get the commandWakeup() notification -- 0x%04x ****\n", ConvertAddressToUInt32(this));
         mConfiguredPM = true;
     }
 

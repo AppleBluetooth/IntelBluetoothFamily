@@ -20,6 +20,7 @@
  *
  */
 
+#include <sys/proc.h>
 #include "IntelBluetoothHostController.h"
 #include "../Transports/Gen1/IntelGen1BluetoothHostControllerUSBTransport.h"
 #include "../Transports/Gen2/IntelGen2BluetoothHostControllerUSBTransport.h"
@@ -79,6 +80,139 @@ bool IntelBluetoothHostController::InitializeController()
     SetControllerFeatureFlags(GetControllerFeatureFlags() | 0x06);
     return true;
 }
+
+IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIRequestID inID, BluetoothHCICommandOpCode inOpCode, IOByteCount outResultsSize, void * outResultsPtr, const char * inFormat, ...)
+{
+    va_list va;
+    IOReturn err = kIOReturnSuccess;
+    BluetoothHCIRequestID id;
+    IOBluetoothHCIRequest * request;
+    IOBluetoothHCIControllerInternalPowerState state;
+    int PID = 0xFF;
+    char processName[0x100];
+    char opStr[100];
+    char errStrLong[100];
+    char errStrShort[50];
+
+    va_start(va, inFormat);
+    snprintf(processName, 0x100, "Unknown");
+    mBluetoothFamily->ConvertOpCodeToString(inOpCode, opStr);
+
+    if ( mSupportNewIdlePolicy )
+        ChangeIdleTimerTime((char *) __FUNCTION__, mNewIdleTime);
+
+    err = LookupRequest(inID, &request);
+    if ( err || !request )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: request could not be found!");
+        goto OVER;
+    }
+
+    request->RetainRequest((char *) "IntelBluetoothHostController::SendHCIRequestFormatted -- at the beginning");
+    request->InitializeRequest();
+    PID = request->mPID;
+    proc_name(PID, processName, 0x100);
+
+    if ( inOpCode == BluetoothHCIMakeCommandOpCode(kBluetoothHCICommandGroupLowEnergy, kBluetoothHCICommandLESetAdvertisingData) )
+        UpdateLESetAdvertisingDataReporter(request);
+
+    if ( !mBluetoothTransport || mBluetoothTransport->isInactive() )
+    {
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Transport is inactive -- inOpCode = 0x%04X (%s), From: %s (%d), mNumberOfCommandsAllowedByHardware is %d, requestPtr = 0x%04x -- this = 0x%04x\n", inOpCode, opStr, processName, PID, mNumberOfCommandsAllowedByHardware, ConvertAddressToUInt32(request), ConvertAddressToUInt32(this));
+        goto OVER_RELEASE;
+    }
+
+    if ( TransportRadioPowerOff(inOpCode, processName, PID, request) )
+        goto OVER_RELEASE;
+
+    if ( !request->mAsyncNotify )
+        request->SetResultsBufferPtrAndSize((UInt8 *) outResultsPtr, outResultsSize);
+
+    request->mOpCode = inOpCode;
+    request->mCommandBufferSize = PackDataList(request->mCommandBuffer, sizeof(request->mCommandBuffer), inFormat, va);
+
+    err = kIOReturnError;
+    if ( request->mCommandBufferSize > kMaxHCIBufferLength )
+        goto OVER_RELEASE;
+
+    SetHCIRequestRequireEvents(inOpCode, request);
+
+    if ( GetTransportCurrentPowerState(&state) )
+    {
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- GetTransportCurrentPowerState() returned error -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x \n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
+        goto OVER_RELEASE;
+    }
+
+    if ( state != kIOBluetoothHCIControllerInternalPowerStateSleep || request->mAsyncNotify )
+    {
+        if ( inOpCode == BluetoothHCIMakeCommandOpCode(kBluetoothHCICommandGroupLowEnergy, kBluetoothHCICommandLEStartEncryption) )
+            request->mConnectionHandle = *(BluetoothConnectionHandle *) (request->mCommandBuffer + 3);
+
+        err = EnqueueRequest(request);
+        if ( err != 99 )
+        {
+            if ( err )
+            {
+              mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
+              os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequest failed (err=0x%x (%s)) for opCode 0x%04x (%s)\n", err, errStrLong, inOpCode, opStr);
+            }
+
+            err = EnqueueRequestForController(request);
+            if ( err )
+            {
+                AbortRequestAndSetTime(request);
+                mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
+                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequestForController failed (err=0x%x (%s)) for opCode 0x%04x (%s)\n", err, errStrLong, inOpCode, opStr);
+                goto OVER_RELEASE;
+            }
+        }
+
+        if ( (request->mControlFlags & 4) && !HCIRequestCreate(&id, true) )
+        {
+            BluetoothHCIWriteAuthenticationEnable(id, 0);
+            HCIRequestDelete(NULL, id);
+        }
+
+        if ( (request->mControlFlags & 8) && !HCIRequestCreate(&id, true) )
+        {
+            BluetoothHCIWritePageTimeout(id, 10000);
+            HCIRequestDelete(NULL, id);
+        }
+
+        request->Start();
+        err = request->mStatus;
+        if ( err <= kBluetoothSyncHCIRequestTimedOutWaitingToBeSent )
+        {
+            if ( err != kBluetoothSyncHCIRequestTimedOutWaitingToBeSent && !mBusyQueueHead )
+            {
+                BluetoothFamilyLogPacket(mBluetoothFamily, 249, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- requestPtr->Start() returned kBluetoothSyncHCIRequestTimedOutWaitingToBeSent but mBusyQueueHead is NULL -- inID = %d, opCode = 0x%04x (%s), mNumberOfCommandsAllowedByHardware is %d ****\n", inID, inOpCode, opStr, mNumberOfCommandsAllowedByHardware);
+            }
+            if ( request->mState == kHCIRequestStateWaiting )
+            {
+                AbortRequestAndSetTime(request);
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
+                IncrementHCICommandTimeOutCounter(request->GetCommandOpCode());
+#else
+                IncrementHCICommandTimeOutCounter();
+#endif
+            }
+        }
+        goto OVER_RELEASE;
+    }
+
+    if ( state == kIOBluetoothHCIControllerInternalPowerStateSleep )
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- Current power state is SLEEP -- cannot send out the HCI command -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x \n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
+
+OVER_RELEASE:
+    request->ReleaseRequest((char *) "IntelBluetoothHostController::SendHCIRequestFormatted -- before exiting");
+OVER:
+    if ( mSupportNewIdlePolicy )
+        ChangeIdleTimerTime((char *) __FUNCTION__, mNewIdleTime);
+
+    va_end(va);
+    return err;
+}
+
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
