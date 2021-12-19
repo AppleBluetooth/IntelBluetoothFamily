@@ -124,7 +124,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     if ( params->limitedCCE != 0x00 )
     {
-        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Unsupported firmware loading method: %u ****!", params->limitedCCE);
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Unsupported firmware loading method: %u ****\n", params->limitedCCE);
         return kIOReturnInvalid;
     }
 
@@ -133,7 +133,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     if ( params->otpDeviceAddress.data[0] == 0 && params->otpDeviceAddress.data[1] == 0 && params->otpDeviceAddress.data[2] == 0 && params->otpDeviceAddress.data[3] == 0 && params->otpDeviceAddress.data[4] == 0 && params->otpDeviceAddress.data[5] == 0 )
     {
-        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- No device address configured! ****");
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- No device address configured! ****\n");
         controller->mInvalidDeviceAddress = true;
     }
     
@@ -175,7 +175,7 @@ download:
 
     if ( fwData->getLength() < 644 )
     {
-        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Size of firmware file is invalid: %u! ****", fwData->getLength());
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Size of firmware file is invalid: %u! ****\n", fwData->getLength());
         return kIOReturnUnsupported;
     }
 
@@ -198,7 +198,7 @@ download:
             /* Skip download if firmware has the same version */
             if ( controller->ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {
-                os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****");
+                os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****\n");
                 controller->mFirmwareLoaded = true;
                 setProperty("FirmwareLoaded", true);
                 return kIOReturnSuccess;

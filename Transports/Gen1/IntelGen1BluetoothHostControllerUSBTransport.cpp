@@ -86,7 +86,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
      */
     if ( remain > kBluetoothHCICommandPacketHeaderSize && *fwPtr[0] != 0x01 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command read!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command read!\n");
         return kIOReturnInvalid;
     }
     ++(*fwPtr);
@@ -102,7 +102,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
      */
     if ( remain < cmd.dataSize )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command length!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid command length!\n");
         return kIOReturnError;
     }
 
@@ -137,7 +137,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
 
         if ( remain < event->dataSize )
         {
-            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event length!");
+            os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event length!\n");
             return kIOReturnError;
         }
 
@@ -152,7 +152,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
      */
     if ( !event || !eventParam || remain < 0 )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event read!");
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Firmware corrupted -- invalid event read!\n");
         return kIOReturnError;
     }
 
@@ -166,7 +166,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     controller->HCIRequestDelete(NULL, id);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x", cmd.opCode, err);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] ### ERROR: opCode = 0x%04X -- send request failed -- cannot dispatch patch command: 0x%x\n", cmd.opCode, err);
         return kIOReturnError;
     }
 
@@ -179,12 +179,12 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     actualEvent = (UInt8 *) mInterruptReadDataBuffer->getBytesNoCopy();
     if ( event->dataSize != actualSize )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event length mismatch: opCode = 0x%04X", cmd.opCode);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event length mismatch: opCode = 0x%04X\n", cmd.opCode);
         return kIOReturnError;
     }
     if ( memcmp(actualEvent, eventParam, actualSize) )
     {
-        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event parameters mismatch: opCode = 0x%04X", cmd.opCode);
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event parameters mismatch: opCode = 0x%04X\n", cmd.opCode);
         return kIOReturnError;
     }
     

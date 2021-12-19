@@ -289,12 +289,12 @@ FAIL:
 
     if ( that->mBluetoothController && !that->mBluetoothController->mHardResetPerformed && that->mBluetoothFamily->mTestNotRespondingHardReset && (that->mBluetoothFamily->GetCurrentTime() - that->mBluetoothFamily->mUSBHardResetWLCallTime) >= 0x3938701 )
     {
-        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- mBluetoothFamily->mTestNotRespondingHardReset is true ****");
+        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- mBluetoothFamily->mTestNotRespondingHardReset is true ****\n");
         if ( that->mBuiltIn )
         {
             that->mHardResetState = 2;
             that->mBluetoothController->mHardResetPerformed = true;
-            os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset() ****");
+            os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset() ****\n");
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_15
             that->HardReset();
 #else

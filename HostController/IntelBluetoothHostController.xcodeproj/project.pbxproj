@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5040DB702740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB6F2740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5040DB742740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB732740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5040DB762740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB752740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5040DB782740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB772740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5040DB702740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB6F2740EC6200D2B548 /* IntelBluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5040DB742740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB732740ED5300D2B548 /* IntelGen1BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5040DB762740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB752740ED5A00D2B548 /* IntelGen2BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5040DB782740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5040DB772740ED5F00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.kext */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		50BDB5F2273F86DF00DED64C /* IntelBluetoothHostControllerTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 50BDB5DF273F85BB00DED64C /* IntelBluetoothHostControllerTypes.h */; };
 		50BDB5F3273F86E400DED64C /* IntelBluetoothHostController.h in Headers */ = {isa = PBXBuildFile; fileRef = 50BDB5E0273F85C100DED64C /* IntelBluetoothHostController.h */; };
 		50BDB5F4273F86E800DED64C /* IntelBluetoothHostController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50BDB5E1273F85C500DED64C /* IntelBluetoothHostController.cpp */; };
@@ -140,7 +140,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					50BDB5E7273F862000DED64C = {
 						CreatedOnToolsVersion = 13.1;
@@ -302,7 +302,7 @@
 		5040DB512740C28600D2B548 /* Big Sur */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -380,7 +380,7 @@
 		504D1C442746754A00BCB513 /* High Sierra */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -458,7 +458,7 @@
 		504D1C4C274676AF00BCB513 /* Mojave */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
@@ -475,7 +475,7 @@
 		50BDB5F0273F862000DED64C /* Catalina */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
