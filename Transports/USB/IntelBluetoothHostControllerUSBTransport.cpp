@@ -481,7 +481,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::CallPowerManagerChangePowerSt
     }
     mCurrentPMMethod = 4;
 
-    switch (ordinal)
+    switch ( ordinal )
     {
         case kIOBluetoothHCIControllerPowerStateOrdinalOff:
             return changePowerStateToPriv(0);

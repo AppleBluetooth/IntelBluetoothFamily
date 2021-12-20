@@ -91,6 +91,7 @@ public:
     virtual IOReturn CallBluetoothHCIIntelSetDiagnosticMode(bool enable);
 
     virtual IOReturn WaitForFirmwareDownload(UInt32 callTime, UInt32 deadline);
+    virtual IOReturn WaitForDeviceBoot(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
 
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;

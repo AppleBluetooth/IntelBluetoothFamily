@@ -315,7 +315,7 @@ SETUP_GEN2:
          * run the legacy bootloader setup.
          */
         err = CallBluetoothHCIIntelReadVersionInfo(0x00);
-        if (err)
+        if ( err )
             return err;
         goto SETUP_GEN2;
     }
@@ -1080,25 +1080,26 @@ static int btintel_get_codec_config_data(struct hci_dev *hdev,
 {
     int err = 0;
 
-    if (!ven_data || !ven_len)
+    if ( !ven_data || !ven_len )
         return -EINVAL;
 
     *ven_len = 0;
     *ven_data = NULL;
 
-    if (link != ESCO_LINK) {
+    if ( link != ESCO_LINK ) {
         bt_dev_err(hdev, "Invalid link type(%u)", link);
         return -EINVAL;
     }
 
     *ven_data = kmalloc(sizeof(__u8), GFP_KERNEL);
-    if (!*ven_data) {
+    if ( !*ven_data ) {
         err = -ENOMEM;
         goto error;
     }
 
     // supports only CVSD and mSBC offload codecs
-    switch (codec->id) {
+    switch ( codec->id )
+    {
         case 0x02:
             **ven_data = 0x00;
             break;
@@ -1180,14 +1181,34 @@ IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, 
     return kIOReturnSuccess;
 }
 
+IOReturn IntelBluetoothHostController::WaitForDeviceBoot(UInt32 callTime, UInt32 deadline)
+{
+    IOReturn err;
+    AbsoluteTime duration;
+
+    err = ControllerCommandSleep(&mBooting, deadline, (char *) __FUNCTION__, true);
+    if ( err == THREAD_INTERRUPTED )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device boot interrupted!\n");
+        return THREAD_INTERRUPTED;
+    }
+    if ( err )
+    {
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device boot timed out!\n");
+        return kIOReturnTimeout;
+    }
+
+    absolutetime_to_nanoseconds(mBluetoothFamily->GetCurrentTime() - callTime, &duration);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device booted in %llu usecs.\n", duration >> 10);
+
+    return kIOReturnSuccess;
+}
+
 IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
 {
     IOReturn err;
     BluetoothHCIRequestID id;
-    AbsoluteTime duration;
-    UInt32 callTime;
 
-    callTime = mBluetoothFamily->GetCurrentTime();
     mBooting = true;
 
     err = HCIRequestCreate(&id);
@@ -1214,17 +1235,9 @@ reset:
      * 1 second. However if that happens, then just fail the setup
      * since something went wrong.
      */
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Waiting for device to boot...\n");
-
-    err = ControllerCommandSleep(&mBooting, 1000, (char *) __FUNCTION__, true);
+    err = WaitForDeviceBoot(mBluetoothFamily->GetCurrentTime(), 1000);
     if ( err )
-    {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Device boot timed out!\n");
         goto reset;
-    }
-
-    absolutetime_to_nanoseconds(mBluetoothFamily->GetCurrentTime() - callTime, &duration);
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Device booted in %llu usecs.\n", duration >> 10);
 
     return kIOReturnSuccess;
 }
@@ -1502,7 +1515,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetEventMask(bool de
     if ( mIsLegacyROMDevice )
     {
         err = HCIRequestCreate(&id);
-        if (err)
+        if ( err )
         {
             REQUIRE_NO_ERR(err);
             return err;
