@@ -81,7 +81,6 @@ bool IntelBluetoothHostController::InitializeController()
     return true;
 }
 
-#if 0
 IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIRequestID inID, BluetoothHCICommandOpCode inOpCode, IOByteCount outResultsSize, void * outResultsPtr, const char * inFormat, ...)
 {
     va_list va;
@@ -184,7 +183,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
         err = request->mStatus;
         if ( err <= kBluetoothSyncHCIRequestTimedOutWaitingToBeSent )
         {
-            if ( err != kBluetoothSyncHCIRequestTimedOutWaitingToBeSent && !mBusyQueueHead )
+            if ( err == kBluetoothSyncHCIRequestTimedOutWaitingToBeSent && !mBusyQueueHead )
             {
                 BluetoothFamilyLogPacket(mBluetoothFamily, 249, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- requestPtr->Start() returned kBluetoothSyncHCIRequestTimedOutWaitingToBeSent but mBusyQueueHead is NULL -- inID = %d, opCode = 0x%04x (%s), mNumberOfCommandsAllowedByHardware is %d ****\n", inID, inOpCode, opStr, mNumberOfCommandsAllowedByHardware);
             }
@@ -213,7 +212,6 @@ OVER:
     va_end(va);
     return err;
 }
-#endif
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
