@@ -477,7 +477,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::CallPowerManagerChangePowerSt
     {
         mBluetoothController->SetChangingPowerState(true);
         if ( mSupportNewIdlePolicy )
-            mBluetoothController->ChangeIdleTimerTime((char *) __FUNCTION__, mBluetoothController->mNewIdleTime);
+            mBluetoothController->ChangeIdleTimerTime((char *) __FUNCTION__, mBluetoothController->mIdleTimerTime);
     }
     mCurrentPMMethod = 4;
 

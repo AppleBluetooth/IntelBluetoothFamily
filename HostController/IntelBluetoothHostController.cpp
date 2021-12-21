@@ -99,7 +99,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
     mBluetoothFamily->ConvertOpCodeToString(inOpCode, opStr);
 
     if ( mSupportNewIdlePolicy )
-        ChangeIdleTimerTime((char *) __FUNCTION__, mNewIdleTime);
+        ChangeIdleTimerTime((char *) __FUNCTION__, mIdleTimerTime);
 
     err = LookupRequest(inID, &request);
     if ( err || !request )
@@ -207,7 +207,7 @@ OVER_RELEASE:
     request->ReleaseRequest((char *) "IntelBluetoothHostController::SendHCIRequestFormatted -- before exiting");
 OVER:
     if ( mSupportNewIdlePolicy )
-        ChangeIdleTimerTime((char *) __FUNCTION__, mNewIdleTime);
+        ChangeIdleTimerTime((char *) __FUNCTION__, mIdleTimerTime);
 
     va_end(va);
     return err;

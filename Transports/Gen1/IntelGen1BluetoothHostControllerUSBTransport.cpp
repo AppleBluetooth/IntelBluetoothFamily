@@ -187,7 +187,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
         os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] Event parameters mismatch: opCode = 0x%04X\n", cmd.opCode);
         return kIOReturnError;
     }
-    
+
     return kIOReturnSuccess;
 }
 
