@@ -50,7 +50,6 @@
 				50A4D744273FB35F00ABE8E1 /* Info.plist */,
 				50A4D73E273FB35F00ABE8E1 /* Products */,
 				5040DB1F2740918500D2B548 /* Frameworks */,
-				BC8F387A2767D38000CEEA29 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,14 +59,6 @@
 				50A4D73D273FB35F00ABE8E1 /* IntelGen2BluetoothHostControllerUSBTransport.kext */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		BC8F387A2767D38000CEEA29 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				50FFE3712740FF0500176708 /* Gen2FirmwareBinary.cpp */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
