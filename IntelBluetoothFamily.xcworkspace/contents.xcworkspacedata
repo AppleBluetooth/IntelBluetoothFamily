@@ -17,9 +17,6 @@
       location = "group:Transports/Gen3/IntelGen3BluetoothHostControllerUSBTransport.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Transports/UART/IntelBluetoothHostControllerUARTTransport.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:README.md">
    </FileRef>
    <FileRef
