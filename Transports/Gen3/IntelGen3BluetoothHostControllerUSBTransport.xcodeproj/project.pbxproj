@@ -20,6 +20,7 @@
 		50A4D73D273FB35F00ABE8E1 /* IntelGen3BluetoothHostControllerUSBTransport.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelGen3BluetoothHostControllerUSBTransport.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A4D744273FB35F00ABE8E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50FFE3752741000C00176708 /* Gen3FirmwareBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Gen3FirmwareBinary.cpp; path = "$(SYMROOT)/../Intermediates.noindex/Firmwares/Gen3FirmwareBinary.cpp"; sourceTree = "<absolute>"; };
+		BCA3ABC92773F518001E6C04 /* Firmwares */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firmwares; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,11 +46,13 @@
 		50A4D733273FB35F00ABE8E1 = {
 			isa = PBXGroup;
 			children = (
+				BCA3ABC92773F518001E6C04 /* Firmwares */,
 				5040DB1A2740904D00D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.h */,
 				5040DB1B2740905200D2B548 /* IntelGen3BluetoothHostControllerUSBTransport.cpp */,
 				50A4D744273FB35F00ABE8E1 /* Info.plist */,
 				50A4D73E273FB35F00ABE8E1 /* Products */,
 				5040DB1C274090FA00D2B548 /* Frameworks */,
+				BCA3ABC42773F33B001E6C04 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -59,6 +62,14 @@
 				50A4D73D273FB35F00ABE8E1 /* IntelGen3BluetoothHostControllerUSBTransport.kext */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BCA3ABC42773F33B001E6C04 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				50FFE3752741000C00176708 /* Gen3FirmwareBinary.cpp */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
