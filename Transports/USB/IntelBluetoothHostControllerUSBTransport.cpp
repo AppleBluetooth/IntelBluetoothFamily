@@ -222,6 +222,8 @@ void IntelBluetoothHostControllerUSBTransport::InjectCommandCompleteEvent(Blueto
     packet[packetSize - 1] = 0x00;
 
     ReceiveInterruptData(packet, packetSize, false);
+
+    IOSafeDeleteNULL(packet, UInt8, packetSize);
 }
 
 bool IntelBluetoothHostControllerUSBTransport::PostSecureSendBulkPipeRead()
