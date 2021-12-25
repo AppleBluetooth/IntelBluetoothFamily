@@ -21,100 +21,104 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
 1. Download OpenFirmwareManager, IOBluetoothFixup, and IntelBluetoothFamily from the AppleBluetooth organization.
 2. Drag the transports out of the PlugIns folder in IntelBluetoothFamily. This has to be done for now as the name is too long.
 3. Place the kexts in the EFI folder and add them to the config.plist. Make sure the order is as follows.
-```html
-<dict>
-  <key>Arch</key>
-  <string>Any</string>
-  <key>BundlePath</key>
-  <string>OpenFirmwareManager.kext</string>
-  <key>Comment</key>
-  <string></string>
-  <key>Enabled</key>
-  <true/>
-  <key>ExecutablePath</key>
-  <string>Contents/MacOS/OpenFirmwareManager</string>
-  <key>MaxKernel</key>
-  <string></string>
-  <key>MinKernel</key>
-  <string></string>
-  <key>PlistPath</key>
-  <string>Contents/Info.plist</string>
-</dict>
-<dict>
-  <key>Arch</key>
-  <string>Any</string>
-  <key>BundlePath</key>
-  <string>IOBluetoothFixup.kext</string>
-  <key>Comment</key>
-  <string></string>
-  <key>Enabled</key>
-  <true/>
-  <key>ExecutablePath</key>
-  <string>Contents/MacOS/IOBluetoothFixup</string>
-  <key>MaxKernel</key>
-  <string></string>
-  <key>MinKernel</key>
-  <string></string>
-  <key>PlistPath</key>
-  <string>Contents/Info.plist</string>
-</dict>
-<dict>
-  <key>Arch</key>
-  <string>Any</string>
-  <key>BundlePath</key>
-  <string>IntelBluetoothFamily.kext</string>
-  <key>Comment</key>
-  <string></string>
-  <key>Enabled</key>
-  <true/>
-  <key>ExecutablePath</key>
-  <string>Contents/MacOS/IntelBluetoothFamily</string>
-  <key>MaxKernel</key>
-  <string></string>
-  <key>MinKernel</key>
-  <string></string>
-  <key>PlistPath</key>
-  <string>Contents/Info.plist</string>
-</dict>
-<dict>
-  <key>Arch</key>
-  <string>Any</string>
-  <key>BundlePath</key>
-  <string>IntelBluetoothHostControllerUSBTransport.kext</string>
-  <key>Comment</key>
-  <string></string>
-  <key>Enabled</key>
-  <true/>
-  <key>ExecutablePath</key>
-  <string>Contents/MacOS/IntelBluetoothHostControllerUSBTransport</string>
-  <key>MaxKernel</key>
-  <string></string>
-  <key>MinKernel</key>
-  <string></string>
-  <key>PlistPath</key>
-  <string>Contents/Info.plist</string>
-</dict>
-<dict>
-  <key>Arch</key>
-  <string>Any</string>
-  <key>BundlePath</key>
-  <string>IntelGenXBluetoothHostControllerUSBTransport.kext</string>
-  <key>Comment</key>
-  <string></string>
-  <key>Enabled</key>
-  <true/>
-  <key>ExecutablePath</key>
-  <string>Contents/MacOS/IntelGenXBluetoothHostControllerUSBTransport</string>
-  <key>MaxKernel</key>
-  <string></string>
-  <key>MinKernel</key>
-  <string></string>
-  <key>PlistPath</key>
-  <string>Contents/Info.plist</string>
-</dict>
-```
-3. Remove all other Bluetooth kexts such as IntelBluetoothFirmware.
-4. Reboot and enjoy!
+4. Remove all other Bluetooth kexts such as IntelBluetoothFirmware.
+5. Reboot and enjoy!
+<details>
+  <summary>Load Order</summary>
+
+  ```xml
+    <dict>
+      <key>Arch</key>
+      <string>Any</string>
+      <key>BundlePath</key>
+      <string>OpenFirmwareManager.kext</string>
+      <key>Comment</key>
+      <string></string>
+      <key>Enabled</key>
+      <true/>
+      <key>ExecutablePath</key>
+      <string>Contents/MacOS/OpenFirmwareManager</string>
+      <key>MaxKernel</key>
+      <string></string>
+      <key>MinKernel</key>
+      <string></string>
+      <key>PlistPath</key>
+      <string>Contents/Info.plist</string>
+    </dict>
+    <dict>
+      <key>Arch</key>
+      <string>Any</string>
+      <key>BundlePath</key>
+      <string>IOBluetoothFixup.kext</string>
+      <key>Comment</key>
+      <string></string>
+      <key>Enabled</key>
+      <true/>
+      <key>ExecutablePath</key>
+      <string>Contents/MacOS/IOBluetoothFixup</string>
+      <key>MaxKernel</key>
+      <string></string>
+      <key>MinKernel</key>
+      <string></string>
+      <key>PlistPath</key>
+      <string>Contents/Info.plist</string>
+    </dict>
+    <dict>
+      <key>Arch</key>
+      <string>Any</string>
+      <key>BundlePath</key>
+      <string>IntelBluetoothFamily.kext</string>
+      <key>Comment</key>
+      <string></string>
+      <key>Enabled</key>
+      <true/>
+      <key>ExecutablePath</key>
+      <string>Contents/MacOS/IntelBluetoothFamily</string>
+      <key>MaxKernel</key>
+      <string></string>
+      <key>MinKernel</key>
+      <string></string>
+      <key>PlistPath</key>
+      <string>Contents/Info.plist</string>
+    </dict>
+    <dict>
+      <key>Arch</key>
+      <string>Any</string>
+      <key>BundlePath</key>
+      <string>IntelBluetoothHostControllerUSBTransport.kext</string>
+      <key>Comment</key>
+      <string></string>
+      <key>Enabled</key>
+      <true/>
+      <key>ExecutablePath</key>
+      <string>Contents/MacOS/IntelBluetoothHostControllerUSBTransport</string>
+      <key>MaxKernel</key>
+      <string></string>
+      <key>MinKernel</key>
+      <string></string>
+      <key>PlistPath</key>
+      <string>Contents/Info.plist</string>
+    </dict>
+    <dict>
+      <key>Arch</key>
+      <string>Any</string>
+      <key>BundlePath</key>
+      <string>IntelGenXBluetoothHostControllerUSBTransport.kext</string>
+      <key>Comment</key>
+      <string></string>
+      <key>Enabled</key>
+      <true/>
+      <key>ExecutablePath</key>
+      <string>Contents/MacOS/IntelGenXBluetoothHostControllerUSBTransport</string>
+      <key>MaxKernel</key>
+      <string></string>
+      <key>MinKernel</key>
+      <string></string>
+      <key>PlistPath</key>
+      <string>Contents/Info.plist</string>
+    </dict>
+  ```
+</details>
 
 ## Acknowledgements
 - Apple for macOS
