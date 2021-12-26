@@ -89,7 +89,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      * It is not possible to use the Secure Boot Parameters in this
      * case since that command is only available in bootloader mode.
      */
-    if ( version->firmwareVariant == 0x23 )
+    if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
         controller->mBootloaderMode = false;
         controller->CheckDeviceAddress();
@@ -213,7 +213,7 @@ download:
      * If the firmware version has changed that means it needs to be reset
      * to bootloader when operational so the new firmware can be loaded.
      */
-    if ( version->firmwareVariant == 0x23 )
+    if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
         ret = kIOReturnInvalid;
         goto done;

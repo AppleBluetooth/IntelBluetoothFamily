@@ -375,7 +375,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
      * WBS for SdP - SdP and Stp have a same hw_varaint but
      * different fw_variant
      */
-    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantStP && version->firmwareVariant == 0x22 )
+    if ( version->hardwareVariant == kBluetoothIntelHardwareVariantStP && version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantLegacyROM2_X )
         mWidebandSpeechSupported = true;
 
     /* These devices have an issue with LED which doesn't
@@ -552,7 +552,7 @@ IOReturn IntelBluetoothHostController::SetupGen2Controller()
         return err;
 
     /* controller is already having an operational firmware */
-    if ( version->firmwareVariant == 0x23 )
+    if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
         return kIOReturnSuccess;
 
     err = BootDevice(bootAddress);
