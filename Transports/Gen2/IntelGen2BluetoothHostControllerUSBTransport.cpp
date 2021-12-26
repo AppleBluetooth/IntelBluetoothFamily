@@ -91,6 +91,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Operational firmware is present! Calling CheckDeviceAddress()... ****\n");
         controller->mBootloaderMode = false;
         controller->CheckDeviceAddress();
 
@@ -196,7 +197,7 @@ download:
             break;
         default:
             /* Skip download if firmware has the same version */
-            if ( controller->ParseFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
+            if ( controller->CheckFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {
                 os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****\n");
                 controller->mFirmwareLoaded = true;

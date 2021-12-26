@@ -2067,7 +2067,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     return kIOReturnSuccess;
 }
 
-bool IntelBluetoothHostController::ParseFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress)
+bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress)
 {
     UInt8 * fwPtr;
     BluetoothHCICommandPacket cmd;
@@ -2089,7 +2089,7 @@ bool IntelBluetoothHostController::ParseFirmwareVersion(UInt8 number, UInt8 week
             params = (BluetoothIntelCommandWriteBootParams *) (fwPtr + kBluetoothHCICommandPacketHeaderSize);
 
             *bootAddress = params->bootAddress;
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ParseFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
 
             return (number == params->firmwareBuildNumber && week == params->firmwareBuildWeek && year == params->firmwareBuildYear);
         }

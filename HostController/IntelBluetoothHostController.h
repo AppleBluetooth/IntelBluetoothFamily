@@ -131,7 +131,7 @@ protected:
     virtual IOReturn DownloadFirmwarePayload(OSData * fwData, size_t offset);
     virtual IOReturn SecureSendSFIRSAFirmwareHeader(OSData * fwData);
     virtual IOReturn SecureSendSFIECDSAFirmwareHeader(OSData * fwData);
-    virtual bool ParseFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress);
+    virtual bool CheckFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress);
     
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 0);
     OSMetaClassDeclareReservedUnused(IntelBluetoothHostController, 1);

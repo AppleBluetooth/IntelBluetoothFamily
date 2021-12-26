@@ -181,6 +181,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     if ( version->imageType == 0x03 )
     {
+        os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Operational firmware is present! Calling CheckDeviceAddress()... ****\n");
         controller->mBootloaderMode = false;
         controller->CheckDeviceAddress();
     }
@@ -217,7 +218,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
 
     controller->mDownloading = true;
     /* Skip download if firmware has the same version */
-    if ( controller->ParseFirmwareVersion(version->firmwareBuildNumber, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
+    if ( controller->CheckFirmwareVersion(version->firmwareBuildNumber, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
     {
         os_log(mInternalOSLogObject, "**** [IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****\n");
         controller->mFirmwareLoaded = true;
