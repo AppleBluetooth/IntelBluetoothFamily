@@ -95,9 +95,18 @@ enum BluetoothIntelTLVTypes
     kBluetoothIntelTLVTypeUnlockedState
 };
 
+enum BluetoothHCIIntelFirmwareVariants
+{
+    kBluetoothHCIIntelFirmwareVariantLegacyROM2_5 = 0x01,
+    kBluetoothHCIIntelFirmwareVariantBootloader   = 0x06,
+    kBluetoothHCIIntelFirmwareVariantLegacyROM2_X = 0x22,
+    kBluetoothHCIIntelFirmwareVariantFirmware     = 0x23
+};
+typedef UInt8 BluetoothHCIIntelFirmwareVariant;
+
 enum BluetoothHCIIntelCommands
 {
-    kBluetoothHCIIntelCommandWriteBootParams    = 0x000E
+    kBluetoothHCIIntelCommandWriteBootParams = 0x000E
 };
 
 struct BluetoothIntelVersionInfoTLV

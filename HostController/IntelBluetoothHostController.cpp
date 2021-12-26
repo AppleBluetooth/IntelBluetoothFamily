@@ -913,6 +913,28 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelReadVersionInfo(UInt
     return err;
 }
 
+const char * IntelBluetoothHostController::GetFirmwareVariantString(BluetoothHCIIntelFirmwareVariant firmwareVariant)
+{
+    switch ( firmwareVariant )
+    {
+        case kBluetoothHCIIntelFirmwareVariantLegacyROM2_5:
+            return "Legacy ROM 2.5";
+            
+        case kBluetoothHCIIntelFirmwareVariantBootloader:
+            return "Bootloader";
+            
+        case kBluetoothHCIIntelFirmwareVariantLegacyROM2_X:
+            return "Legacy ROM 2.x";
+            
+        case kBluetoothHCIIntelFirmwareVariantFirmware:
+            return "Firmware";
+            
+        default:
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][GetFirmwareVariantString] Unsupported firmware variant: %02x\n", firmwareVariant);
+            return "Unknown";
+    }
+}
+
 IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInfo * version)
 {
     const char * variant;
@@ -945,24 +967,7 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
         return kIOReturnInvalid;
     }
 
-    switch ( version->firmwareVariant )
-    {
-        case 0x01:
-            variant = "Legacy ROM 2.5";
-            break;
-        case 0x06:
-            variant = "Bootloader";
-            break;
-        case 0x22:
-            variant = "Legacy ROM 2.x";
-            break;
-        case 0x23:
-            variant = "Firmware";
-            break;
-        default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported firmware variant: %02x\n", version->firmwareVariant);
-            return kIOReturnInvalid;
-    }
+    variant = GetFirmwareVariantString(version->firmwareVariant);
 
     os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Firmware Revision: %u.%u -- Firmware Build: %u - week: %u - year: %u\n", variant, version->firmwareRevision >> 4, version->firmwareRevision & 0x0F, version->firmwareBuildNum, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
 

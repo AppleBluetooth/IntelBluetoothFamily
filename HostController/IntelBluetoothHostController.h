@@ -127,6 +127,7 @@ public:
     virtual IOReturn BluetoothHCIIntelReadExceptionInfo(BluetoothHCIRequestID inID, BluetoothIntelExceptionInfo * info);
     
 protected:
+    virtual const char * GetFirmwareVariantString(BluetoothHCIIntelFirmwareVariant variant);
     virtual IOReturn DownloadFirmwarePayload(OSData * fwData, size_t offset);
     virtual IOReturn SecureSendSFIRSAFirmwareHeader(OSData * fwData);
     virtual IOReturn SecureSendSFIECDSAFirmwareHeader(OSData * fwData);
