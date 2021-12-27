@@ -611,7 +611,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
 
     if ( IntelCNVXExtractHardwarePlatform(version.cnviBT) != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware platform: 0x%2x\n", IntelCNVXExtractHardwarePlatform(version.cnviBT));
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware platform: 0x%02x\n", IntelCNVXExtractHardwarePlatform(version.cnviBT));
         return kIOReturnInvalid;
     }
 
@@ -869,7 +869,7 @@ IOReturn IntelBluetoothHostController::CheckDeviceAddress()
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Printing device address: 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x, 0x%2x\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Printing device address: 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
 
     /* For some Intel based controllers, the default Bluetooth device
      * address 00:03:19:9E:8B:00 can be found. These controllers are
@@ -983,7 +983,7 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
      */
     if ( IntelCNVXExtractHardwarePlatform(version->cnviBT) != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware platform: 0x%2x\n", IntelCNVXExtractHardwarePlatform(version->cnviBT));
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware platform: 0x%02x\n", IntelCNVXExtractHardwarePlatform(version->cnviBT));
         return kIOReturnInvalid;
     }
 
@@ -1262,7 +1262,7 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
 
     if ( event->eventCode == kBluetoothHCIEventHardwareError )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ProcessEventDataWL] Received hardware error: 0x%2.2x\n", *(UInt8 *) (inDataPtr + kBluetoothHCIEventPacketHeaderSize));
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ProcessEventDataWL] Received hardware error: 0x%02x\n", *(UInt8 *) (inDataPtr + kBluetoothHCIEventPacketHeaderSize));
 
         err = HCIRequestCreate(&id);
         if ( err )

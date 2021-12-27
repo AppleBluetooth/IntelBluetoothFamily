@@ -82,21 +82,17 @@ IOService * IntelBluetoothHostControllerUSBTransport::probe(IOService * provider
 
 bool IntelBluetoothHostControllerUSBTransport::start(IOService * provider)
 {
-    if ( !super::start(provider) )
-        return false;
-
-    if ( mVendorID == 0x8087 )
+    if ( super::start(provider) && mVendorID == 0x8087 )
     {
         mControllerVendorType = 8;
         setProperty("ActiveBluetoothControllerVendor", "Intel");
+        
+        mBluetoothUSBHostDevice->retain();
+        registerService();
+
+        return true;
     }
-    else
-        return false;
-
-    mBluetoothUSBHostDevice->retain();
-    registerService();
-
-    return true;
+    return false;
 }
 
 void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
