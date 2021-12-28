@@ -75,7 +75,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     IOByteCount remain = fwData->getLength() - (*fwPtr - (UInt8 *) fwData->getBytesNoCopy());
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
     if ( !controller )
-        return false;
+        return kIOReturnInvalid;
 
     /* The first byte indicates the types of the patch command or event.
      * 0x01 means HCI command and 0x02 is HCI event. If the first bytes

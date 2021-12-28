@@ -65,9 +65,9 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
 {
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
     if ( !controller )
-        return false;
+        return kIOReturnInvalid;
 
-    IOReturn err, ret;
+    IOReturn err;
     UInt32 callTime;
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) ver;
     OSData * fwData;
@@ -114,10 +114,10 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
         REQUIRE_NO_ERR(err);
         return err;
     }
-    ret = controller->BluetoothHCIIntelReadBootParams(id, params);
+    err = controller->BluetoothHCIIntelReadBootParams(id, params);
     controller->HCIRequestDelete(NULL, id);
-    if ( ret )
-        return ret;
+    if ( err )
+        return err;
 
     /* It is required that every single firmware fragment is acknowledged
      * with a command complete event. If the boot parameters indicate
@@ -161,8 +161,8 @@ download:
      *
      */
     
-    ret = GetFirmware(version, params, "sfi", &fwData);
-    if ( ret )
+    err = GetFirmware(version, params, "sfi", &fwData);
+    if ( err )
     {
         if ( !controller->mBootloaderMode )
         {
@@ -170,7 +170,7 @@ download:
             setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
         }
-        return ret;
+        return err;
     }
 
     if ( fwData->getLength() < 644 )
@@ -220,12 +220,12 @@ retry:
         controller->ResetToBootloader(true);
     }
 
-    ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
-    if ( ret )
+    err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
+    if ( err )
         goto retry;
 
-    ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
-    if ( ret )
+    err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
+    if ( err )
         goto retry;
 
     /* Before switching the device into operational mode and with that
@@ -239,15 +239,16 @@ retry:
      * and thus just timeout if that happens and fail the setup
      * of this device.
      */
-    ret = controller->WaitForFirmwareDownload(callTime, 5000);
-    if ( !ret )
-        return kIOReturnSuccess;
-    else if ( ret == kIOReturnTimeout )
+    err = controller->WaitForFirmwareDownload(callTime, 5000);
+    switch ( err )
     {
-        controller->ResetToBootloader(false);
-        return kIOReturnTimeout;
+        case kIOReturnTimeout:
+            controller->ResetToBootloader(false);
+        case kIOReturnSuccess:
+            return err;
+        default:
+            goto retry;
     }
-    goto retry;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0)

@@ -155,9 +155,9 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
 {
     IntelBluetoothHostController * controller = OSDynamicCast(IntelBluetoothHostController, mBluetoothController);
     if ( !controller )
-        return false;
+        return kIOReturnInvalid;
 
-    IOReturn ret;
+    IOReturn err;
     UInt32 callTime;
     BluetoothIntelVersionInfoTLV * version = (BluetoothIntelVersionInfoTLV *) ver;
     OSData * fwData;
@@ -195,8 +195,8 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
         controller->mInvalidDeviceAddress = true;
     }
 
-    ret = GetFirmware(version, NULL, "sfi", &fwData);
-    if ( ret )
+    err = GetFirmware(version, NULL, "sfi", &fwData);
+    if ( err )
     {
         if ( !controller->mBootloaderMode )
         {
@@ -205,7 +205,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
             setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
         }
-        return ret;
+        return err;
     }
     
     if ( fwData->getLength() < 644 )
@@ -259,7 +259,7 @@ retry:
     if ( cssHeaderVersion != 0x00010000 )
     {
         os_log(mInternalOSLogObject, "**** [IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] -- Invalid CSS Header version! ****\n");
-        ret = kIOReturnInvalid;
+        err = kIOReturnInvalid;
         goto done;
     }
     
@@ -268,16 +268,16 @@ retry:
         if ( version->sbeType != 0x00 )
         {
             os_log(mInternalOSLogObject, "**** [IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] -- Invalid SBE type for hardware variant (%d)! ****\n", IntelCNVXExtractHardwareVariant(version->cnviBT));
-            ret = kIOReturnInvalid;
+            err = kIOReturnInvalid;
             goto done;
         }
 
-        ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
-        if ( ret )
+        err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
+        if ( err )
             goto retry;
 
-        ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
-        if ( ret )
+        err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
+        if ( err )
             goto retry;
     }
     else if ( IntelCNVXExtractHardwareVariant(version->cnviBT) >= 0x17 )
@@ -285,7 +285,7 @@ retry:
         /* Check if CSS header for ECDSA follows the RSA header */
         if ( ((UInt8 *) fwData->getBytesNoCopy())[kIntelECDSAOffset] != 0x06 )
         {
-            ret = kIOReturnInvalid;
+            err = kIOReturnInvalid;
             goto done;
         }
 
@@ -294,25 +294,25 @@ retry:
         if ( cssHeaderVersion != 0x00020000 )
         {
             os_log(mInternalOSLogObject, "**** [IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] -- Invalid CSS Header version! ****\n");
-            ret = kIOReturnInvalid;
+            err = kIOReturnInvalid;
             goto done;
         }
 
         if ( version->sbeType == 0x00 )
         {
-            ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
-            if ( ret )
+            err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
+            if ( err )
                 goto retry;
         }
         else
         {
-            ret = controller->SecureSendSFIECDSAFirmwareHeader(fwData);
-            if ( ret )
+            err = controller->SecureSendSFIECDSAFirmwareHeader(fwData);
+            if ( err )
                 goto retry;
         }
         
-        ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength + kIntelECDSAHeaderLength);
-        if ( ret )
+        err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength + kIntelECDSAHeaderLength);
+        if ( err )
             goto retry;
     }
 
@@ -327,16 +327,17 @@ retry:
      * and thus just timeout if that happens and fail the setup
      * of this device.
      */
-    ret = controller->WaitForFirmwareDownload(callTime, 5000);
-    if ( !ret )
-        return kIOReturnSuccess;
-    else if ( ret == kIOReturnTimeout )
+    err = controller->WaitForFirmwareDownload(callTime, 5000);
+    switch ( err )
     {
+        case kIOReturnTimeout:
 done:
-        controller->ResetToBootloader(false);
-        return ret;
+            controller->ResetToBootloader(false);
+        case kIOReturnSuccess:
+            return err;
+        default:
+            goto retry;
     }
-    goto retry;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen3BluetoothHostControllerUSBTransport, 0)
