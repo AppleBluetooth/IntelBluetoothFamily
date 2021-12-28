@@ -69,6 +69,7 @@ protected:
     UInt8 * mRequiredEventParams;
     BluetoothHCICommandOpCode mCurrentCommandOpCode;
     bool mReceivedEventValid;
+    bool mPatching;
     bool mIsDefaultFirmware;
 };
 
