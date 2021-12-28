@@ -57,7 +57,7 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
       <key>ExecutablePath</key>
       <string>Contents/MacOS/IOBluetoothFixup</string>
       <key>MaxKernel</key>
-      <string></string>
+      <string>20.99.9</string>
       <key>MinKernel</key>
       <string></string>
       <key>PlistPath</key>
@@ -75,7 +75,7 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
       <key>ExecutablePath</key>
       <string>Contents/MacOS/IntelBluetoothFamily</string>
       <key>MaxKernel</key>
-      <string></string>
+      <string>20.99.9</string>
       <key>MinKernel</key>
       <string></string>
       <key>PlistPath</key>
@@ -93,7 +93,7 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
       <key>ExecutablePath</key>
       <string>Contents/MacOS/IntelBluetoothHostControllerUSBTransport</string>
       <key>MaxKernel</key>
-      <string></string>
+      <string>20.99.9</string>
       <key>MinKernel</key>
       <string></string>
       <key>PlistPath</key>
@@ -105,13 +105,13 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
       <key>BundlePath</key>
       <string>IntelGenXBluetoothHostControllerUSBTransport.kext</string>
       <key>Comment</key>
-      <string></string>
+      <string>Please change to the generation of your device.</string>
       <key>Enabled</key>
       <true/>
       <key>ExecutablePath</key>
       <string>Contents/MacOS/IntelGenXBluetoothHostControllerUSBTransport</string>
       <key>MaxKernel</key>
-      <string></string>
+      <string>20.99.9</string>
       <key>MinKernel</key>
       <string></string>
       <key>PlistPath</key>
