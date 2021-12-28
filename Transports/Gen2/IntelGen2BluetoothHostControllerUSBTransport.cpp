@@ -216,17 +216,17 @@ download:
      */
     if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
-        ret = kIOReturnInvalid;
-        goto done;
+retry:
+        controller->ResetToBootloader(true);
     }
 
     ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
     if ( ret )
-        goto done;
+        goto retry;
 
     ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
     if ( ret )
-        goto done;
+        goto retry;
 
     /* Before switching the device into operational mode and with that
      * booting the loaded firmware, wait for the bootloader notification
@@ -240,12 +240,14 @@ download:
      * of this device.
      */
     ret = controller->WaitForFirmwareDownload(callTime, 5000);
-    if ( ret == kIOReturnTimeout )
+    if ( !ret )
+        return kIOReturnSuccess;
+    else if ( ret == kIOReturnTimeout )
     {
-done:
-        controller->ResetToBootloader();
+        controller->ResetToBootloader(false);
+        return kIOReturnTimeout;
     }
-    return ret;
+    goto retry;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0)

@@ -239,8 +239,8 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      */
     if ( version->imageType == kBluetoothHCIIntelImageTypeFirmware )
     {
-        ret = kIOReturnInvalid;
-        goto done;
+retry:
+        controller->ResetToBootloader(true);
     }
     
     /* iBT hardware variants 0x0b, 0x0c, 0x11, 0x12, 0x13, 0x14 support
@@ -274,11 +274,11 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
 
         ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
         if ( ret )
-            goto done;
+            goto retry;
 
         ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
         if ( ret )
-            goto done;
+            goto retry;
     }
     else if ( IntelCNVXExtractHardwareVariant(version->cnviBT) >= 0x17 )
     {
@@ -302,18 +302,18 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
         {
             ret = controller->SecureSendSFIRSAFirmwareHeader(fwData);
             if ( ret )
-                goto done;
+                goto retry;
         }
         else
         {
             ret = controller->SecureSendSFIECDSAFirmwareHeader(fwData);
             if ( ret )
-                goto done;
+                goto retry;
         }
         
         ret = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength + kIntelECDSAHeaderLength);
         if ( ret )
-            goto done;
+            goto retry;
     }
 
     /* Before switching the device into operational mode and with that
@@ -328,12 +328,15 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      * of this device.
      */
     ret = controller->WaitForFirmwareDownload(callTime, 5000);
-    if ( ret == kIOReturnTimeout )
+    if ( !ret )
+        return kIOReturnSuccess;
+    else if ( ret == kIOReturnTimeout )
     {
 done:
-        controller->ResetToBootloader();
+        controller->ResetToBootloader(false);
+        return ret;
     }
-    return ret;
+    goto retry;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen3BluetoothHostControllerUSBTransport, 0)

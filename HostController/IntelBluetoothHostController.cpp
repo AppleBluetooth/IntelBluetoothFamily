@@ -775,12 +775,13 @@ void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVar
     }
 }
 
-void IntelBluetoothHostController::ResetToBootloader()
+void IntelBluetoothHostController::ResetToBootloader(bool retry)
 {
     IOReturn err;
     BluetoothHCIRequestID id;
 
-    mDownloading = false;
+    mBootloaderMode = true;
+    mDownloading = true;
     mBooting = false;
     
     err = HCIRequestCreate(&id);
@@ -797,7 +798,8 @@ void IntelBluetoothHostController::ResetToBootloader()
         return;
     }
     
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] Reset is sent successfully. Retrying firmware download...\n");
+    if ( retry )
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] Reset is sent successfully. Retrying firmware download...\n");
     
     /* Current Intel BT controllers(ThP/JfP) hold the USB reset
      * lines for 2ms when it receives Intel Reset in bootloader mode.
@@ -1221,9 +1223,8 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     err = HCIRequestCreate(&id);
     if ( err )
     {
-        mBooting = false;
         REQUIRE_NO_ERR(err);
-        return err;
+        goto reset;
     }
     err = BluetoothHCISendIntelReset(id, 0, true, false, 1, bootAddress);
     HCIRequestDelete(NULL, id);
@@ -1231,7 +1232,7 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Soft reset failed: 0x%x\n", err);
 reset:
-        ResetToBootloader();
+        ResetToBootloader(false);
         return err;
     }
 
@@ -2071,26 +2072,18 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
 
 bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week, UInt8 year, OSData * fwData, UInt32 * bootAddress)
 {
-    UInt8 * fwPtr;
-    BluetoothHCICommandPacket cmd;
-    BluetoothIntelCommandWriteBootParams * params;
-
-    fwPtr = (UInt8 *) fwData->getBytesNoCopy();
-    while ( fwPtr - (UInt8 *) fwData->getBytesNoCopy() < fwData->getLength() )
+    UInt8 * fwPtr = (UInt8 *) fwData->getBytesNoCopy();
+    
+    while ( (fwPtr - (UInt8 *) fwData->getBytesNoCopy()) < fwData->getLength() )
     {
-        cmd.opCode   = *(BluetoothHCICommandOpCode *) fwPtr;
-        fwPtr        += sizeof(BluetoothHCICommandOpCode);
-        cmd.dataSize = *(UInt8 *) fwPtr;
-        fwPtr        += sizeof(UInt8);
-
         /* Each SKU has a different reset parameter to use in the
          * HCI_Intel_Reset command and it is embedded in the firmware
          * data. So, instead of using static value per SKU, check
          * the firmware data and save it for later use.
          */
-        if ( cmd.opCode == BluetoothHCIMakeCommandOpCode(kBluetoothHCICommandGroupVendorSpecific, kBluetoothHCIIntelCommandWriteBootParams) )
+        if ( *(BluetoothHCICommandOpCode *) fwPtr == BluetoothHCIMakeCommandOpCode(kBluetoothHCICommandGroupVendorSpecific, kBluetoothHCIIntelCommandWriteBootParams) )
         {
-            params = (BluetoothIntelCommandWriteBootParams *) fwPtr;
+            BluetoothIntelCommandWriteBootParams * params = (BluetoothIntelCommandWriteBootParams *) (fwPtr + kBluetoothHCICommandPacketHeaderSize);
 
             *bootAddress = params->bootAddress;
             os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
@@ -2098,7 +2091,7 @@ bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week
             return (number == params->firmwareBuildNumber && week == params->firmwareBuildWeek && year == params->firmwareBuildYear);
         }
         
-        fwPtr += cmd.dataSize;
+        fwPtr += (kBluetoothHCICommandPacketHeaderSize + *(UInt8 *) (fwPtr + sizeof(BluetoothHCICommandOpCode)));
     }
 
     return false;
