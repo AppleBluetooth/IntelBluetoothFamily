@@ -33,6 +33,8 @@ class IntelGen1BluetoothHostControllerUSBTransport : public IntelBluetoothHostCo
 public:
     virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
 
+    virtual void ReceiveInterruptData(void * data, UInt32 dataSize, bool special) APPLE_KEXT_OVERRIDE;
+    
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName) APPLE_KEXT_OVERRIDE;
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData) APPLE_KEXT_OVERRIDE;
     virtual IOReturn PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch) APPLE_KEXT_OVERRIDE;
@@ -63,6 +65,10 @@ public:
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 23);
 
 protected:
+    BluetoothHCIEventPacketHeader * mRequiredEvent;
+    UInt8 * mRequiredEventParams;
+    BluetoothHCICommandOpCode mCurrentCommandOpCode;
+    bool mReceivedEventValid;
     bool mIsDefaultFirmware;
 };
 

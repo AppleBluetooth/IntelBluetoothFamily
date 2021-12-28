@@ -1967,7 +1967,7 @@ IOReturn IntelBluetoothHostController::DownloadFirmwarePayload(OSData * fwData, 
         cmd.opCode   = *(BluetoothHCICommandOpCode *)(fwPtr + fragmentSize);
         cmd.dataSize = *(UInt8 *)(fwPtr + fragmentSize + sizeof(BluetoothHCICommandOpCode));
 
-        fragmentSize += kBluetoothHCICommandPacketHeaderSize + cmd.dataSize;
+        fragmentSize += (kBluetoothHCICommandPacketHeaderSize + cmd.dataSize);
 
         /* The parameter length of the secure send command requires
          * a 4 byte alignment. It happens so that the firmware file
