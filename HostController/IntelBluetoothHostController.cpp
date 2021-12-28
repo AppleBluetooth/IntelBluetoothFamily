@@ -2079,7 +2079,9 @@ bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week
     while ( fwPtr - (UInt8 *) fwData->getBytesNoCopy() < fwData->getLength() )
     {
         cmd.opCode   = *(BluetoothHCICommandOpCode *) fwPtr;
-        cmd.dataSize = *(UInt8 *) (fwPtr + sizeof(BluetoothHCICommandOpCode));
+        fwPtr        += sizeof(BluetoothHCICommandOpCode);
+        cmd.dataSize = *(UInt8 *) fwPtr;
+        fwPtr        += sizeof(UInt8);
 
         /* Each SKU has a different reset parameter to use in the
          * HCI_Intel_Reset command and it is embedded in the firmware
@@ -2088,7 +2090,7 @@ bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week
          */
         if ( cmd.opCode == BluetoothHCIMakeCommandOpCode(kBluetoothHCICommandGroupVendorSpecific, kBluetoothHCIIntelCommandWriteBootParams) )
         {
-            params = (BluetoothIntelCommandWriteBootParams *) (fwPtr + kBluetoothHCICommandPacketHeaderSize);
+            params = (BluetoothIntelCommandWriteBootParams *) fwPtr;
 
             *bootAddress = params->bootAddress;
             os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
@@ -2096,7 +2098,7 @@ bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week
             return (number == params->firmwareBuildNumber && week == params->firmwareBuildWeek && year == params->firmwareBuildYear);
         }
         
-        fwPtr += kBluetoothHCICommandPacketHeaderSize + cmd.dataSize;
+        fwPtr += cmd.dataSize;
     }
 
     return false;
