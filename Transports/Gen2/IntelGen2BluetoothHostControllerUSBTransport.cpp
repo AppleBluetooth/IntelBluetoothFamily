@@ -166,7 +166,6 @@ download:
     {
         if ( !controller->mBootloaderMode )
         {
-            /* Firmware has already been loaded */
             controller->mFirmwareLoaded = true;
             setProperty("FirmwareLoaded", true);
             return kIOReturnSuccess;
@@ -200,6 +199,7 @@ download:
             if ( controller->CheckFirmwareVersion(version->firmwareBuildNum, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
             {
                 os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****\n");
+                controller->mDownloading = false;
                 controller->mFirmwareLoaded = true;
                 setProperty("FirmwareLoaded", true);
                 return kIOReturnSuccess;

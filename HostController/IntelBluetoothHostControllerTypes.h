@@ -104,6 +104,13 @@ enum BluetoothHCIIntelFirmwareVariants
 };
 typedef UInt8 BluetoothHCIIntelFirmwareVariant;
 
+enum BluetoothHCIIntelImageTypes
+{
+    kBluetoothHCIIntelImageTypeBootloader = 0x01,
+    kBluetoothHCIIntelImageTypeFirmware   = 0x03
+};
+typedef UInt8 BluetoothHCIIntelImageType;
+
 enum BluetoothHCIIntelCommands
 {
     kBluetoothHCIIntelCommandWriteBootParams = 0x000E

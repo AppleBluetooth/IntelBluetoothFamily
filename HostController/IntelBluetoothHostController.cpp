@@ -667,7 +667,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
                 return err;
 
             /* check if controller is already having an operational firmware */
-            if ( version.imageType == 0x03 )
+            if ( version.imageType == kBluetoothHCIIntelImageTypeFirmware )
                 return kIOReturnSuccess;
 
             err = BootDevice(bootAddress);
@@ -780,6 +780,9 @@ void IntelBluetoothHostController::ResetToBootloader()
     IOReturn err;
     BluetoothHCIRequestID id;
 
+    mDownloading = false;
+    mBooting = false;
+    
     err = HCIRequestCreate(&id);
     if ( err )
     {
@@ -913,7 +916,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelReadVersionInfo(UInt
     return err;
 }
 
-const char * IntelBluetoothHostController::GetFirmwareVariantString(BluetoothHCIIntelFirmwareVariant firmwareVariant)
+const char * IntelBluetoothHostController::ConvertFirmwareVariantToString(BluetoothHCIIntelFirmwareVariant firmwareVariant)
 {
     switch ( firmwareVariant )
     {
@@ -930,15 +933,29 @@ const char * IntelBluetoothHostController::GetFirmwareVariantString(BluetoothHCI
             return "Firmware";
             
         default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][GetFirmwareVariantString] Unsupported firmware variant: %02x\n", firmwareVariant);
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ConvertFirmwareVariantToString] Unsupported firmware variant: %02x\n", firmwareVariant);
+            return "Unknown";
+    }
+}
+
+const char * IntelBluetoothHostController::ConvertImageTypeToString(BluetoothHCIIntelImageType imageType)
+{
+    switch ( imageType )
+    {
+        case kBluetoothHCIIntelImageTypeBootloader:
+            return "Bootloader";
+            
+        case kBluetoothHCIIntelImageTypeFirmware:
+            return "Firmware";
+            
+        default:
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ConvertImageTypeToString] Unsupported image type: %02x\n", imageType);
             return "Unknown";
     }
 }
 
 IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInfo * version)
 {
-    const char * variant;
-
     /* The hardware platform number has a fixed value of 0x37 and
      * for now only accept this single value.
      */
@@ -967,17 +984,13 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
         return kIOReturnInvalid;
     }
 
-    variant = GetFirmwareVariantString(version->firmwareVariant);
-
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Firmware Revision: %u.%u -- Firmware Build: %u - week: %u - year: %u\n", variant, version->firmwareRevision >> 4, version->firmwareRevision & 0x0F, version->firmwareBuildNum, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Firmware Revision: %u.%u -- Firmware Build: %u - week: %u - year: %u\n", ConvertFirmwareVariantToString(version->firmwareVariant), version->firmwareRevision >> 4, version->firmwareRevision & 0x0F, version->firmwareBuildNum, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
 
     return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInfoTLV * version)
 {
-    const char * variant;
-
     /* The hardware platform number has a fixed value of 0x37 and
      * for now only accept this single value.
      */
@@ -1004,45 +1017,34 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
             return kIOReturnInvalid;
     }
 
-    switch ( version->imageType )
+    if ( version->imageType == kBluetoothHCIIntelImageTypeBootloader )
     {
-        case 0x01:
-            variant = "Bootloader";
-            /* It is required that every single firmware fragment is acknowledged
-             * with a command complete event. If the boot parameters indicate
-             * that this bootloader does not send them, then abort the setup.
-             */
-            if ( version->limitedCCE != 0x00 )
-            {
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported firmware loading method: 0x%x\n", version->limitedCCE);
-                return kIOReturnInvalid;
-            }
-
-            /* Secure boot engine type should be either 1 (ECDSA) or 0 (RSA) */
-            if ( version->sbeType > 0x01 )
-            {
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported secure boot engine type: 0x%x\n", version->sbeType);
-                return kIOReturnInvalid;
-            }
-
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Device revision is %u\n", version->deviceRevisionID);
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Secure boot is %s\n", version->secureBoot ? "enabled" : "disabled");
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] OTP lock is %s\n", version->otpLock ? "enabled" : "disabled");
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] API lock is %s\n", version->apiLock ? "enabled" : "disabled");
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Debug lock is %s\n", version->debugLock ? "enabled" : "disabled");
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Minimum firmware build %u week %u %u\n", version->firmwareBuildNumber, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
-            break;
-            
-        case 0x03:
-            variant = "Firmware";
-            break;
-            
-        default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported image type: %02x\n", version->imageType);
+        /* It is required that every single firmware fragment is acknowledged
+         * with a command complete event. If the boot parameters indicate
+         * that this bootloader does not send them, then abort the setup.
+         */
+        if ( version->limitedCCE != 0x00 )
+        {
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported firmware loading method: 0x%x\n", version->limitedCCE);
             return kIOReturnInvalid;
+        }
+
+        /* Secure boot engine type should be either 1 (ECDSA) or 0 (RSA) */
+        if ( version->sbeType > 0x01 )
+        {
+            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported secure boot engine type: 0x%x\n", version->sbeType);
+            return kIOReturnInvalid;
+        }
+
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Device revision is %u\n", version->deviceRevisionID);
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Secure boot is %s\n", version->secureBoot ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] OTP lock is %s\n", version->otpLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] API lock is %s\n", version->apiLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Debug lock is %s\n", version->debugLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Minimum firmware build %u week %u %u\n", version->firmwareBuildNumber, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Timestamp: %u.%u -- Build Type: %u -- Build Number: %u\n", variant, 2000 + (version->timestamp >> 8), version->timestamp & 0xFF, version->buildType, version->buildNumber);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Timestamp: %u.%u -- Build Type: %u -- Build Number: %u\n", ConvertImageTypeToString(version->imageType), 2000 + (version->timestamp >> 8), version->timestamp & 0xFF, version->buildType, version->buildNumber);
 
     return kIOReturnSuccess;
 }
@@ -1219,6 +1221,7 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     err = HCIRequestCreate(&id);
     if ( err )
     {
+        mBooting = false;
         REQUIRE_NO_ERR(err);
         return err;
     }
@@ -1227,7 +1230,6 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Soft reset failed: 0x%x\n", err);
-
 reset:
         ResetToBootloader();
         return err;

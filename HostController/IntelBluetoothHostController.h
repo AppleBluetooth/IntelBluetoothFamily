@@ -127,7 +127,8 @@ public:
     virtual IOReturn BluetoothHCIIntelReadExceptionInfo(BluetoothHCIRequestID inID, BluetoothIntelExceptionInfo * info);
     
 protected:
-    virtual const char * GetFirmwareVariantString(BluetoothHCIIntelFirmwareVariant variant);
+    virtual const char * ConvertFirmwareVariantToString(BluetoothHCIIntelFirmwareVariant variant);
+    virtual const char * ConvertImageTypeToString(BluetoothHCIIntelImageType imageType);
     virtual IOReturn DownloadFirmwarePayload(OSData * fwData, size_t offset);
     virtual IOReturn SecureSendSFIRSAFirmwareHeader(OSData * fwData);
     virtual IOReturn SecureSendSFIECDSAFirmwareHeader(OSData * fwData);
@@ -170,13 +171,14 @@ protected:
     bool mWidebandSpeechSupported;
     bool mInvalidDeviceAddress;
     bool mIsLegacyROMDevice;
-    bool mBootloaderMode;
+    bool mBrokenLED;
+    bool mBrokenInitialNumberOfCommands;
+    
     bool mBooting;
+    bool mBootloaderMode;
     bool mDownloading;
     bool mFirmwareLoaded;
     bool mFirmwareLoadingFailed;
-    bool mBrokenLED;
-    bool mBrokenInitialNumberOfCommands;
     bool mQualityReportSet;
 
     struct ExpansionData

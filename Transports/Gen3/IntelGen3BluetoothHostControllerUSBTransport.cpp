@@ -93,7 +93,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
                 version->imageType = tlv->value[0];
                 break;
             case kBluetoothIntelTLVTypeTimestamp:
-                /* If image type is Operational firmware (0x03), then
+                /* If image type is Operational firmware, then
                  * running FW Calendar Week and Year information can
                  * be extracted from Timestamp information
                  */
@@ -105,7 +105,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
                 version->buildType = tlv->value[0];
                 break;
             case kBluetoothIntelTLVTypeBuildNum:
-                /* If image type is Operational firmware (0x03), then
+                /* If image type is Operational firmware, then
                  * running FW build number can be extracted from the
                  * Build information
                  */
@@ -179,7 +179,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      * It is not possible to use the Secure Boot Parameters in this
      * case since that command is only available in bootloader mode.
      */
-    if ( version->imageType == 0x03 )
+    if ( version->imageType == kBluetoothHCIIntelImageTypeFirmware )
     {
         os_log(mInternalOSLogObject, "**** [IntelGen2BluetoothHostControllerUSBTransport][DownloadFirmware] -- Operational firmware is present! Calling CheckDeviceAddress()... ****\n");
         controller->mBootloaderMode = false;
@@ -217,10 +217,12 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     callTime = mBluetoothFamily->GetCurrentTime();
 
     controller->mDownloading = true;
+    
     /* Skip download if firmware has the same version */
     if ( controller->CheckFirmwareVersion(version->firmwareBuildNumber, version->firmwareBuildWeek, version->firmwareBuildYear, fwData, bootAddress) )
     {
         os_log(mInternalOSLogObject, "**** [IntelGen3BluetoothHostControllerUSBTransport][DownloadFirmware] -- Firmware already loaded! ****\n");
+        controller->mDownloading = false;
         controller->mFirmwareLoaded = true;
         setProperty("FirmwareLoaded", true);
         return kIOReturnSuccess;
@@ -235,7 +237,7 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
      * If the firmware version has changed that means it needs to be reset
      * to bootloader when operational so the new firmware can be loaded.
      */
-    if ( version->imageType == 0x03 )
+    if ( version->imageType == kBluetoothHCIIntelImageTypeFirmware )
     {
         ret = kIOReturnInvalid;
         goto done;
