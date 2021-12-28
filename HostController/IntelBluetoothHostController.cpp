@@ -572,7 +572,6 @@ IOReturn IntelBluetoothHostController::SetupGen2Controller()
         LoadDDCConfig(fwData);
 
     SetQualityReport(mQualityReportSet);
-    mQualityReportSet = false;
 
     /* Read the Intel version information after loading the FW */
     err = CallBluetoothHCIIntelReadVersionInfo(0x00);
@@ -690,7 +689,6 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
             ConfigureOffload();
 
             SetQualityReport(mQualityReportSet);
-            mQualityReportSet = false;
 
             /* Read the Intel version information after loading the FW  */
             err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
@@ -1862,7 +1860,7 @@ IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDe
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x\n", 0x00, 0x00);
+    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetDebugFeatures] Reset debug features successfully: traceEnable = 0x%02x, mask = 0x%02x\n", 0x00, 0x00);
 
     return kIOReturnSuccess;
 }
