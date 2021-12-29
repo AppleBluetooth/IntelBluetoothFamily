@@ -204,7 +204,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
         return err;
     }
     
-    err = TransportCommandSleep(&mReceivedEventValid, 10, (char *) __FUNCTION__, true);
+    err = TransportCommandSleep(&mReceivedEventValid, 100, (char *) __FUNCTION__, true);
     mPatching = false;
     if ( err == THREAD_AWAKENED || (err == THREAD_TIMED_OUT && mReceivedEventValid) )
     {

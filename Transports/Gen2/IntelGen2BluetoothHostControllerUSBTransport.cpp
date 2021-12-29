@@ -222,11 +222,11 @@ retry:
 
     err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
     if ( err )
-        goto retry;
+        goto done;
 
     err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
     if ( err )
-        goto retry;
+        goto done;
 
     /* Before switching the device into operational mode and with that
      * booting the loaded firmware, wait for the bootloader notification
@@ -243,6 +243,7 @@ retry:
     switch ( err )
     {
         case kIOReturnTimeout:
+done:
             controller->ResetToBootloader(false);
         case kIOReturnSuccess:
             return err;

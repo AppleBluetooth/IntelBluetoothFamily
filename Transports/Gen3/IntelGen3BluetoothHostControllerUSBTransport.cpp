@@ -274,11 +274,11 @@ retry:
 
         err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
         if ( err )
-            goto retry;
+            goto done;
 
         err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength);
         if ( err )
-            goto retry;
+            goto done;
     }
     else if ( IntelCNVXExtractHardwareVariant(version->cnviBT) >= 0x17 )
     {
@@ -302,18 +302,18 @@ retry:
         {
             err = controller->SecureSendSFIRSAFirmwareHeader(fwData);
             if ( err )
-                goto retry;
+                goto done;
         }
         else
         {
             err = controller->SecureSendSFIECDSAFirmwareHeader(fwData);
             if ( err )
-                goto retry;
+                goto done;
         }
         
         err = controller->DownloadFirmwarePayload(fwData, kIntelRSAHeaderLength + kIntelECDSAHeaderLength);
         if ( err )
-            goto retry;
+            goto done;
     }
 
     /* Before switching the device into operational mode and with that
