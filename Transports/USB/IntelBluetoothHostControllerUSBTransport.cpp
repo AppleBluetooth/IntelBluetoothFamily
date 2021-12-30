@@ -75,7 +75,7 @@ IOService * IntelBluetoothHostControllerUSBTransport::probe(IOService * provider
 
     vendorID = device->getDeviceDescriptor()->idVendor;
     productID = device->getDeviceDescriptor()->idProduct;
-    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][probe] -- USB device info: name: %s, vendor ID: 0x%04X, product ID: 0x%04X\n", device->getName(), vendorID, productID);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][probe] -- USB device info: name: %s, vendor ID: 0x%04X, product ID: 0x%04X ****\n", device->getName(), vendorID, productID);
 
     return result;
 }
@@ -236,7 +236,7 @@ bool IntelBluetoothHostControllerUSBTransport::PostSecureSendBulkPipeRead()
     if ( err )
     {
         mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] -- ERROR -- clearStall (true) failed with error 0x%04X (%s) -- 0x%04x\n", err, errStrLong, ConvertAddressToUInt32(this));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] ### ERROR -- clearStall (true) failed with error 0x%04X (%s) -- 0x%04x ****\n", err, errStrLong, ConvertAddressToUInt32(this));
         BluetoothFamilyLogPacket(mBluetoothFamily, 250, "SecureSend - clearStall 0x%04X %s", err, errStrShort);
         return false;
     }
@@ -257,7 +257,7 @@ bool IntelBluetoothHostControllerUSBTransport::PostSecureSendBulkPipeRead()
     ReleaseTransport((char *) __FUNCTION__);
 
     mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
-    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] -- ERROR -- failed to read on the bulk in pipe: 0x%04X (%s) -- this = 0x%04x\n", err, errStrLong, ConvertAddressToUInt32(this));
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][PostSecureSendBulkPipeRead] ### ERROR -- failed to read on the bulk in pipe: 0x%04X (%s) -- this = 0x%04x ****\n", err, errStrLong, ConvertAddressToUInt32(this));
     BluetoothFamilyLogPacket(mBluetoothFamily, 250, "SecureSend - Read 0x%04X %s", err, errStrShort);
     return false;
 }
@@ -278,7 +278,7 @@ void IntelBluetoothHostControllerUSBTransport::SecureSendBulkInReadHandler(void 
     if ( !that->mBulkInPipe )
     {
         that->mBulkInPipeStarted = false;
-        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Pipe Is Gone\n");
+        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Pipe Is Gone ****\n");
         BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "Bulk In Pipe Gone");
 FAIL:
         that->ReleaseTransport((char *) __FUNCTION__);
@@ -311,9 +311,9 @@ FAIL:
     if ( inStatus == kIOReturnAborted )
     {
         if ( that->mBulkInPipeOutstandingIOCount )
-            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 \n", that->mBulkInPipeOutstandingIOCount);
+            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 ****\n", that->mBulkInPipeOutstandingIOCount);
         else
-            BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe = %d \n", 0);
+            BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- Number of outstanding IO on the Bulk In Pipe = %d ****\n", 0);
 
         BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In Pipe: Aborted");
         BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- kIOReturnAborted -- dataSize = %u -- inTarget = 0x%04x ****\n", dataSize, that->ConvertAddressToUInt32(that));
@@ -336,7 +336,7 @@ FAIL:
         }
 
         ++that->mInterruptReadNumRetries;
-        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received kIOReturnAborted error - retrying: %d -- 0x%04x\n", that->mInterruptReadNumRetries, that->ConvertAddressToUInt32(that));
+        os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received kIOReturnAborted error - retrying: %d -- 0x%04x ****\n", that->mInterruptReadNumRetries, that->ConvertAddressToUInt32(that));
         return;
     }
 
@@ -378,7 +378,7 @@ FAIL:
         ++that->mInterruptReadNumRetries;
         if ( that->mInterruptReadNumRetries >= 5 )
         {
-            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received %s error - no more retries \n", errStrLong);
+            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Received %s error - no more retries ****\n", errStrLong);
             BluetoothFamilyLogPacket(that->mBluetoothFamily, 250, "Bulk In Read - no more retry");
 
             if ( that->mBluetoothFamily )
@@ -389,7 +389,7 @@ FAIL:
                 that->mHardResetState = 2;
                 that->mBluetoothController->mHardResetPerformed = 1;
                 BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In Read -- Hardware Reset");
-                os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset()\n");
+                os_log(that->mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- calling HardReset() ****\n");
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_15
                 that->HardReset();
 #else
@@ -405,9 +405,9 @@ ABORT:
     if ( that->mStopAllPipesCalled )
     {
         if ( that->mBulkInPipeOutstandingIOCount )
-            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 \n", that->mBulkInPipeOutstandingIOCount);
+            OSLogAndLogPacket(that->mInternalOSLogObject, that->mBluetoothFamily, 250, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe (%d) > 0 ****\n", that->mBulkInPipeOutstandingIOCount);
         else
-            BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe = %d \n", that->mBulkInPipeOutstandingIOCount);
+            BluetoothFamilyLogPacket(that->mBluetoothFamily, 249, "**** [IntelBluetoothHostControllerUSBTransport][SecureSendBulkInReadHandler] -- Bulk In Pipe Aborted -- Number of outstanding IO on the Bulk In Pipe = %d ****\n", that->mBulkInPipeOutstandingIOCount);
 
         BluetoothFamilyLogPacket(that->mBluetoothFamily, 248, "Bulk In: IO %d", that->mBulkInPipeOutstandingIOCount);
     }

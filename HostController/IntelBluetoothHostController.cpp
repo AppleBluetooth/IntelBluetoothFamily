@@ -104,7 +104,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
     err = LookupRequest(inID, &request);
     if ( err || !request )
     {
-        os_log(OS_LOG_DEFAULT, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: request could not be found!\n");
+        os_log(OS_LOG_DEFAULT, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: request could not be found! ****\n");
         goto OVER;
     }
 
@@ -118,7 +118,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
 
     if ( !mBluetoothTransport || mBluetoothTransport->isInactive() )
     {
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Transport is inactive -- inOpCode = 0x%04X (%s), From: %s (%d), mNumberOfCommandsAllowedByHardware is %d, requestPtr = 0x%04x -- this = 0x%04x\n", inOpCode, opStr, processName, PID, mNumberOfCommandsAllowedByHardware, ConvertAddressToUInt32(request), ConvertAddressToUInt32(this));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Transport is inactive -- inOpCode = 0x%04X (%s), From: %s (%d), mNumberOfCommandsAllowedByHardware is %d, requestPtr = 0x%04x -- this = 0x%04x ****\n", inOpCode, opStr, processName, PID, mNumberOfCommandsAllowedByHardware, ConvertAddressToUInt32(request), ConvertAddressToUInt32(this));
         goto OVER_RELEASE;
     }
 
@@ -139,7 +139,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
 
     if ( GetTransportCurrentPowerState(&state) )
     {
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- GetTransportCurrentPowerState() returned error -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x \n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- GetTransportCurrentPowerState() returned error -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x ****\n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
         goto OVER_RELEASE;
     }
 
@@ -154,7 +154,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
             if ( err )
             {
               mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
-              os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequest failed (err=0x%x (%s)) for opCode 0x%04x (%s)\n", err, errStrLong, inOpCode, opStr);
+              os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequest failed (err=0x%x (%s)) for opCode 0x%04x (%s) ****\n", err, errStrLong, inOpCode, opStr);
             }
 
             err = EnqueueRequestForController(request);
@@ -162,7 +162,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
             {
                 AbortRequestAndSetTime(request);
                 mBluetoothFamily->ConvertErrorCodeToString(err, errStrLong, errStrShort);
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequestForController failed (err=0x%x (%s)) for opCode 0x%04x (%s)\n", err, errStrLong, inOpCode, opStr);
+                os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] ### ERROR: EnqueueRequestForController failed (err=0x%x (%s)) for opCode 0x%04x (%s) ****\n", err, errStrLong, inOpCode, opStr);
                 goto OVER_RELEASE;
             }
         }
@@ -201,7 +201,7 @@ IOReturn IntelBluetoothHostController::SendHCIRequestFormatted(BluetoothHCIReque
     }
 
     if ( state == kIOBluetoothHCIControllerInternalPowerStateSleep )
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- Current power state is SLEEP -- cannot send out the HCI command -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x\n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SendHCIRequestFormatted] -- Returned Error -- Current power state is SLEEP -- cannot send out the HCI command -- mNumberOfCommandsAllowedByHardware is %d, inID = %d, opCode = 0x%04x, requestPtr = 0x%04x ****\n", mNumberOfCommandsAllowedByHardware, inID, inOpCode, ConvertAddressToUInt32(request));
 
 OVER_RELEASE:
     request->ReleaseRequest((char *) "IntelBluetoothHostController::SendHCIRequestFormatted -- before exiting");
@@ -285,7 +285,7 @@ SETUP_GEN2:
                 break;
 
             default:
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupController] Unsupported hardware variant: %u\n", version->hardwareVariant);
+                os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupController] -- Unsupported hardware variant: %u ****\n", version->hardwareVariant);
                 err = kIOReturnInvalid;
         }
 
@@ -388,7 +388,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
      */
     if ( version->firmwarePatchVersion )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Device is already patched -- patch number: %02x\n", version->firmwarePatchVersion);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Device is already patched -- patch number: %02x ****\n", version->firmwarePatchVersion);
         goto complete;
     }
 
@@ -461,7 +461,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
             if ( err )
                 return err;
 
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch completed and deactivated.\n");
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch completed and deactivated. ****\n");
             goto complete;
         }
     }
@@ -480,7 +480,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
         if ( err )
             return err;
 
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch completed.\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch completed. ****\n");
         goto complete;
     }
 
@@ -505,7 +505,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     if ( err )
         return err;
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen1Controller] Firmware patch (0x%02x) completed and activated.\n", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch (0x%02x) completed and activated. ****\n", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
 
 complete:
     CheckDeviceAddress();
@@ -602,13 +602,13 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
     err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen3Controller] -- Failed to parse TLV version information! ****\n");
         return err;
     }
 
     if ( IntelCNVXExtractHardwarePlatform(version.cnviBT) != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware platform: 0x%02x\n", IntelCNVXExtractHardwarePlatform(version.cnviBT));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen3Controller] -- Unsupported hardware platform: 0x%02x ****\n", IntelCNVXExtractHardwarePlatform(version.cnviBT));
         return kIOReturnInvalid;
     }
 
@@ -626,7 +626,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
         case kBluetoothIntelHardwareVariantHrP:
         case kBluetoothIntelHardwareVariantCcP:
         {
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] This controller is not an Intel new bootloader device!!!\n");
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen3Controller] -- This controller is not an Intel new bootloader device!!! ****\n");
             mGeneration = 2;
             return kIOReturnUnsupported;
         }
@@ -696,7 +696,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
             err = transport->ParseVersionInfoTLV(&version, mVersionInfo, kMaxHCIBufferLength * 4);
             if ( err )
             {
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Failed to parse TLV version information!\n");
+                os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen3Controller] -- Failed to parse TLV version information! ****\n");
                 return err;
             }
 
@@ -707,7 +707,7 @@ IOReturn IntelBluetoothHostController::SetupGen3Controller()
 
         default:
         {
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetupGen3Controller] Unsupported hardware variant: %u\n", IntelCNVXExtractHardwareVariant(version.cnviBT));
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen3Controller] -- Unsupported hardware variant: %u ****\n", IntelCNVXExtractHardwareVariant(version.cnviBT));
             return kIOReturnInvalid;
         }
     }
@@ -790,12 +790,12 @@ IOReturn IntelBluetoothHostController::ResetToBootloader(bool retry)
     HCIRequestDelete(NULL, id);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] BluetoothHCISendIntelReset() failed -- cannot deliver Intel reset: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetToBootloader] -- BluetoothHCISendIntelReset() failed -- cannot deliver Intel reset: 0x%x ****\n", err);
         return err;
     }
     
     if ( retry )
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] Reset is sent successfully. Retrying firmware download...\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetToBootloader] -- Reset is sent successfully. Retrying firmware download... ****\n");
     
     /* Current Intel BT controllers(ThP/JfP) hold the USB reset
      * lines for 2ms when it receives Intel Reset in bootloader mode.
@@ -814,18 +814,18 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadExceptionInfo(Blueto
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFC22, sizeof(BluetoothIntelExceptionInfo), info, "Hbb", 0xFC22, 1, 0x00);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] ### ERROR: opCode = 0x%04X -- send request failed -- Unable to obtain exception info: 0x%x\n", 0xFC22, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] ### ERROR: opCode = 0x%04X -- send request failed -- Unable to obtain exception info: 0x%x ****\n", 0xFC22, err);
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] Exception Info: %s\n", info->info);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadExceptionInfo] -- Exception Info: %s ****\n", info->info);
 
     return kIOReturnSuccess;
 }
@@ -837,14 +837,14 @@ IOReturn IntelBluetoothHostController::WriteDeviceAddress(BluetoothHCIRequestID 
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WriteDeviceAddress] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WriteDeviceAddress] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
     
     err = SendHCIRequestFormatted(inID, 0xFC31, 0, NULL, "Hb^", 0xFC31, 6, inAddress);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WriteDeviceAddress] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC31, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WriteDeviceAddress] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC31, err);
         return err;
     }
     
@@ -868,11 +868,11 @@ IOReturn IntelBluetoothHostController::CheckDeviceAddress()
     HCIRequestDelete(NULL, id);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] BluetoothHCIReadDeviceAddress() failed -- cannot read device address: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][CheckDeviceAddress] -- BluetoothHCIReadDeviceAddress() failed -- cannot read device address: 0x%x ****\n", err);
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Printing device address: 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][CheckDeviceAddress] -- Printing device address: 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x ****\n", address.data[0], address.data[1], address.data[2], address.data[3], address.data[4], address.data[5]);
 
     /* For some Intel based controllers, the default Bluetooth device
      * address 00:03:19:9E:8B:00 can be found. These controllers are
@@ -881,7 +881,7 @@ IOReturn IntelBluetoothHostController::CheckDeviceAddress()
      */
     if ( !memcmp(&address, &defaultAddress, 6) )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckDeviceAddress] Default device address (%pMR) found!\n", &address);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][CheckDeviceAddress] -- Default device address (%pMR) found! ****\n", &address);
         mInvalidDeviceAddress = true;
     }
 
@@ -933,7 +933,7 @@ const char * IntelBluetoothHostController::ConvertFirmwareVariantToString(Blueto
             return "Firmware";
             
         default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ConvertFirmwareVariantToString] Unsupported firmware variant: %02x\n", firmwareVariant);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ConvertFirmwareVariantToString] -- Unsupported firmware variant: %02x ****\n", firmwareVariant);
             return "Unknown";
     }
 }
@@ -949,7 +949,7 @@ const char * IntelBluetoothHostController::ConvertImageTypeToString(BluetoothHCI
             return "Firmware";
             
         default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ConvertImageTypeToString] Unsupported image type: %02x\n", imageType);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ConvertImageTypeToString] -- Unsupported image type: %02x ****\n", imageType);
             return "Unknown";
     }
 }
@@ -961,7 +961,7 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
      */
     if ( version->hardwarePlatform != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware platform: %u\n", version->hardwarePlatform);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported hardware platform: %u ****\n", version->hardwarePlatform);
         return kIOReturnInvalid;
     }
 
@@ -980,11 +980,11 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
       && version->hardwareVariant != kBluetoothIntelHardwareVariantHrP
       && version->hardwareVariant != kBluetoothIntelHardwareVariantCcP )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware variant: %u\n", version->hardwareVariant);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported hardware variant: %u ****\n", version->hardwareVariant);
         return kIOReturnInvalid;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Firmware Revision: %u.%u -- Firmware Build: %u - week: %u - year: %u\n", ConvertFirmwareVariantToString(version->firmwareVariant), version->firmwareRevision >> 4, version->firmwareRevision & 0x0F, version->firmwareBuildNum, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- %s -- Firmware Revision: %u.%u -- Firmware Build: %u - week: %u - year: %u ****\n", ConvertFirmwareVariantToString(version->firmwareVariant), version->firmwareRevision >> 4, version->firmwareRevision & 0x0F, version->firmwareBuildNum, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
 
     return kIOReturnSuccess;
 }
@@ -996,7 +996,7 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
      */
     if ( IntelCNVXExtractHardwarePlatform(version->cnviBT) != 0x37 )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware platform: 0x%02x\n", IntelCNVXExtractHardwarePlatform(version->cnviBT));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported hardware platform: 0x%02x ****\n", IntelCNVXExtractHardwarePlatform(version->cnviBT));
         return kIOReturnInvalid;
     }
 
@@ -1013,7 +1013,7 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
         case kBluetoothIntelHardwareVariantSlrF:
             break;
         default:
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported hardware variant: 0x%x\n", IntelCNVXExtractHardwareVariant(version->cnviBT));
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported hardware variant: 0x%x ****\n", IntelCNVXExtractHardwareVariant(version->cnviBT));
             return kIOReturnInvalid;
     }
 
@@ -1025,26 +1025,26 @@ IOReturn IntelBluetoothHostController::PrintVersionInfo(BluetoothIntelVersionInf
          */
         if ( version->limitedCCE != 0x00 )
         {
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported firmware loading method: 0x%x\n", version->limitedCCE);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported firmware loading method: 0x%x ****\n", version->limitedCCE);
             return kIOReturnInvalid;
         }
 
         /* Secure boot engine type should be either 1 (ECDSA) or 0 (RSA) */
         if ( version->sbeType > 0x01 )
         {
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Unsupported secure boot engine type: 0x%x\n", version->sbeType);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Unsupported secure boot engine type: 0x%x ****\n", version->sbeType);
             return kIOReturnInvalid;
         }
 
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Device revision is %u\n", version->deviceRevisionID);
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Secure boot is %s\n", version->secureBoot ? "enabled" : "disabled");
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] OTP lock is %s\n", version->otpLock ? "enabled" : "disabled");
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] API lock is %s\n", version->apiLock ? "enabled" : "disabled");
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Debug lock is %s\n", version->debugLock ? "enabled" : "disabled");
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] Minimum firmware build %u week %u %u\n", version->firmwareBuildNumber, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Device revision is %u ****\n", version->deviceRevisionID);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Secure boot is %s ****\n", version->secureBoot ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- OTP lock is %s ****\n", version->otpLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- API lock is %s ****\n", version->apiLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Debug lock is %s ****\n", version->debugLock ? "enabled" : "disabled");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- Minimum firmware build %u week %u %u ****\n", version->firmwareBuildNumber, version->firmwareBuildWeek, 2000 + version->firmwareBuildYear);
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][PrintVersionInfo] %s -- Timestamp: %u.%u -- Build Type: %u -- Build Number: %u\n", ConvertImageTypeToString(version->imageType), 2000 + (version->timestamp >> 8), version->timestamp & 0xFF, version->buildType, version->buildNumber);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][PrintVersionInfo] -- %s -- Timestamp: %u.%u -- Build Type: %u -- Build Number: %u ****\n", ConvertImageTypeToString(version->imageType), 2000 + (version->timestamp >> 8), version->timestamp & 0xFF, version->buildType, version->buildNumber);
 
     return kIOReturnSuccess;
 }
@@ -1055,7 +1055,7 @@ IOReturn IntelBluetoothHostController::SetQualityReport(bool enable)
     BluetoothHCIRequestID id;
     BluetoothIntelDebugFeatures features;
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetQualityReport] %s quality report...\n", enable ? "Setting" : "Resetting");
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetQualityReport] -- %s quality report... ****\n", enable ? "Setting" : "Resetting");
 
      /* Read the Intel supported features and if new exception formats
       * supported, need to load the additional DDC config to enable.
@@ -1167,23 +1167,23 @@ IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, 
     mFirmwareLoaded = true;
     setProperty("FirmwareLoaded", true);
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForFirmwareDownload] Waiting for firmware download to complete...\n");
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Waiting for firmware download to complete... ****\n");
 
     err = ControllerCommandSleep(&mDownloading, deadline, (char *) __FUNCTION__, true);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForFirmwareDownload] Firmware loading timed out!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading timed out! ****\n");
         return kIOReturnTimeout;
     }
 
     if ( mFirmwareLoadingFailed )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForFirmwareDownload] Firmware loading failed!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading failed! ****\n");
         return kIOReturnError;
     }
 
     absolutetime_to_nanoseconds(mBluetoothFamily->GetCurrentTime() - callTime, &duration);
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForFirmwareDownload] Firmware loaded in %llu usecs.\n", duration >> 10);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loaded in %llu usecs. ****\n", duration >> 10);
 
     return kIOReturnSuccess;
 }
@@ -1196,17 +1196,17 @@ IOReturn IntelBluetoothHostController::WaitForDeviceBoot(UInt32 callTime, UInt32
     err = ControllerCommandSleep(&mBooting, deadline, (char *) __FUNCTION__, true);
     if ( err == THREAD_INTERRUPTED )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device boot interrupted!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForDeviceBoot] -- Device boot interrupted! ****\n");
         return THREAD_INTERRUPTED;
     }
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device boot timed out!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForDeviceBoot] -- Device boot timed out! ****\n");
         return kIOReturnTimeout;
     }
 
     absolutetime_to_nanoseconds(mBluetoothFamily->GetCurrentTime() - callTime, &duration);
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][WaitForDeviceBoot] Device booted in %llu usecs.\n", duration >> 10);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForDeviceBoot] -- Device booted in %llu usecs. ****\n", duration >> 10);
 
     return kIOReturnSuccess;
 }
@@ -1228,7 +1228,7 @@ IOReturn IntelBluetoothHostController::BootDevice(UInt32 bootAddress)
     HCIRequestDelete(NULL, id);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BootDevice] Soft reset failed: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BootDevice] -- Soft reset failed: 0x%x ****\n", err);
 reset:
         ResetToBootloader(false);
         return err;
@@ -1263,7 +1263,7 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
 
     if ( event->eventCode == kBluetoothHCIEventHardwareError )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ProcessEventDataWL] Received hardware error: 0x%02x\n", *(UInt8 *) (inDataPtr + kBluetoothHCIEventPacketHeaderSize));
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ProcessEventDataWL] -- Received hardware error: 0x%02x ****\n", *(UInt8 *) (inDataPtr + kBluetoothHCIEventPacketHeaderSize));
 
         err = HCIRequestCreate(&id);
         if ( err )
@@ -1430,7 +1430,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSecureSend(BluetoothHCII
         err = PrepareRequestForNewCommand(id, NULL, 0xFFFF);
         if ( err )
         {
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSecureSend] Failed to prepare request for new command: 0x%x\n", err);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSecureSend] -- Failed to prepare request for new command: 0x%x ****\n", err);
             return err;
         }
         err = SendHCIRequestFormatted(id, 0xFC09, 0, NULL, "Hbbn", 0xFC09, fragmentSize + 1, fragmentType, fragmentSize, param);
@@ -1455,14 +1455,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCISendIntelReset(BluetoothHCIRe
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCISendIntelReset] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCISendIntelReset] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
     
     err = SendHCIRequestFormatted(inID, 0xFC01, 0, NULL, "HbbbbbW", 0xFC01, 8, resetType, enablePatch, reloadDDC, bootOption, bootAddress);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCISendIntelReset] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC01, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCISendIntelReset] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC01, err);
         return err;
     }
     
@@ -1477,14 +1477,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelEnterManufacturerMode(Bl
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelEnterManufacturerMode] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelEnterManufacturerMode] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
     
     err = SendHCIRequestFormatted(inID, 0xFC11, 1, &status, "Hbbb", 0xFC11, 2, 0x01, 0x00);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelEnterManufacturerMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC11, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelEnterManufacturerMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC11, err);
         return err;
     }
     
@@ -1499,14 +1499,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelExitManufacturerMode(Blu
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelExitManufacturerMode] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelExitManufacturerMode] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFC11, 1, &status, "Hbbb", 0xFC11, 2, 0x00, resetOption);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelExitManufacturerMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC11, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelExitManufacturerMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC11, err);
         return err;
     }
     
@@ -1568,14 +1568,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetEventMask(BluetoothHC
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetEventMask] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetEventMask] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
     
     err = SendHCIRequestFormatted(inID, 0xFC52, 1, &status, "Hbbbbbbbbb", 0xFC52, 8, 0x87, debug ? 0x6E : 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetEventMask] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC52, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetEventMask] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC52, err);
         return err;
     }
 
@@ -1649,7 +1649,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDiagnosticMode(Blueto
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
@@ -1660,7 +1660,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetDiagnosticMode(Blueto
 
     if ( err ) // && err != -ENODATA
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC43, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetDiagnosticMode] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC43, err);
         return err;
     }
 
@@ -1674,18 +1674,18 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadBootParams(Bluetooth
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFC0D, sizeof(BluetoothIntelBootParams), params, "Hb", 0xFC0D, 0);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC0D, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC0D, err);
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] Device Revision: %u -- Secure Boot: %s -- OTP Lock: %s -- API Lock: %s -- Debug Lock: %s -- Minimum Firmware Build Number: %u -- Week: %u -- Year: %u", params->deviceRevisionID, params->secureBoot ? "Enabled" : "Disabled", params->otpLock ? "Enabled" : "Disabled", params->apiLock ? "Enabled" : "Disabled", params->debugLock ? "Enabled" : "Disabled", params->minFirmwareBuildNumber, params->minFirmwareBuildWeek, 2000 + params->minFirmwareBuildYear);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadBootParams] -- Device Revision: %u -- Secure Boot: %s -- OTP Lock: %s -- API Lock: %s -- Debug Lock: %s -- Minimum Firmware Build Number: %u -- Week: %u -- Year: %u ****\n", params->deviceRevisionID, params->secureBoot ? "Enabled" : "Disabled", params->otpLock ? "Enabled" : "Disabled", params->apiLock ? "Enabled" : "Disabled", params->debugLock ? "Enabled" : "Disabled", params->minFirmwareBuildNumber, params->minFirmwareBuildWeek, 2000 + params->minFirmwareBuildYear);
 
     return kIOReturnSuccess;
 }
@@ -1700,7 +1700,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadVersionInfo(Bluetoot
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
@@ -1710,13 +1710,13 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadVersionInfo(Bluetoot
         err = SendHCIRequestFormatted(inID, 0xFC05, kMaxHCIBufferLength * 4, response, "Hbb", 0xFC05, 1, 0xFF);
     else
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] Invalid parameter (0x%02X), should be either 0x00 or 0xFF.\n", param);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] -- Invalid parameter (0x%02X), should be either 0x00 or 0xFF. ****\n", param);
         return kIOReturnInvalid;
     }
 
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x\n", 0xFC05, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadVersionInfo] ### ERROR: opCode = 0x%04X -- send request failed: 0x%x ****\n", 0xFC05, err);
         return err;
     }
 
@@ -1731,7 +1731,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
@@ -1742,7 +1742,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
     err = SendHCIRequestFormatted(inID, 0xFCA6, sizeof(features->page1) + 3, response, "Hbb", 0xFCA6, 1, 1);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read supported features for page 1: 0x%x\n", 0xFCA6, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read supported features for page 1: 0x%x ****\n", 0xFCA6, err);
         return err;
     }
 
@@ -1761,13 +1761,13 @@ IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebu
 
     if ( !features )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetDebugFeatures] Debug features are not read!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- Debug features are not read! ****\n");
         return kIOReturnInvalid;
     }
 
     if ( !(features->page1[0] & 0x3F) )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetDebugFeatures] Telemetry exception format not supported.\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- Telemetry exception format not supported. ****\n");
         return kIOReturnSuccess;
     }
 
@@ -1795,7 +1795,7 @@ IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebu
     HCIRequestDelete(NULL, id);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- BluetoothHCIIntelWriteDDC() failed -- periodicity for link statistics traces not set: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- BluetoothHCIIntelWriteDDC() failed -- periodicity for link statistics traces not set: 0x%x ****\n", err);
         return err;
     }
 
@@ -1810,7 +1810,7 @@ IOReturn IntelBluetoothHostController::SetDebugFeatures(const BluetoothIntelDebu
     if ( err )
         return err;
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SetDebugFeatures] Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x\n", 0x02, 0x7f);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetDebugFeatures] -- Set debug features successfully: traceEnable = 0x%02x, mask = 0x%02x ****\n", 0x02, 0x7f);
 
     return kIOReturnSuccess;
 }
@@ -1823,13 +1823,13 @@ IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDe
 
     if ( !features )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetDebugFeatures] Debug features are not read!\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetDebugFeatures] -- Debug features are not read! ****\n");
         return kIOReturnInvalid;
     }
 
     if ( !(features->page1[0] & 0x3F) )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetDebugFeatures] Telemetry exception format not supported.\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetDebugFeatures] -- Telemetry exception format not supported. ****\n");
         return kIOReturnSuccess;
     }
 
@@ -1860,7 +1860,7 @@ IOReturn IntelBluetoothHostController::ResetDebugFeatures(const BluetoothIntelDe
         return err;
     }
 
-    os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetDebugFeatures] Reset debug features successfully: traceEnable = 0x%02x, mask = 0x%02x\n", 0x00, 0x00);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][ResetDebugFeatures] -- Reset debug features successfully: traceEnable = 0x%02x, mask = 0x%02x ****\n", 0x00, 0x00);
 
     return kIOReturnSuccess;
 }
@@ -1873,14 +1873,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelTurnOffDeviceLED(Bluetoo
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFC3F, 1, &status, "Hb", 0xFC3F, 0);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] ### ERROR: opCode = 0x%04X -- send request failed -- failed to turn off device LED: 0x%x\n", 0xFC3F, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelTurnOffDeviceLED] ### ERROR: opCode = 0x%04X -- send request failed -- failed to turn off device LED: 0x%x ****\n", 0xFC3F, err);
         return err;
     }
 
@@ -1915,14 +1915,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadOffloadUseCases(Blue
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFC86, sizeof(BluetoothIntelOffloadUseCases), cases, "Hb", 0xFC86, 0);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read offload use cases: 0x%x\n", 0xFC86, err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadOffloadUseCases] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read offload use cases: 0x%x ****\n", 0xFC86, err);
         return err;
     }
 
@@ -1937,14 +1937,14 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelSetLinkStatisticsEventsT
     err = PrepareRequestForNewCommand(inID, NULL, 0xFFFF);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] Failed to prepare request for new command: 0x%x\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] -- Failed to prepare request for new command: 0x%x ****\n", err);
         return err;
     }
 
     err = SendHCIRequestFormatted(inID, 0xFCA1, 1, &status, "Hbb", 0xFCA1, 1, param);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] ### ERROR: opCode = 0x%04X -- send request failed -- failed to %s tracing of link statistics events: 0x%x\n", 0xFCA1, param ? "enable" : "disable", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelSetLinkStatisticsEventsTracing] ### ERROR: opCode = 0x%04X -- send request failed -- failed to %s tracing of link statistics events: 0x%x ****\n", 0xFCA1, param ? "enable" : "disable", err);
         return err;
     }
 
@@ -1982,7 +1982,7 @@ IOReturn IntelBluetoothHostController::DownloadFirmwarePayload(OSData * fwData, 
             err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeData, fragmentSize, fwPtr);
             if ( err )
             {
-                os_log(mInternalOSLogObject, "[IntelBluetoothHostController][DownloadFirmwarePayload] BluetoothHCIIntelSecureSend() failed -- cannot send firmware data: 0x%x\n", err);
+                os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][DownloadFirmwarePayload] -- BluetoothHCIIntelSecureSend() failed -- cannot send firmware data: 0x%x ****\n", err);
                 return err;
             }
 
@@ -2005,7 +2005,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeInit, 128, (UInt8 *) fwData->getBytesNoCopy());
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware header: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] -- Failed to send firmware header: %d ****\n", err);
         return err;
     }
 
@@ -2015,7 +2015,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypePKey, 256, (UInt8 *) fwData->getBytesNoCopy() + 128);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware PKey: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] -- Failed to send firmware PKey: %d ****\n", err);
         return err;
     }
 
@@ -2025,7 +2025,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeSign, 256, (UInt8 *) fwData->getBytesNoCopy() + 388);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware signature: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] -- Failed to send firmware signature: %d ****\n", err);
         return err;
     }
 
@@ -2042,7 +2042,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeInit, 128, (UInt8 *) fwData->getBytesNoCopy() + 644);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware header: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] -- Failed to send firmware header: %d ****\n", err);
         return err;
     }
 
@@ -2052,7 +2052,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypePKey, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 128);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware PKey: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] -- Failed to send firmware PKey: %d ****\n", err);
         return err;
     }
 
@@ -2062,7 +2062,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeSign, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 224);
     if ( err )
     {
-        os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware signature: %d\n", err);
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] -- Failed to send firmware signature: %d ****\n", err);
         return err;
     }
     return kIOReturnSuccess;
@@ -2084,7 +2084,7 @@ bool IntelBluetoothHostController::CheckFirmwareVersion(UInt8 number, UInt8 week
             BluetoothIntelCommandWriteBootParams * params = (BluetoothIntelCommandWriteBootParams *) (fwPtr + kBluetoothHCICommandPacketHeaderSize);
 
             *bootAddress = params->bootAddress;
-            os_log(mInternalOSLogObject, "[IntelBluetoothHostController][CheckFirmwareVersion] Boot Address: 0x%x -- Firmware Version: %u-%u.%u\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][CheckFirmwareVersion] -- Boot Address: 0x%x -- Firmware Version: %u-%u.%u ****\n", *bootAddress, params->firmwareBuildNumber, params->firmwareBuildWeek, params->firmwareBuildYear);
 
             return (number == params->firmwareBuildNumber && week == params->firmwareBuildWeek && year == params->firmwareBuildYear);
         }
