@@ -111,6 +111,14 @@ enum BluetoothHCIIntelImageTypes
 };
 typedef UInt8 BluetoothHCIIntelImageType;
 
+typedef enum BluetoothHCIIntelSecureSendFragmentType
+{
+    kBluetoothHCIIntelFirmwareFragmentTypeInit = 0x00,
+    kBluetoothHCIIntelFirmwareFragmentTypeData = 0x01,
+    kBluetoothHCIIntelFirmwareFragmentTypeSign = 0x02,
+    kBluetoothHCIIntelFirmwareFragmentTypePKey = 0x03
+} BluetoothHCIIntelSecureSendFragmentType;
+
 enum BluetoothHCIIntelCommands
 {
     kBluetoothHCIIntelCommandWriteBootParams = 0x000E

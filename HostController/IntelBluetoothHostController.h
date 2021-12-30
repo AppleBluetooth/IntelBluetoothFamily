@@ -100,7 +100,7 @@ public:
 
     virtual IOReturn LoadDDCConfig(OSData * fwData);
 
-    virtual IOReturn BluetoothHCIIntelSecureSend(UInt8 fragmentType, UInt32 paramSize, const UInt8 * param);
+    virtual IOReturn BluetoothHCIIntelSecureSend(BluetoothHCIIntelSecureSendFragmentType fragmentType, UInt32 paramSize, const UInt8 * param);
     
     /*! @function BluetoothHCISendIntelReset
      *   @abstract Sends the Intel Reset HCI command.

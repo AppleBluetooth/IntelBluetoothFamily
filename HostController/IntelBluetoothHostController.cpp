@@ -222,13 +222,12 @@ IOReturn IntelBluetoothHostController::SetupController()
     IOReturn err;
     setConfigState(kIOBluetoothHCIControllerConfigStateKernelSetupPending);
 
-    /* The some controllers have a bug with the first HCI command sent to it
+    /* Some controllers have a bug with the first HCI command sent to it
      * returning number of completed commands as zero. This would stall the
      * command processing in the Bluetooth core.
      *
      * As a workaround, send HCI Reset command first which will reset the
-     * number of completed commands and allow normal command processing
-     * from now on.
+     * number of completed commands and allow normal command processing.
      */
 
     if ( mProductID == 2012 )
@@ -248,17 +247,16 @@ IOReturn IntelBluetoothHostController::SetupController()
 
     setConfigState(kIOBluetoothHCIControllerConfigStateKernelPostResetSetupPending);
 
-    /* Starting from TyP device, the command parameter and response are
+    /* Starting from TyP devices, the command parameter and response are
      * changed even though the OCF for HCI_Intel_Read_Version command
-     * remains same. The legacy devices can handle even if the
-     * command has a parameter and returns a correct version information.
-     * So, it uses new format to support both legacy and new format.
+     * remains same. The legacy devices can handle even if the command
+     * has a parameter and returns a correct version information. So,
+     * the new format is used to support both legacy and new devices.
      */
     err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
     if ( err )
         return false;
 
-    /* Apply the common HCI quirks for Intel device */
     mStrictDuplicateFilter = true;
     mSimultaneousDiscovery = true;
     mDiagnosticModeNotPersistent = true;
@@ -305,7 +303,7 @@ SETUP_GEN2:
         /* Some legacy bootloader devices from JfP supports both old
          * and TLV based HCI_Intel_Read_Version command. But we don't
          * want to use the TLV based setup routines for those legacy
-         * bootloader device.
+         * bootloader devices.
          *
          * Also, it is not easy to convert TLV based version from the
          * legacy version format.
@@ -1411,7 +1409,7 @@ IOReturn IntelBluetoothHostController::LoadDDCConfig(OSData * fwData)
     return kIOReturnSuccess;
 }
 
-IOReturn IntelBluetoothHostController::BluetoothHCIIntelSecureSend(UInt8 fragmentType, UInt32 paramSize, const UInt8 * param)
+IOReturn IntelBluetoothHostController::BluetoothHCIIntelSecureSend(BluetoothHCIIntelSecureSendFragmentType fragmentType, UInt32 paramSize, const UInt8 * param)
 {
     IOReturn err;
     UInt8 fragmentSize;
@@ -1979,7 +1977,7 @@ IOReturn IntelBluetoothHostController::DownloadFirmwarePayload(OSData * fwData, 
          */
         if ( !(fragmentSize % 4) )
         {
-            err = BluetoothHCIIntelSecureSend(0x01, fragmentSize, fwPtr);
+            err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeData, fragmentSize, fwPtr);
             if ( err )
             {
                 os_log(mInternalOSLogObject, "[IntelBluetoothHostController][DownloadFirmwarePayload] BluetoothHCIIntelSecureSend() failed -- cannot send firmware data: 0x%x\n", err);
@@ -2002,7 +2000,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
      * represented by the 128 bytes of CSS header.
      */
 
-    err = BluetoothHCIIntelSecureSend(0x00, 128, (UInt8 *) fwData->getBytesNoCopy());
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeInit, 128, (UInt8 *) fwData->getBytesNoCopy());
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware header: %d\n", err);
@@ -2012,7 +2010,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
     /* Send the 256 bytes of public key information from the firmware
      * as the PKey fragment.
      */
-    err = BluetoothHCIIntelSecureSend(0x03, 256, (UInt8 *) fwData->getBytesNoCopy() + 128);
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypePKey, 256, (UInt8 *) fwData->getBytesNoCopy() + 128);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware PKey: %d\n", err);
@@ -2022,7 +2020,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIRSAFirmwareHeader(OSData * f
     /* Send the 256 bytes of signature information from the firmware
      * as the Sign fragment.
      */
-    err = BluetoothHCIIntelSecureSend(0x02, 256, (UInt8 *) fwData->getBytesNoCopy() + 388);
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeSign, 256, (UInt8 *) fwData->getBytesNoCopy() + 388);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIRSAFirmwareHeader] Failed to send firmware signature: %d\n", err);
@@ -2039,7 +2037,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     /* Start the firmware download transaction with the Init fragment
      * represented by the 128 bytes of CSS header.
      */
-    err = BluetoothHCIIntelSecureSend(0x00, 128, (UInt8 *) fwData->getBytesNoCopy() + 644);
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeInit, 128, (UInt8 *) fwData->getBytesNoCopy() + 644);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware header: %d\n", err);
@@ -2049,7 +2047,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     /* Send the 96 bytes of public key information from the firmware
      * as the PKey fragment.
      */
-    err = BluetoothHCIIntelSecureSend(0x03, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 128);
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypePKey, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 128);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware PKey: %d\n", err);
@@ -2059,7 +2057,7 @@ IOReturn IntelBluetoothHostController::SecureSendSFIECDSAFirmwareHeader(OSData *
     /* Send the 96 bytes of signature information from the firmware
      * as the Sign fragment
      */
-    err = BluetoothHCIIntelSecureSend(0x02, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 224);
+    err = BluetoothHCIIntelSecureSend(kBluetoothHCIIntelFirmwareFragmentTypeSign, 96, (UInt8 *) fwData->getBytesNoCopy() + 644 + 224);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][SecureSendSFIECDSAFirmwareHeader] Failed to send firmware signature: %d\n", err);

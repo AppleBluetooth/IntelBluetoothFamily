@@ -76,15 +76,10 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( !version || !params )
         return kIOReturnInvalid;
 
-    /* The firmware variant determines if the device is in bootloader
-     * mode or is running operational firmware. The value 0x06 identifies
-     * the bootloader and the value 0x23 identifies the operational
-     * firmware.
-     *
-     * When the operational firmware is already present, then only
-     * the check for valid Bluetooth device address is needed. This
-     * determines if the device will be added as configured or
-     * unconfigured controller.
+    /* Check for valid Bluetooth device address only when the
+     * operational firmware is already present, which determines
+     * if the device will be added as configured or unconfigured
+     * controller.
      *
      * It is not possible to use the Secure Boot Parameters in this
      * case since that command is only available in bootloader mode.
@@ -96,7 +91,7 @@ IOReturn IntelGen2BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
         controller->CheckDeviceAddress();
 
         /* SfP and WsP don't seem to update the firmware version on file
-         * so version checking is currently possible.
+         * so version checking is currently impossible.
          */
         if ( version->hardwareVariant == kBluetoothIntelHardwareVariantSfP || version->hardwareVariant == kBluetoothIntelHardwareVariantWsP )
             return kIOReturnSuccess;
@@ -206,12 +201,7 @@ download:
             }
     }
 
-    /* The firmware variant determines if the device is in bootloader
-     * mode or is running operational firmware. The value 0x06 identifies
-     * the bootloader and the value 0x23 identifies the operational
-     * firmware.
-     *
-     * If the firmware version has changed that means it needs to be reset
+    /* If the firmware version has changed that means it needs to be reset
      * to bootloader when operational so the new firmware can be loaded.
      */
     if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )

@@ -207,12 +207,11 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     err = TransportCommandSleep(&mReceivedEventValid, 100, (char *) __FUNCTION__, true);
     mPatching = false;
     if ( err == THREAD_AWAKENED || (err == THREAD_TIMED_OUT && mReceivedEventValid) )
-    {
         mReceivedEventValid = false;
-        return kIOReturnSuccess;
-    }
+    else
+        os_log(mInternalOSLogObject, "[IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] -- Beware! Did not receive event valid notification after waiting for 1 second, which could cause strange behavior -- this = 0x%04x", ConvertAddressToUInt32(this));
     
-    return kIOReturnError;
+    return kIOReturnSuccess;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 0)
