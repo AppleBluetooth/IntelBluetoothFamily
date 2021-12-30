@@ -207,7 +207,9 @@ download:
     if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
 retry:
-        controller->ResetToBootloader(true);
+        err = controller->ResetToBootloader(true);
+        if ( err )
+            return err;
     }
 
     err = controller->SecureSendSFIRSAFirmwareHeader(fwData);

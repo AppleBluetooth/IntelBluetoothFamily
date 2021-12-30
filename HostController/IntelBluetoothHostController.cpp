@@ -255,7 +255,7 @@ IOReturn IntelBluetoothHostController::SetupController()
      */
     err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
     if ( err )
-        return false;
+        return err;
 
     mStrictDuplicateFilter = true;
     mSimultaneousDiscovery = true;
@@ -771,7 +771,7 @@ void IntelBluetoothHostController::SetMicrosoftExtensionOpCode(UInt8 hardwareVar
     }
 }
 
-void IntelBluetoothHostController::ResetToBootloader(bool retry)
+IOReturn IntelBluetoothHostController::ResetToBootloader(bool retry)
 {
     IOReturn err;
     BluetoothHCIRequestID id;
@@ -784,14 +784,14 @@ void IntelBluetoothHostController::ResetToBootloader(bool retry)
     if ( err )
     {
         REQUIRE_NO_ERR(err);
-        return;
+        return err;
     }
     err = BluetoothHCISendIntelReset(id, 0x01, true, true, 0x00, 0x00000000);
     HCIRequestDelete(NULL, id);
     if ( err )
     {
         os_log(mInternalOSLogObject, "[IntelBluetoothHostController][ResetToBootloader] BluetoothHCISendIntelReset() failed -- cannot deliver Intel reset: 0x%x\n", err);
-        return;
+        return err;
     }
     
     if ( retry )
@@ -803,6 +803,8 @@ void IntelBluetoothHostController::ResetToBootloader(bool retry)
      * for 150ms. To keep the delay generic, 150ms is chosen here.
      */
     IOSleep(150);
+
+    return kIOReturnSuccess;
 }
 
 IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadExceptionInfo(BluetoothHCIRequestID inID, BluetoothIntelExceptionInfo * info)

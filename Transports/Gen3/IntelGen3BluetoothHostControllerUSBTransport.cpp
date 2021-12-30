@@ -240,7 +240,9 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::DownloadFirmwareWL(void *
     if ( version->imageType == kBluetoothHCIIntelImageTypeFirmware )
     {
 retry:
-        controller->ResetToBootloader(true);
+        err = controller->ResetToBootloader(true);
+        if ( err )
+            return err;
     }
     
     /* iBT hardware variants 0x0b, 0x0c, 0x11, 0x12, 0x13, 0x14 support
