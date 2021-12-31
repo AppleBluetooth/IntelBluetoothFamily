@@ -219,6 +219,8 @@ IOReturn IntelBluetoothHostController::SetupController(bool * hardReset)
 IOReturn IntelBluetoothHostController::SetupController()
 #endif
 {
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupController] -- Starting setup routine... ****\n");
+
     IOReturn err;
     setConfigState(kIOBluetoothHCIControllerConfigStateKernelSetupPending);
 
@@ -1177,10 +1179,7 @@ IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, 
     }
 
     if ( mFirmwareLoadingFailed )
-    {
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading failed! ****\n");
-        return kIOReturnError;
-    }
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading failed according to the vendor specific event, which could cause strange behavior. ****\n");
 
     absolutetime_to_nanoseconds(mBluetoothFamily->GetCurrentTime() - callTime, &duration);
     os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loaded in %llu usecs. ****\n", duration >> 10);
