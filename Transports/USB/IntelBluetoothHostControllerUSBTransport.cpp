@@ -106,7 +106,7 @@ void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
 
     /* Send HCI Reset to the controller to stop any BT activity which
      * were triggered. This will help to save power and maintain the
-     * sync b/w Host and controller
+     * sync between Host and controller
      */
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
     if ( controller->CallBluetoothHCIReset(false, (char *) __FUNCTION__) )
@@ -115,11 +115,11 @@ void IntelBluetoothHostControllerUSBTransport::stop(IOService * provider)
 #endif
         return;
 
-    /* Some platforms have an issue with BT LED when the interface is
+    /* Legacy ROM devices have an issue with BT LED when the interface is
      * down or BT radio is turned off, which takes 5 seconds to BT LED
      * goes off. This command turns off the BT LED immediately.
      */
-    if ( controller->mBrokenLED )
+    if ( controller->mGeneration == 1 )
     {
         err = controller->HCIRequestCreate(&id);
         if ( err )
@@ -686,7 +686,7 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * vers
     return kIOReturnUnsupported;
 }
 
-IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
+IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData, char ** outFwName)
 {
     char fwName[64];
 
@@ -695,6 +695,9 @@ IOReturn IntelBluetoothHostControllerUSBTransport::GetFirmware(void * version, B
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostControllerUSBTransport][GetFirmware] -- Unsupported firmware name! ****\n");
         return kIOReturnInvalid;
     }
+    
+    if ( outFwName )
+        *outFwName = fwName;
 
     setProperty("FirmwareName", fwName);
 

@@ -40,19 +40,16 @@ bool IntelBluetoothHostController::init(IOBluetoothHCIController * family, IOBlu
     mVersionInfo = IONewZero(UInt8, kMaxHCIBufferLength * 4);
 
     mValidLEStates = false;
-    mStrictDuplicateFilter = false;
-    mSimultaneousDiscovery = false;
-    mDiagnosticModeNotPersistent = false;
+    mStrictDuplicateFilter = true;
+    mSimultaneousDiscovery = true;
+    mDiagnosticModeNotPersistent = true;
     mWidebandSpeechSupported = false;
     mInvalidDeviceAddress = false;
-    mIsLegacyROMDevice = false;
     mBootloaderMode = false;
     mBooting = false;
     mDownloading = false;
     mFirmwareLoaded = false;
     mFirmwareLoadingFailed = false;
-    mBrokenLED = false;
-    mBrokenInitialNumberOfCommands = false;
     mQualityReportSet = true;
     return true;
 }
@@ -234,7 +231,6 @@ IOReturn IntelBluetoothHostController::SetupController()
 
     if ( mProductID == 2012 )
     {
-        mBrokenInitialNumberOfCommands = true;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_11_0
         err = CallBluetoothHCIReset(false, (char *) __FUNCTION__);
 #else
@@ -258,10 +254,6 @@ IOReturn IntelBluetoothHostController::SetupController()
     err = CallBluetoothHCIIntelReadVersionInfo(0xFF);
     if ( err )
         return err;
-
-    mStrictDuplicateFilter = true;
-    mSimultaneousDiscovery = true;
-    mDiagnosticModeNotPersistent = true;
 
     BluetoothIntelVersionInfo * version = (BluetoothIntelVersionInfo *) mVersionInfo;
 
@@ -368,7 +360,6 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     }
 
     mGeneration = 1;
-    mIsLegacyROMDevice = true;
 
     /* Apply the device specific HCI quirks
      *
@@ -377,12 +368,6 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
      */
     if ( version->hardwareVariant == kBluetoothIntelHardwareVariantStP && version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantLegacyROM2_X )
         mWidebandSpeechSupported = true;
-
-    /* These devices have an issue with LED which doesn't
-     * go off immediately during shutdown. Set the flag
-     * here to send the LED OFF command during shutdown.
-     */
-    mBrokenLED = true;
 
     /* fw_patch_num indicates the version of patch the device currently
      * have. If there is no patch data in the device, it is always 0x00.
@@ -404,6 +389,8 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     if ( !fwData )
         goto complete;
     fwPtr = (UInt8 *) fwData->getBytesNoCopy();
+    
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- entering manufacturer mode for patch... ****\n");
 
     /* Enable the manufacturer mode of the controller.
      * Only while this mode is enabled, the driver can download the
@@ -422,6 +409,8 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
         return err;
 
     disablePatch = 1;
+    
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- starting patch -- fwPtr = 0x%04x ****\n", ConvertAddressToUInt32(fwPtr));
 
     /* The firmware data file consists of list of Intel specific HCI
      * commands and its expected events. The first byte indicates the
@@ -463,7 +452,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
             if ( err )
                 return err;
 
-            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch completed and deactivated. ****\n");
+            os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Patching failed and deactivated. ****\n");
             goto complete;
         }
     }
@@ -482,7 +471,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
         if ( err )
             return err;
 
-        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch completed. ****\n");
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Patch completed with default firmware. ****\n");
         goto complete;
     }
 
@@ -507,7 +496,7 @@ IOReturn IntelBluetoothHostController::SetupGen1Controller()
     if ( err )
         return err;
 
-    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Firmware patch (0x%02x) completed and activated. ****\n", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
+    os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][SetupGen1Controller] -- Patch (0x%02x) completed and activated. ****\n", ((BluetoothIntelVersionInfo *) mVersionInfo)->firmwarePatchVersion);
 
 complete:
     CheckDeviceAddress();
@@ -1522,7 +1511,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetEventMask(bool de
     IOReturn err;
     BluetoothHCIRequestID id;
 
-    if ( mIsLegacyROMDevice )
+    if ( mGeneration == 1 )
     {
         err = HCIRequestCreate(&id);
         if ( err )
@@ -1547,7 +1536,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetEventMask(bool de
     if ( err )
         return err;
 
-    if ( mIsLegacyROMDevice )
+    if ( mGeneration == 1 )
     {
         err = HCIRequestCreate(&id);
         if ( err )
@@ -1594,7 +1583,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetDiagnosticMode(bo
     /* Legacy ROM device needs to be in the manufacturer mode to apply
      * diagnostic settings.
      */
-    if ( mIsLegacyROMDevice ) // This flag is set after reading the Intel version.
+    if ( mGeneration == 1 )
     {
         err = HCIRequestCreate(&id);
         if ( err )
@@ -1628,7 +1617,7 @@ IOReturn IntelBluetoothHostController::CallBluetoothHCIIntelSetDiagnosticMode(bo
     BluetoothHCIIntelSetEventMask(id, enable);
     HCIRequestDelete(NULL, id);
 
-    if ( mIsLegacyROMDevice )
+    if ( mGeneration == 1 )
     {
         err = HCIRequestCreate(&id);
         if ( err )

@@ -170,9 +170,6 @@ protected:
     bool mDiagnosticModeNotPersistent;
     bool mWidebandSpeechSupported;
     bool mInvalidDeviceAddress;
-    bool mIsLegacyROMDevice;
-    bool mBrokenLED;
-    bool mBrokenInitialNumberOfCommands;
     
     bool mBooting;
     bool mBootloaderMode;

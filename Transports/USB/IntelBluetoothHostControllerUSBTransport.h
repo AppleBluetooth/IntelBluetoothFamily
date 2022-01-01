@@ -69,7 +69,7 @@ public:
     virtual IOReturn GetFirmwareName(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName, IOByteCount size);
     static IOReturn GetFirmwareNameAction(OSObject * owner, void * arg0, void * arg1, void * arg2, void * arg3);
     virtual IOReturn GetFirmwareNameWL(void * version, BluetoothIntelBootParams * params, const char * suffix, char * fwName);
-    virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
+    virtual IOReturn GetFirmware(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData, char ** outFwName = NULL);
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData);
     virtual IOReturn PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch);
     virtual IOReturn DownloadFirmware(void * version, BluetoothIntelBootParams * params, UInt32 * bootAddress);
