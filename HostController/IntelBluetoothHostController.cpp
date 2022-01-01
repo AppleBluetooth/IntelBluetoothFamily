@@ -1172,7 +1172,12 @@ IOReturn IntelBluetoothHostController::WaitForFirmwareDownload(UInt32 callTime, 
     os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Waiting for firmware download to complete... ****\n");
 
     err = ControllerCommandSleep(&mDownloading, deadline, (char *) __FUNCTION__, true);
-    if ( err )
+    if ( err == THREAD_INTERRUPTED )
+    {
+        os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading interrupted! ****\n");
+        return THREAD_INTERRUPTED;
+    }
+    else if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForFirmwareDownload] -- Firmware loading timed out! ****\n");
         return kIOReturnTimeout;
@@ -1198,7 +1203,7 @@ IOReturn IntelBluetoothHostController::WaitForDeviceBoot(UInt32 callTime, UInt32
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForDeviceBoot] -- Device boot interrupted! ****\n");
         return THREAD_INTERRUPTED;
     }
-    if ( err )
+    else if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][WaitForDeviceBoot] -- Device boot timed out! ****\n");
         return kIOReturnTimeout;
@@ -1241,7 +1246,7 @@ reset:
      * since something went wrong.
      */
     err = WaitForDeviceBoot(mBluetoothFamily->GetCurrentTime(), 1000);
-    if ( err )
+    if ( err == kIOReturnTimeout )
         goto reset;
 
     return kIOReturnSuccess;

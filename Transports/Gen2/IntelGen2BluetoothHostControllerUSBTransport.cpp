@@ -206,7 +206,6 @@ download:
      */
     if ( version->firmwareVariant == kBluetoothHCIIntelFirmwareVariantFirmware )
     {
-retry:
         err = controller->ResetToBootloader(true);
         if ( err )
             return err;
@@ -232,16 +231,14 @@ retry:
      * of this device.
      */
     err = controller->WaitForFirmwareDownload(callTime, 5000);
-    switch ( err )
+    if ( err == kIOReturnTimeout )
     {
-        case kIOReturnTimeout:
 done:
-            controller->ResetToBootloader(false);
-        case kIOReturnSuccess:
-            return err;
-        default:
-            goto retry;
+        controller->ResetToBootloader(false);
+        return err;
     }
+    
+    return kIOReturnSuccess;
 }
 
 OSMetaClassDefineReservedUnused(IntelGen2BluetoothHostControllerUSBTransport, 0)
