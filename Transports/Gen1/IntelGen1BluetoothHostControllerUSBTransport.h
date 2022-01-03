@@ -26,6 +26,13 @@
 #include "../USB/IntelBluetoothHostControllerUSBTransport.h"
 #include <FirmwareList.h>
 
+struct BluetoothHCIEventQueueNode
+{
+    BluetoothHCIEventPacketHeader event;
+    UInt8 * eventParams;
+    BluetoothHCIEventQueueNode * next;
+};
+
 class IntelGen1BluetoothHostControllerUSBTransport : public IntelBluetoothHostControllerUSBTransport
 {
     OSDeclareDefaultStructors(IntelGen1BluetoothHostControllerUSBTransport)
@@ -39,6 +46,10 @@ public:
     virtual IOReturn GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData) APPLE_KEXT_OVERRIDE;
     virtual IOReturn PatchFirmware(OSData * fwData, UInt8 ** fwPtr, int * disablePatch) APPLE_KEXT_OVERRIDE;
 
+private:
+    bool EventsQueueEnqueue(BluetoothHCIEventQueueNode * node);
+    BluetoothHCIEventQueueNode * EventsQueueDequeue();
+    
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 0);
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 1);
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 2);
@@ -65,8 +76,8 @@ public:
     OSMetaClassDeclareReservedUnused(IntelGen1BluetoothHostControllerUSBTransport, 23);
 
 protected:
-    BluetoothHCIEventPacketHeader * mRequiredEvent;
-    UInt8 * mRequiredEventParams;
+    BluetoothHCIEventQueueNode * mRequiredEventsQueueHead;
+    BluetoothHCIEventQueueNode * mRequiredEventsQueueTail;
     BluetoothHCICommandOpCode mCurrentCommandOpCode;
     bool mReceivedEventValid;
     bool mPatching;
@@ -74,4 +85,3 @@ protected:
 };
 
 #endif
-
