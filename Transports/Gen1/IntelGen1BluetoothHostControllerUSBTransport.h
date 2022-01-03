@@ -38,6 +38,8 @@ class IntelGen1BluetoothHostControllerUSBTransport : public IntelBluetoothHostCo
     OSDeclareDefaultStructors(IntelGen1BluetoothHostControllerUSBTransport)
 
 public:
+    virtual bool init( OSDictionary * dictionary = NULL ) APPLE_KEXT_OVERRIDE;
+    virtual void free() APPLE_KEXT_OVERRIDE;
     virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
 
     virtual void ReceiveInterruptData(void * data, UInt32 dataSize, bool special) APPLE_KEXT_OVERRIDE;

@@ -25,14 +25,34 @@
 #define super IntelBluetoothHostControllerUSBTransport
 OSDefineMetaClassAndStructors(IntelGen1BluetoothHostControllerUSBTransport, super)
 
+bool IntelGen1BluetoothHostControllerUSBTransport::init(OSDictionary * dictionary)
+{
+    if ( !super::init() )
+    {
+        os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][init] -- super::init() failed ****\n");
+        return false;
+    }
+    
+    mRequiredEventsQueueHead = NULL;
+    mRequiredEventsQueueTail = NULL;
+    mReceivedEventValid = false;
+    mPatching = false;
+    mIsDefaultFirmware = false;
+    return true;
+}
+
+void IntelGen1BluetoothHostControllerUSBTransport::free()
+{
+    while ( mRequiredEventsQueueHead )
+        IODelete(EventsQueueDequeue(), BluetoothHCIEventQueueNode, 1);
+    super::free();
+}
+
 bool IntelGen1BluetoothHostControllerUSBTransport::start(IOService * provider)
 {
     if ( !super::start(provider) )
         return false;
 
-    mReceivedEventValid = false;
-    mPatching = false;
-    mIsDefaultFirmware = false;
     mFirmwareCandidates = fwCandidates;
     mNumFirmwares = fwCount;
     setProperty("ActiveBluetoothControllerVendor", "Intel - Legacy ROM");
@@ -170,6 +190,8 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     *fwPtr += kBluetoothHCICommandPacketHeaderSize;
     remain -= kBluetoothHCICommandPacketHeaderSize;
 
+    mCurrentCommandOpCode = cmd.opCode;
+    
     /* Ensure that the remain firmware data is long enough than the length
      * of command parameter. If not, the firmware file is corrupted.
      */
@@ -212,8 +234,10 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
 
         if ( remain < node->event.dataSize )
         {
+            REQUIRE("( remain >= node->event.dataSize )");
             os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] -- Firmware corrupted -- invalid event length ****\n");
             mPatching = false;
+            IOSafeDeleteNULL(node, BluetoothHCIEventQueueNode, 1);
             return kIOReturnError;
         }
 
@@ -221,6 +245,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
         if ( !node->eventParams )
         {
             REQUIRE("( node->eventParams != NULL )");
+            IOSafeDeleteNULL(node, BluetoothHCIEventQueueNode, 1);
             goto INVALID_EVENT_READ;
         }
         *fwPtr += node->event.dataSize;
