@@ -1328,13 +1328,21 @@ bool IntelBluetoothHostController::SetHCIRequestRequireEvents(BluetoothHCIComman
         case 0xFC01:
         case 0xFC05:
         case 0xFC09:
+        case 0xFC11:
         case 0xFC52:
         case 0xFC86:
         case 0xFC8B:
+        case 0xFC8E:
         case 0xFCA1:
         case 0xFCA6:
             request->mExpectedEvent = 2; // command complete
             request->mNumberOfExpectedExplicitCompleteEvents = 0;
+            return true;
+            
+        case 0xFC2F:
+            request->mExpectedEvent = 5; // command status
+            request->mNumberOfExpectedExplicitCompleteEvents = 1;
+            request->mExpectedExplicitCompleteEvents[0] = kBluetoothHCIEventVendorSpecific;
             return true;
 
         default:
@@ -1351,14 +1359,20 @@ bool IntelBluetoothHostController::GetCompleteCodeForCommand(BluetoothHCICommand
         case 0xFC01:
         case 0xFC05:
         case 0xFC09:
+        case 0xFC11:
         case 0xFC52:
         case 0xFC86:
         case 0xFC8B:
+        case 0xFC8E:
         case 0xFCA1:
         case 0xFCA6:
             eventCode = kBluetoothHCIEventCommandComplete;
             break;
 
+        case 0xFC2F:
+            eventCode = kBluetoothHCIEventCommandStatus;
+            break;
+            
         default:
             return super::GetCompleteCodeForCommand(inOpCode, outEventCode);
     }

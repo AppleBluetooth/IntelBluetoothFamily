@@ -80,6 +80,7 @@ private:
 protected:
     BluetoothHCIEventQueueNode * mRequiredEventsQueueHead;
     BluetoothHCIEventQueueNode * mRequiredEventsQueueTail;
+    UInt32 mRequiredEventsQueueSize;
     BluetoothHCICommandOpCode mCurrentCommandOpCode;
     bool mReceivedEventValid;
     bool mPatching;

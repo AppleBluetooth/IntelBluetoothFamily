@@ -64,6 +64,8 @@ bool IntelGen1BluetoothHostControllerUSBTransport::EventsQueueEnqueue(BluetoothH
     if ( !node )
         return false;
     
+    ++mRequiredEventsQueueSize;
+    
     if ( !mRequiredEventsQueueHead ) // queue is empty
     {
         mRequiredEventsQueueHead = node;
@@ -81,6 +83,8 @@ BluetoothHCIEventQueueNode * IntelGen1BluetoothHostControllerUSBTransport::Event
     if ( !mRequiredEventsQueueHead )
         return NULL;
     
+    --mRequiredEventsQueueSize;
+    
     BluetoothHCIEventQueueNode * node = mRequiredEventsQueueHead;
     if ( !mRequiredEventsQueueHead->next )
         mRequiredEventsQueueHead = NULL;
@@ -91,38 +95,39 @@ BluetoothHCIEventQueueNode * IntelGen1BluetoothHostControllerUSBTransport::Event
 
 void IntelGen1BluetoothHostControllerUSBTransport::ReceiveInterruptData(void * data, UInt32 dataSize, bool special)
 {
-    /* It ensures that the returned event matches the event data read from
-     * the firmware file. At fist, it checks the length and then
-     * the contents of the event.
+    /* Ensure that the received event's length and data matches
+     * those of the event read from the firmware file.
      */
     if ( mPatching )
     {
-        int location = 0;
         BluetoothHCIEventQueueNode * node;
-        UInt8 * events = (UInt8 *) data;
+        UInt8 * eventData = (UInt8 *) data;
         
-        while ( mRequiredEventsQueueHead )
+        if ( mRequiredEventsQueueHead )
         {
             node = EventsQueueDequeue();
-            BluetoothHCIEventPacketHeader * event = (BluetoothHCIEventPacketHeader *) (events + location);
-            location += kBluetoothHCIEventPacketHeaderSize;
+            BluetoothHCIEventPacketHeader * event = (BluetoothHCIEventPacketHeader *) eventData;
             if ( node->event.dataSize != event->dataSize )
             {
-                os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][ReceiveInterruptData] -- Event length mismatch: opCode = 0x%04X ****\n", mCurrentCommandOpCode);
+                os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][ReceiveInterruptData] -- expected data size (%u) != actual data size (%u) -- opCode = 0x%04X ****\n", node->event.dataSize, event->dataSize, mCurrentCommandOpCode);
                 IOSafeDeleteNULL(node, BluetoothHCIEventQueueNode, 1);
                 goto call_super;
             }
-            if ( memcmp(events + location, node->eventParams, event->dataSize) )
+            if ( memcmp(eventData + kBluetoothHCIEventPacketHeaderSize, node->eventParams, event->dataSize) )
             {
                 os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][ReceiveInterruptData] -- Event parameters mismatch: opCode = 0x%04X ****\n", mCurrentCommandOpCode);
                 IOSafeDeleteNULL(node, BluetoothHCIEventQueueNode, 1);
                 goto call_super;
             }
-            location += event->dataSize;
             IOSafeDeleteNULL(node, BluetoothHCIEventQueueNode, 1);
         }
-        mReceivedEventValid = true;
-        mCommandGate->commandWakeup(&mReceivedEventValid);
+        
+        /* Wake up the received event valid thread only when all the required events are received. */
+        if ( !mRequiredEventsQueueSize )
+        {
+            mReceivedEventValid = true;
+            mCommandGate->commandWakeup(&mReceivedEventValid);
+        }
     }
     
 call_super:
@@ -145,8 +150,8 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareNameWL(void * 
 
 IOReturn IntelGen1BluetoothHostControllerUSBTransport::GetFirmwareErrorHandler(void * version, BluetoothIntelBootParams * params, const char * suffix, OSData ** fwData)
 {
-    /* If the correct firmware patch file is not found, use the
-     * default firmware patch file instead
+    /* Use the default firmware patch file instead if the device
+     * specific firmware patch file is not found.
      */
     if ( !mIsDefaultFirmware )
     {
@@ -169,14 +174,12 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
 
     mPatching = true;
     
-    /* The first byte indicates the types of the patch command or event.
-     * 0x01 means HCI command and 0x02 is HCI event. If the first bytes
-     * in the current firmware buffer doesn't start with 0x01 or
-     * the size of remain buffer is smaller than HCI command header,
-     * the firmware file is corrupted and it should stop the patching
-     * process.
+    /* The first byte indicates the type of the patch (command / event).
+     * 0x01 indicates a HCI command and 0x02 a HCI event. The first byte
+     * in the firmware buffer must start with 0x01 and the size of the
+     * remaining buffer should be larger than HCI command header.
      */
-    if ( remain > kBluetoothHCICommandPacketHeaderSize && *fwPtr[0] != 0x01 )
+    if ( remain > kBluetoothHCICommandPacketHeaderSize && **fwPtr != 0x01 )
     {
         os_log(mInternalOSLogObject, "**** [IntelGen1BluetoothHostControllerUSBTransport][PatchFirmware] -- Firmware corrupted -- invalid command read ****\n");
         mPatching = false;
@@ -185,15 +188,15 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
     ++(*fwPtr);
     --remain;
 
-    cmd.opCode = *(BluetoothHCICommandOpCode *) fwPtr;
-    cmd.dataSize = *(UInt8 *) (fwPtr + sizeof(BluetoothHCICommandOpCode));
+    cmd.opCode = *(BluetoothHCICommandOpCode *) *fwPtr;
+    cmd.dataSize = *(UInt8 *) (*fwPtr + sizeof(BluetoothHCICommandOpCode));
     *fwPtr += kBluetoothHCICommandPacketHeaderSize;
     remain -= kBluetoothHCICommandPacketHeaderSize;
 
     mCurrentCommandOpCode = cmd.opCode;
     
-    /* Ensure that the remain firmware data is long enough than the length
-     * of command parameter. If not, the firmware file is corrupted.
+    /* Ensure that the remaining firmware data is longer than the
+     * length of the command parameter.
      */
     if ( remain < cmd.dataSize )
     {
@@ -208,7 +211,7 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
      * is not required when the default firmware patch file is used
      * because there are no patch data to load.
      */
-    if ( *disablePatch && (UInt16) (cmd.opCode) == 0xFC8E )
+    if ( *disablePatch && cmd.opCode == 0xFC8E )
         *disablePatch = 0;
 
     memcpy(cmd.data, *fwPtr, cmd.dataSize);
@@ -222,13 +225,14 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
      * can be sent with __hci_cmd_sync_ev() which returns the sk_buff of
      * last expected event.
      */
-    while ( remain > kBluetoothHCIEventPacketHeaderSize && *fwPtr[0] == 0x02 )
+    while ( remain > kBluetoothHCIEventPacketHeaderSize && **fwPtr == 0x02 )
     {
         ++(*fwPtr);
         --remain;
         
         node = IONewZero(BluetoothHCIEventQueueNode, 1);
-        memcpy(&node->event, *fwPtr, kBluetoothHCIEventPacketHeaderSize);
+        node->event.eventCode = **fwPtr;
+        node->event.dataSize  = *(UInt8 *) (*fwPtr + sizeof(BluetoothHCIEventCode));
         *fwPtr += kBluetoothHCIEventPacketHeaderSize;
         remain -= kBluetoothHCIEventPacketHeaderSize;
 
@@ -250,13 +254,12 @@ IOReturn IntelGen1BluetoothHostControllerUSBTransport::PatchFirmware(OSData * fw
         }
         *fwPtr += node->event.dataSize;
         remain -= node->event.dataSize;
-        
+
         EventsQueueEnqueue(node);
     }
 
-    /* Every HCI commands in the firmware file has its correspond event.
-     * If event is not found or remain is smaller than zero, the firmware
-     * file is corrupted.
+    /* Every HCI commands in the firmware file has its corresponding event.
+     * If the remaining size is smaller than zero, the firmware file is corrupted.
      */
     if ( remain < 0 )
     {
