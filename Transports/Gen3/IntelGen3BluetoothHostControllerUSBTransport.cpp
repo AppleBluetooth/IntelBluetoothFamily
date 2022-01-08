@@ -55,10 +55,6 @@ IOReturn IntelGen3BluetoothHostControllerUSBTransport::ParseVersionInfoTLV(Bluet
     if ( !version || !data )
         return kIOReturnInvalid;
 
-    /* Consume Command Complete Status field */
-    --dataSize;
-    ++data;
-
     /* Event parameters contatin multiple TLVs. Read each of them
      * and only keep the required data. Also, it use existing legacy
      * version field like hw_platform, hw_variant, and fw_variant

@@ -44,7 +44,6 @@
 		50BDB5E8273F862000DED64C /* IntelBluetoothFamily.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IntelBluetoothFamily.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		50BDB5EE273F862000DED64C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50BDB5F6273F888D00DED64C /* libkmod.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkmod.a; path = ../MacKernelSDK/Library/x86_64/libkmod.a; sourceTree = "<group>"; };
-		BC872F8D274B0DE000B123E3 /* Logs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logs.h; sourceTree = "<group>"; usesTabs = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +61,6 @@
 		500F709F273E902900B1FBD2 = {
 			isa = PBXGroup;
 			children = (
-				BC872F8D274B0DE000B123E3 /* Logs.h */,
 				50BDB5DF273F85BB00DED64C /* IntelBluetoothHostControllerTypes.h */,
 				50BDB5E0273F85C100DED64C /* IntelBluetoothHostController.h */,
 				50BDB5E1273F85C500DED64C /* IntelBluetoothHostController.cpp */,

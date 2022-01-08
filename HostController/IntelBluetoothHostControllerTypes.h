@@ -121,7 +121,23 @@ typedef enum BluetoothHCIIntelSecureSendFragmentType
 
 enum BluetoothHCIIntelCommands
 {
-    kBluetoothHCIIntelCommandWriteBootParams = 0x000E
+    kBluetoothHCIIntelCommandReset               = 0x0001,
+    kBluetoothHCIIntelCommandReadVersionInfo     = 0x0005,
+    kBluetoothHCIIntelCommandSecureSend          = 0x0009,
+    kBluetoothHCIIntelCommandReadBootParams      = 0x000D,
+    kBluetoothHCIIntelCommandWriteBootParams     = 0x000E,
+    kBluetoothHCIIntelCommandManufacturing       = 0x0011,
+    kBluetoothHCIIntelCommandMicrosoftExtension  = 0x001E,
+    kBluetoothHCIIntelCommandReadExceptionInfo   = 0x0022,
+    kBluetoothHCIIntelCommandWriteDeviceAddress  = 0x0031,
+    kBluetoothHCIIntelCommandTurnOffLED          = 0x003F,
+    kBluetoothHCIIntelCommandSetDiagnosticMode   = 0x0043,
+    kBluetoothHCIIntelCommandSetEventMask        = 0x0052,
+    kBluetoothHCIIntelCommandReadOffloadUseCases = 0x0086,
+    kBluetoothHCIIntelCommandWriteDDC            = 0x008B,
+    kBluetoothHCIIntelCommandLoadPatch           = 0x008E,
+    kBluetoothHCIIntelCommandSetLinkStatsTracing = 0x00A1,
+    kBluetoothHCIIntelCommandReadDebugFeatures   = 0x00A6
 };
 
 struct BluetoothIntelVersionInfoTLV
@@ -156,7 +172,6 @@ struct BluetoothIntelTLV
 
 struct BluetoothIntelVersionInfo
 {
-    UInt8  status;
     UInt8  hardwarePlatform;
     UInt8  hardwareVariant;
     UInt8  hardwareRevision;
@@ -170,7 +185,6 @@ struct BluetoothIntelVersionInfo
 
 struct BluetoothIntelBootParams
 {
-    UInt8  status;
     UInt8  otpFormat;
     UInt8  otpContent;
     UInt8  otpPatch;
@@ -191,8 +205,9 @@ struct BluetoothIntelBootParams
 
 struct BluetoothIntelDebugFeatures
 {
-    UInt8  page1[16];
-    UInt8  page2[16];
+    UInt8 unknown1;
+    UInt8 unknown2;
+    UInt8 page1[16];
 } __attribute__((packed));
 
 struct BluetoothIntelCommandWriteBootParams
@@ -222,14 +237,12 @@ struct BluetoothIntelSecureSendResultEventParams
 
 struct BluetoothIntelOffloadUseCases
 {
-    UInt8  status;
-    UInt8  preset[8];
+    UInt8 preset[8];
 } __attribute__((packed));
 
 struct BluetoothIntelExceptionInfo
 {
-    UInt8  status;
-    char   info[12];
+    char info[12];
 } __attribute__((packed));
 
 #define IntelCNVXExtractHardwarePlatform(cnvx)      ((UInt8)(((cnvx) & 0x0000ff00) >> 8))

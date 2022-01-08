@@ -26,10 +26,11 @@
 #include <IOKit/bluetooth/IOBluetoothHCIController.h>
 #include <IOKit/bluetooth/IOBluetoothHCIRequest.h>
 #include <IOKit/IOLib.h>
-#include "Logs.h"
 #include "IntelBluetoothHostControllerTypes.h"
 
 class IntelBluetoothHostControllerUSBTransport;
+
+IOBLUETOOTH_EXPORT IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDataSize, UInt8 * outData, UInt32 * outDataSize, UInt8 * outStatus);
 
 class IntelBluetoothHostController : public IOBluetoothHostController
 {
