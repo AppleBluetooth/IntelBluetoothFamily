@@ -129,6 +129,7 @@ enum BluetoothHCIIntelCommands
     kBluetoothHCIIntelCommandManufacturing       = 0x0011,
     kBluetoothHCIIntelCommandMicrosoftExtension  = 0x001E,
     kBluetoothHCIIntelCommandReadExceptionInfo   = 0x0022,
+    kBluetoothHCIIntelCommandPatchComplete       = 0x002F,
     kBluetoothHCIIntelCommandWriteDeviceAddress  = 0x0031,
     kBluetoothHCIIntelCommandTurnOffLED          = 0x003F,
     kBluetoothHCIIntelCommandSetDiagnosticMode   = 0x0043,

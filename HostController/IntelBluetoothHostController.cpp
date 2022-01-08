@@ -102,7 +102,7 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
             
-        case 0xFC2F:
+        case kBluetoothHCIIntelCommandPatchComplete:
             *outDataSize = 0;
             *outStatus = kBluetoothHCIErrorSuccess;
             return kIOReturnSuccess;
