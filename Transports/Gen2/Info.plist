@@ -49,7 +49,7 @@
 			<key>idVendor</key>
 			<integer>32903</integer>
 		</dict>
-		<key>IntelGen2USBBluetoothHCIController_AC8260_AC8265</key>
+		<key>IntelGen2USBBluetoothHCIController_AC8260</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
@@ -62,7 +62,7 @@
 			<key>idVendor</key>
 			<integer>32903</integer>
 		</dict>
-		<key>IntelGen2USBBluetoothHCIController_AC9460_AC9565</key>
+		<key>IntelGen2USBBluetoothHCIController_AC9560</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.cjiang.IntelGen2BluetoothHostControllerUSBTransport</string>
