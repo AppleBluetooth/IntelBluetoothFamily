@@ -95,7 +95,9 @@ public:
     virtual IOReturn WaitForDeviceBoot(UInt32 callTime, UInt32 deadline);
     virtual IOReturn BootDevice(UInt32 bootAddress);
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
     virtual IOReturn GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, UInt8 * numOpCodes, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool * complete) APPLE_KEXT_OVERRIDE;
+#endif
     virtual void ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber) APPLE_KEXT_OVERRIDE;
     virtual bool GetCompleteCodeForCommand(BluetoothHCICommandOpCode inOpCode, BluetoothHCIEventCode * outEventCode) APPLE_KEXT_OVERRIDE;
     virtual bool SetHCIRequestRequireEvents(BluetoothHCICommandOpCode opCode, IOBluetoothHCIRequest * request) APPLE_KEXT_OVERRIDE;

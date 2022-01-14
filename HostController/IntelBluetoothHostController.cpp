@@ -1326,6 +1326,7 @@ reset:
     return kIOReturnSuccess;
 }
 
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_14
 IOReturn IntelBluetoothHostController::GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, UInt8 * numOpCodes, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool * complete)
 {
     if ( !inDataPtr || !inDataSize || !outOpCode || !numOpCodes || !eventCode || !outStatus || !outDeviceAddress || !outConnectionHandle || !complete )
@@ -1338,6 +1339,7 @@ IOReturn IntelBluetoothHostController::GetOpCodeAndEventCode(UInt8 * inDataPtr, 
     
     return err;
 }
+#endif
 
 void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber)
 {
