@@ -30,36 +30,36 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
 {
     if ( !inData || !outData || !outDataSize || !outStatus )
         return kIOReturnBadArgument;
-    
+
     switch ( ocf )
     {
         case kBluetoothHCIIntelCommandReadBootParams:
             if ( inDataSize != sizeof(BluetoothIntelBootParams) + 1 )
                 return kIOReturnBadArgument;
-            
+
             *outDataSize = sizeof(BluetoothIntelBootParams);
             if ( UnpackData(inDataSize, inData, "bbbbHbbbbbb^bbbbb", outStatus, outData, outData + 1, outData + 2, outData + 3, outData + 5, outData + 6, outData + 7, outData + 8, outData + 9, outData + 10, outData + 11, outData + 17, outData + 18, outData + 19, outData + 20, outData + 21) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
-        
+
         case kBluetoothHCIIntelCommandReadOffloadUseCases:
             if ( inDataSize != sizeof(BluetoothIntelOffloadUseCases) + 1 )
                 return kIOReturnBadArgument;
-            
+
             *outDataSize = sizeof(BluetoothIntelOffloadUseCases);
             if ( UnpackData(inDataSize, inData, "bn", outStatus, 8, outData) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
-    
+
         case kBluetoothHCIIntelCommandReadExceptionInfo:
             if ( inDataSize != sizeof(BluetoothIntelExceptionInfo) + 1 )
                 return kIOReturnBadArgument;
-            
+
             *outDataSize = sizeof(BluetoothIntelExceptionInfo);
             if ( UnpackData(inDataSize, inData, "bn", outStatus, 12, outData) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
-            
+
         case kBluetoothHCIIntelCommandReadDebugFeatures:
             if ( inDataSize != sizeof(BluetoothIntelDebugFeatures) + 1 )
                 return kIOReturnBadArgument;
@@ -67,7 +67,7 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
             if ( UnpackData(inDataSize, inData, "bbbn", outStatus, outData, outData + 1, 16, outData + 2) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
-            
+
         case kBluetoothHCIIntelCommandReadVersionInfo:
             if ( inDataSize == sizeof(BluetoothIntelVersionInfo) + 1 )
             {
@@ -85,7 +85,7 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
                 return kIOReturnSuccess;
             }
             return kIOReturnBadArgument;
-            
+
         case kBluetoothHCIIntelCommandWriteBootParams:
         case kBluetoothHCIIntelCommandWriteDeviceAddress:
         case kBluetoothHCIIntelCommandWriteDDC:
@@ -97,16 +97,16 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
         case kBluetoothHCIIntelCommandSetEventMask:
         case kBluetoothHCIIntelCommandManufacturing:
         case kBluetoothHCIIntelCommandLoadPatch:
+        case 0x0060:
             *outDataSize = 0;
             if ( UnpackData(inDataSize, inData, "b", outStatus) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
-            
+
         case kBluetoothHCIIntelCommandPatchComplete:
             *outDataSize = 0;
-            *outStatus = kBluetoothHCIErrorSuccess;
             return kIOReturnSuccess;
-            
+
         default:
             *outDataSize = inDataSize;
             memmove(outData, inData, inDataSize);
@@ -1326,6 +1326,19 @@ reset:
     return kIOReturnSuccess;
 }
 
+IOReturn IntelBluetoothHostController::GetOpCodeAndEventCode(UInt8 * inDataPtr, UInt32 inDataSize, BluetoothHCICommandOpCode * outOpCode, UInt8 * numOpCodes, BluetoothHCIEventCode * eventCode, BluetoothHCIEventStatus * outStatus, BluetoothDeviceAddress * outDeviceAddress, BluetoothConnectionHandle * outConnectionHandle, bool * complete)
+{
+    if ( !inDataPtr || !inDataSize || !outOpCode || !numOpCodes || !eventCode || !outStatus || !outDeviceAddress || !outConnectionHandle || !complete )
+        return kIOReturnBadArgument;
+    
+    IOReturn err = super::GetOpCodeAndEventCode(inDataPtr, inDataSize, outOpCode, numOpCodes, eventCode, outStatus, outDeviceAddress, outConnectionHandle, complete);
+    
+    if ( *eventCode == kBluetoothHCIEventCommandStatus && *outOpCode == 0xFC2F )
+        *complete = true;
+    
+    return err;
+}
+
 void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 inDataSize, UInt32 sequenceNumber)
 {
     IOReturn err;
@@ -1413,8 +1426,10 @@ bool IntelBluetoothHostController::SetHCIRequestRequireEvents(BluetoothHCIComman
         case 0xFC01:
         case 0xFC05:
         case 0xFC09:
+        case 0xFC0D:
         case 0xFC11:
         case 0xFC52:
+        case 0xFC60:
         case 0xFC86:
         case 0xFC8B:
         case 0xFC8E:
@@ -1444,8 +1459,10 @@ bool IntelBluetoothHostController::GetCompleteCodeForCommand(BluetoothHCICommand
         case 0xFC01:
         case 0xFC05:
         case 0xFC09:
+        case 0xFC0D:
         case 0xFC11:
         case 0xFC52:
+        case 0xFC60:
         case 0xFC86:
         case 0xFC8B:
         case 0xFC8E:

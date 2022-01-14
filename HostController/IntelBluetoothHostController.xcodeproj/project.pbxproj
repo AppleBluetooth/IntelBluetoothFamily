@@ -487,7 +487,7 @@
 				504D1C432746754A00BCB513 /* High Sierra */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Catalina;
+			defaultConfigurationName = "Big Sur";
 		};
 		50BDB5EF273F862000DED64C /* Build configuration list for PBXNativeTarget "IntelBluetoothFamily" */ = {
 			isa = XCConfigurationList;
@@ -498,7 +498,7 @@
 				504D1C442746754A00BCB513 /* High Sierra */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Catalina;
+			defaultConfigurationName = "Big Sur";
 		};
 /* End XCConfigurationList section */
 	};
