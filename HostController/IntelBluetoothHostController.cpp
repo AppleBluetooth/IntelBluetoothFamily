@@ -88,22 +88,22 @@ IOReturn ParseIntelVendorSpecificCommand(UInt16 ocf, UInt8 * inData, UInt32 inDa
 
         case kBluetoothHCIIntelCommandWriteBootParams:
         case kBluetoothHCIIntelCommandWriteDeviceAddress:
-        case kBluetoothHCIIntelCommandWriteDDC:
+        case kBluetoothHCIIntelCommandWriteConfigDDC:
         case kBluetoothHCIIntelCommandSecureSend:
         case kBluetoothHCIIntelCommandReset:
-        case kBluetoothHCIIntelCommandTurnOffLED:
+        case kBluetoothHCIIntelCommandSWRFKill:
         case kBluetoothHCIIntelCommandSetLinkStatsTracing:
-        case kBluetoothHCIIntelCommandSetDiagnosticMode:
+        case kBluetoothHCIIntelCommandActivateTraces:
         case kBluetoothHCIIntelCommandSetEventMask:
-        case kBluetoothHCIIntelCommandManufacturing:
-        case kBluetoothHCIIntelCommandLoadPatch:
+        case kBluetoothHCIIntelCommandManufacturerMode:
+        case kBluetoothHCIIntelCommandWriteMemory:
         case 0x0060:
             *outDataSize = 0;
             if ( UnpackData(inDataSize, inData, "b", outStatus) == -1 )
                 return kIOReturnBadArgument;
             return kIOReturnSuccess;
 
-        case kBluetoothHCIIntelCommandPatchComplete:
+        case kBluetoothHCIIntelCommandWriteBDData:
             *outDataSize = 0;
             return kIOReturnSuccess;
 
@@ -1377,7 +1377,7 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
 
         switch ( inDataPtr[2] )
         {
-            case 0x02:
+            case kBluetoothHCIEventIntelBootup:
                 /* When switching to the operational firmware
                  * the device sends a vendor specific event
                  * indicating that the bootup completed.
@@ -1392,7 +1392,7 @@ void IntelBluetoothHostController::ProcessEventDataWL(UInt8 * inDataPtr, UInt32 
                 }
                 break;
 
-            case 0x06:
+            case kBluetoothHCIEventIntelSecureSendCommandsResult:
                 /* When the firmware loading completes the
                  * device sends out a vendor specific event
                  * indicating the result of the firmware

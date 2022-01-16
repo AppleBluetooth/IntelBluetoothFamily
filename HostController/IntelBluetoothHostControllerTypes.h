@@ -24,6 +24,90 @@
 
 #include <IOKit/bluetooth/Bluetooth.h>
 
+enum BluetoothHCIIntelResetTypes
+{
+    kBluetoothHCIIntelResetTypeHardwareReset     = 0x00,
+    kBluetoothHCIIntelResetTypeSoftWatchdogReset = 0x01,
+    kBluetoothHCIIntelResetTypeSoftSoftwareReset = 0x02,
+    kBluetoothHCIIntelResetTypeHardWatchdogReset = 0x03,
+    kBluetoothHCIIntelResetTypeHardSoftwareReset = 0x04
+};
+
+enum BluetoothHCIIntelSoftwareResetTypes
+{
+    kBluetoothHCIIntelSoftwareResetTypeSoft = 0x00,
+    kBluetoothHCIIntelSoftwareResetTypeHard = 0x01
+};
+
+enum BluetoothHCIIntelResetReaons
+{
+    kBluetoothHCIIntelResetReaonPowerOn           = 0x00,
+    kBluetoothHCIIntelResetReaonResetCommand      = 0x01,
+    kBluetoothHCIIntelResetReaonIntelResetCommand = 0x02,
+    kBluetoothHCIIntelResetReaonWatchdog          = 0x03,
+    kBluetoothHCIIntelResetReaonFatalException    = 0x04,
+    kBluetoothHCIIntelResetReaonSystemException   = 0x05,
+    kBluetoothHCIIntelResetReaonUnknown           = 0xFF
+};
+
+enum BluetoothHCIIntelResetDDCReloadModes
+{
+    kBluetoothHCIIntelResetDDCReloadModeDisabled = 0x00,
+    kBluetoothHCIIntelResetDDCReloadModeOTP      = 0x01
+};
+
+enum kBluetoothHCIIntelSecureSendResults
+{
+    kBluetoothHCIIntelSecureSendResultSuccess = 0x00,
+    kBluetoothHCIIntelSecureSendResultGeneralFailure,
+    kBluetoothHCIIntelSecureSendResultHardwareFailure,
+    kBluetoothHCIIntelSecureSendResultSignatureVerificationFailure,
+    kBluetoothHCIIntelSecureSendResultCommandBufferParseError,
+    kBluetoothHCIIntelSecureSendResultCommandExecutionFailure,
+    kBluetoothHCIIntelSecureSendResultCommandParametersError,
+    kBluetoothHCIIntelSecureSendResultCommandMissing
+};
+
+enum kBluetoothHCIIntelLinkPDUTraceTypes
+{
+    kBluetoothHCIIntelLinkPDUTraceTypeLMPRx  = 0x00,
+    kBluetoothHCIIntelLinkPDUTraceTypeLMPTx  = 0x01,
+    kBluetoothHCIIntelLinkPDUTraceTypeLMPAck = 0x02,
+    
+    kBluetoothHCIIntelLinkPDUTraceTypeLLRx   = 0x03,
+    kBluetoothHCIIntelLinkPDUTraceTypeLLTx   = 0x04,
+    kBluetoothHCIIntelLinkPDUTraceTypeLLAck  = 0x05
+};
+
+enum BluetoothHCIIntelDDCStatus
+{
+    kBluetoothHCIIntelDDCStatusFirmwareDefault        = 0x00,
+    kBluetoothHCIIntelDDCStatusFirmwareDefaultWithOTP = 0x01,
+    kBluetoothHCIIntelDDCStatusPersistentRAM          = 0x02,
+    kBluetoothHCIIntelDDCStatusReserved
+};
+
+enum BluetoothHCIIntelExceptionTypes
+{
+    kBluetoothHCIIntelExceptionTypeNoException          = 0x00,
+    kBluetoothHCIIntelExceptionTypeUndefinedInstruction = 0x01,
+    kBluetoothHCIIntelExceptionTypePrefetchAbort        = 0x02,
+    kBluetoothHCIIntelExceptionTypeDataAbort            = 0x03,
+};
+
+enum BluetoothHCIIntelStimulatedExceptionTypes
+{
+    kBluetoothHCIIntelStimulatedExceptionTypeFatalException = 0x01,
+    kBluetoothHCIIntelStimulatedExceptionTypeDebugException = 0x02
+};
+
+enum BluetoothHCIIntelMemoryModes
+{
+    kBluetoothHCIIntelMemoryModeByteAccess     = 0x00,
+    kBluetoothHCIIntelMemoryModeHalfWordAccess = 0x01,
+    kBluetoothHCIIntelMemoryModeWordAccess     = 0x02,
+};
+
 typedef enum BluetoothIntelHardwareVariant
 {
     kBluetoothIntelHardwareVariantWP     = 0x07,    // Legacy ROM
@@ -52,9 +136,7 @@ enum BluetoothIntelManufacturingExitResetOptions
 {
     kBluetoothIntelManufacturingExitResetOptionsNoReset,
     kBluetoothIntelManufacturingExitResetOptionResetDeactivatePatches,
-    kBluetoothIntelManufacturingExitResetOptionResetActivatePatches,
-    
-    kBluetoothIntelManufacturingExitResetOptionEnd
+    kBluetoothIntelManufacturingExitResetOptionResetActivatePatches
 };
 
 enum BluetoothIntelTLVTypes
@@ -119,26 +201,65 @@ typedef enum BluetoothHCIIntelSecureSendFragmentType
     kBluetoothHCIIntelFirmwareFragmentTypePKey = 0x03
 } BluetoothHCIIntelSecureSendFragmentType;
 
+enum BluetoothHCIIntelEvents
+{
+    kBluetoothHCIEventIntelFatalException           = 0x01,
+    kBluetoothHCIEventIntelBootup                   = 0x02,
+    kBluetoothHCIEventIntelDefaultBDData            = 0x05,
+    kBluetoothHCIEventIntelSecureSendCommandsResult = 0x06,
+    kBluetoothHCIEventIntelDebugException           = 0x08,
+    kBluetoothHCIEventIntelLELinkEstablished        = 0x0F,
+    kBluetoothHCIEventIntelScanStatus               = 0x11,
+    kBluetoothHCIEventIntelTraceActivationComplete  = 0x16,
+    kBluetoothHCIEventIntelLinkPDUTrace             = 0x17,
+    kBluetoothHCIEventIntelWriteBDDataComplete      = 0x19,
+    kBluetoothHCIEventIntelSCORejectedViaLMP        = 0x25,
+    kBluetoothHCIEventIntelPTTSwitchNotification    = 0x26,
+    kBluetoothHCIEventIntelSystemException          = 0x29,
+    kBluetoothHCIEventIntelFirmwareTraceString      = 0x2C,
+    kBluetoothHCIEventIntelFirmwareTraceBinary      = 0x2E
+};
+
 enum BluetoothHCIIntelCommands
 {
-    kBluetoothHCIIntelCommandReset               = 0x0001,
-    kBluetoothHCIIntelCommandReadVersionInfo     = 0x0005,
-    kBluetoothHCIIntelCommandSecureSend          = 0x0009,
-    kBluetoothHCIIntelCommandReadBootParams      = 0x000D,
-    kBluetoothHCIIntelCommandWriteBootParams     = 0x000E,
-    kBluetoothHCIIntelCommandManufacturing       = 0x0011,
-    kBluetoothHCIIntelCommandMicrosoftExtension  = 0x001E,
-    kBluetoothHCIIntelCommandReadExceptionInfo   = 0x0022,
-    kBluetoothHCIIntelCommandPatchComplete       = 0x002F,
-    kBluetoothHCIIntelCommandWriteDeviceAddress  = 0x0031,
-    kBluetoothHCIIntelCommandTurnOffLED          = 0x003F,
-    kBluetoothHCIIntelCommandSetDiagnosticMode   = 0x0043,
-    kBluetoothHCIIntelCommandSetEventMask        = 0x0052,
-    kBluetoothHCIIntelCommandReadOffloadUseCases = 0x0086,
-    kBluetoothHCIIntelCommandWriteDDC            = 0x008B,
-    kBluetoothHCIIntelCommandLoadPatch           = 0x008E,
-    kBluetoothHCIIntelCommandSetLinkStatsTracing = 0x00A1,
-    kBluetoothHCIIntelCommandReadDebugFeatures   = 0x00A6
+    kBluetoothHCIIntelCommandReset                = 0x0001,
+    kBluetoothHCIIntelCommandNoOperation          = 0x0002,
+    kBluetoothHCIIntelCommandReadVersionInfo      = 0x0005,
+    kBluetoothHCIIntelCommandSetUARTBaudrate      = 0x0006,
+    kBluetoothHCIIntelCommandEnableLPM            = 0x0007,
+    kBluetoothHCIIntelCommandPCMWriteConfig       = 0x0008,
+    kBluetoothHCIIntelCommandSecureSend           = 0x0009,
+    kBluetoothHCIIntelCommandReadBootParams       = 0x000D,
+    kBluetoothHCIIntelCommandWriteBootParams      = 0x000E,
+    kBluetoothHCIIntelCommandUnlock               = 0x000F,
+    kBluetoothHCIIntelCommandChangeUARTBaudrate   = 0x0010,
+    kBluetoothHCIIntelCommandManufacturerMode     = 0x0011,
+    kBluetoothHCIIntelCommandReadLinkRSSI         = 0x0012,
+    kBluetoothHCIIntelCommandMicrosoftExtension   = 0x001E,
+    kBluetoothHCIIntelCommandReadExceptionInfo    = 0x0022,
+    kBluetoothHCIIntelCommandClearExceptionInfo   = 0x0024,
+    kBluetoothHCIIntelCommandWriteBDData          = 0x002F,
+    kBluetoothHCIIntelCommandReadBDData           = 0x0030,
+    kBluetoothHCIIntelCommandWriteDeviceAddress   = 0x0031,
+    kBluetoothHCIIntelCommandFlowSpecification    = 0x0032,
+    kBluetoothHCIIntelCommandReadSecureID         = 0x0034,
+    kBluetoothHCIIntelCommandSetSyncInterfaceType = 0x0038,
+    kBluetoothHCIIntelCommandConfigSyncInterface  = 0x0039,
+    kBluetoothHCIIntelCommandSWRFKill             = 0x003F,
+    kBluetoothHCIIntelCommandActivateTraces       = 0x0043, // also handles deactivation
+    kBluetoothHCIIntelCommandStimulateException   = 0x004D,
+    kBluetoothHCIIntelCommandReadHardwareVersion  = 0x0050,
+    kBluetoothHCIIntelCommandSetEventMask         = 0x0052,
+    kBluetoothHCIIntelCommandConfigLinkController = 0x0053,
+    kBluetoothHCIIntelCommandReadOffloadUseCases  = 0x0086,
+    kBluetoothHCIIntelCommandWriteDDC             = 0x0089,
+    kBluetoothHCIIntelCommandReadDDC              = 0x008A,
+    kBluetoothHCIIntelCommandWriteConfigDDC       = 0x008B,
+    kBluetoothHCIIntelCommandReadConfigDDC        = 0x008C,
+    kBluetoothHCIIntelCommandReadMemory           = 0x008D,
+    kBluetoothHCIIntelCommandWriteMemory          = 0x008E,
+    kBluetoothHCIIntelCommandSetLinkStatsTracing  = 0x00A1,
+    kBluetoothHCIIntelCommandReadDebugFeatures    = 0x00A6
 };
 
 struct BluetoothIntelVersionInfoTLV
