@@ -1847,7 +1847,7 @@ IOReturn IntelBluetoothHostController::BluetoothHCIIntelReadDebugFeatures(Blueto
     /* Intel controller supports two pages, each page is of 128-bit
      * feature bit mask. And each bit defines specific feature support
      */
-    err = SendHCIRequestFormatted(inID, 0xFCA6, sizeof(features), features, "Hbb", 0xFCA6, 1, 1);
+    err = SendHCIRequestFormatted(inID, 0xFCA6, sizeof(BluetoothIntelDebugFeatures), features, "Hbb", 0xFCA6, 1, 1);
     if ( err )
     {
         os_log(mInternalOSLogObject, "**** [IntelBluetoothHostController][BluetoothHCIIntelReadDebugFeatures] ### ERROR: opCode = 0x%04X -- send request failed -- failed to read supported features for page 1: 0x%x ****\n", 0xFCA6, err);
