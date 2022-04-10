@@ -4,9 +4,11 @@ Supporting Bluetooth chipsets on macOS has never been hard: notable projects lik
 
 ### DON'T USE ON MONTEREY!!!
 
+## Unfortunately I am very busy recently due to heavy academic work... I will maintain this repo when I have time. Btw, I am also working on porting the Linux 80211 stack to C++ as an IOKit-based developer friendly library that can dramatically facilitate wireless driver development :)
+
 ## Supported Devices
 - 0x8087, 0x0025
-- 0x8087, 0x0026
+- 0x8087, 0x0026s if
 - 0x8087, 0x0029
 - 0x8087, 0x0032
 - 0x8087, 0x0033
